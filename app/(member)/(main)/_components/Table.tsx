@@ -11,8 +11,6 @@ export default function Table({ tableData, tableClass }: TableProps) {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  console.log(table.getHeaderGroups());
-
   return (
     <div>
       <table

@@ -39,7 +39,7 @@ export default function ClientForm({ type, idUser }: ClientFormProps) {
     name: "",
     phone: "",
     memo: "",
-    use: 1,
+    use: true,
     recommendId: "",
   });
   const router = useRouter();
@@ -127,14 +127,14 @@ export default function ClientForm({ type, idUser }: ClientFormProps) {
                   <div
                     className={`${client.use ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
                     role="presentation"
-                    onClick={() => setClient({ ...client, use: 1 })}
+                    onClick={() => setClient({ ...client, use: true })}
                   >
                     사용 중
                   </div>
                   <div
                     className={`${!client.use ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
                     role="presentation"
-                    onClick={() => setClient({ ...client, use: 0 })}
+                    onClick={() => setClient({ ...client, use: false })}
                   >
                     사용 안함
                   </div>

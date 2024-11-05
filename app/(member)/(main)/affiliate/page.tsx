@@ -240,7 +240,7 @@ export default function AffiliateList() {
     columnHelper.accessor("createdAt", {
       id: "createdAt",
       header: () => (
-        <TableTh text="출금 요청시점" onSort={() => handleSort("createdAt")} />
+        <TableTh text="등록일시" onSort={() => handleSort("createdAt")} />
       ),
       cell: (info) => {
         const newDate = info.getValue().split(" ");

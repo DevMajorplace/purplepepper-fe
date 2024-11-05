@@ -1,3 +1,4 @@
+import { affiliate } from "@/contexts/AffiliateContext";
 import { idUser } from "@/contexts/IdContext";
 
 export {};
@@ -192,7 +193,7 @@ declare global {
     name: string;
     phone: string;
     memo: string;
-    use: number;
+    use: boolean;
     account?: {
       bank: string;
       accountNumber: string;
@@ -212,7 +213,7 @@ declare global {
     name: string;
     phone: string;
     memo: string;
-    use: number;
+    use: boolean;
     account?: {
       bank: string;
       accountNumber: string;
@@ -269,6 +270,11 @@ declare global {
   // 입출금 승인 모달
   interface MoneyChkModalProps {
     info: string[];
+  }
+
+  // 매체사 관리
+  interface AffiliateFormProps {
+    affiliate: affiliate;
   }
 
   // faq

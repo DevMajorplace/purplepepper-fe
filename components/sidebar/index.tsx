@@ -17,11 +17,19 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   });
 
   const userLevel = user.level;
+  const mainNav = pathname.split("/")[1];
 
   // verifies if routeName is the one active (in browser input)
   const activeRoute = useCallback(
     (routeName: string) => {
       return pathname?.includes(routeName);
+    },
+    [pathname]
+  );
+
+  const activeMain = useCallback(
+    (routeName: string) => {
+      return routeName?.includes(mainNav);
     },
     [pathname]
   );
@@ -87,20 +95,20 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 {item.sub ? (
                   <div
                     className={`group flex cursor-pointer flex-col gap-3 text-base ${
-                      activeRoute(item.href) === true ? "open" : ""
+                      activeMain(item.href) === true ? "open" : ""
                     }`}
                     onClick={(e) => handleClick(e)}
                   >
                     <div
                       className={`${
-                        activeRoute(item.href) === true
+                        activeMain(item.href) === true
                           ? "bg-[#f2f2f2] text-[#444]"
                           : "text-[#888]"
                       } py-3 px-3 flex items-center rounded-md`}
                     >
                       <span
                         className={`${
-                          activeRoute(item.href) === true
+                          activeMain(item.href) === true
                             ? "text-[#444]"
                             : "text-[#888]"
                         } font-medium w-6`}
@@ -109,7 +117,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                       </span>
                       <p
                         className={`leading-1 ml-3 flex ${
-                          activeRoute(item.href) === true
+                          activeMain(item.href) === true
                             ? "font-bold dark:text-white"
                             : "font-medium "
                         }`}

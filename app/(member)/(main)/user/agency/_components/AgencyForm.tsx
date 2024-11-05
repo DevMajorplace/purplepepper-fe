@@ -39,7 +39,7 @@ export default function AgencyForm({ type, idUser }: AgencyFormProps) {
     name: "",
     phone: "",
     memo: "",
-    use: 1,
+    use: true,
   });
   const router = useRouter();
 
@@ -124,14 +124,14 @@ export default function AgencyForm({ type, idUser }: AgencyFormProps) {
                 <div
                   className={`${agency.use ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
                   role="presentation"
-                  onClick={() => setAgency({ ...agency, use: 1 })}
+                  onClick={() => setAgency({ ...agency, use: true })}
                 >
                   사용 중
                 </div>
                 <div
                   className={`${!agency.use ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
                   role="presentation"
-                  onClick={() => setAgency({ ...agency, use: 0 })}
+                  onClick={() => setAgency({ ...agency, use: false })}
                 >
                   사용 안함
                 </div>

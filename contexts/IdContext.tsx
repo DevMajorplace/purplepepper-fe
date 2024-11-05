@@ -14,7 +14,7 @@ export interface idUser extends User {
   id: string;
   password: string;
   memo: string;
-  use: 0 | 1;
+  use: boolean;
   account: {
     bank: string;
     accountNumber: string;
@@ -45,7 +45,7 @@ const DEFAULT_IDUSER: idUser = {
   cash: 0, // 캐시 (충전)
   level: 1,
   memo: "",
-  use: 1, // 사용 여부
+  use: true, // 사용 여부
   account: {
     // 계좌 정보
     bank: "KEB하나은행", // 계좌 은행 (디폴트 KEB하나은행)
@@ -69,7 +69,7 @@ export function IdProvider({ id, children }: IdContextProviderProps) {
       cash: 12000,
       level: 3,
       memo: "",
-      use: 1,
+      use: true,
       account: {
         bank: "",
         accountNumber: "",
