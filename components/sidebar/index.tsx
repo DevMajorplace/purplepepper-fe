@@ -29,7 +29,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
 
   const activeMain = useCallback(
     (routeName: string) => {
-      return routeName?.includes(mainNav);
+      return routeName.split("/")[1] === mainNav;
     },
     [pathname]
   );

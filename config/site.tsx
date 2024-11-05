@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 import { HiMiniHome } from "react-icons/hi2";
 import { GoQuestion } from "react-icons/go";
-import { PiDatabase, PiCurrencyCircleDollar } from "react-icons/pi";
+import { PiDatabase, PiCurrencyCircleDollar, PiWarning } from "react-icons/pi";
 import { LuUsers, LuGoal, LuTv } from "react-icons/lu";
 //import { FiPlus } from "react-icons/fi";
 //import { FiLogOut } from "react-icons/fi";
@@ -62,6 +62,19 @@ export const siteConfig = {
         {
           label: "미션 분류 관리",
           href: "/mission/type",
+          show: [10],
+        },
+      ],
+    },
+    {
+      label: "미션 CS 관리",
+      href: "/missionCS",
+      icon: <PiWarning className="w-full h-full" />,
+      show: [10],
+      sub: [
+        {
+          label: "미션 CS 목록",
+          href: "/missionCS",
           show: [10],
         },
       ],
@@ -153,6 +166,10 @@ export const siteConfig = {
     {
       label: "미션별 포인트",
       href: "/mission-point",
+    },
+    {
+      label: "미션 CS 관리",
+      href: "/missionCS",
     },
     {
       label: "캐시 관리",
