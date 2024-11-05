@@ -12,7 +12,10 @@ import {
 import { createColumnHelper } from "@tanstack/react-table";
 import { IoIosSearch, IoIosClose } from "react-icons/io";
 import { PiDownloadSimple } from "react-icons/pi";
-import { RiRefreshLine } from "react-icons/ri";
+import { RiCheckFill, RiRefreshLine } from "react-icons/ri";
+
+import MoneyChkApprovalModal from "../../_components/MoneyChkApprovalModal";
+import MoneyChkRefusalModal from "../../_components/MoneyChkRefusalModal";
 
 import Pages from "@/components/Pages";
 import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
@@ -20,14 +23,18 @@ import TableSelect from "@/components/Select/TableSelect";
 import useCustomParams from "@/hooks/useCustomParams";
 import TableTh from "@/app/(member)/(main)/_components/TableTh";
 import Table from "@/app/(member)/(main)/_components/Table";
+import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
 type RowObj = {
   chk: ReactElement; // 체크 박스
   idx: string; // IDX
-  clientIdx: string; // 광고주 IDX
-  name: string; // 입금자명
-  price: number; // 충전액
-  createdAt: string; // 충전 요청일시
+  requesterIdx: string; // 출금 요청 업체 IDX
+  requesterName: string; // 출금 요청 업체명
+  bank: string; // 은행명
+  accountNumber: string; // 계좌번호
+  depositor: string; // 예금주명
+  price: number; // 출금요청액
+  createdAt: string; // 출금요청시점
   state: string; // 처리상태
   ProcessedAt: string; // 처리일시
   reason: string; // 거절사유
@@ -38,8 +45,11 @@ const columnHelper = createColumnHelper<RowObj>();
 const DEFAULT_DATA = [
   {
     idx: "idx1",
-    clientIdx: "광고주 idx1",
-    name: "입금자명",
+    requesterIdx: "출금요청자 idx1",
+    requesterName: "출금요청업체명",
+    bank: "은행명",
+    accountNumber: "계좌번호",
+    depositor: "예금주명",
     price: 10000,
     createdAt: "2024-10-28 09:00:00",
     state: "대기",
@@ -48,9 +58,12 @@ const DEFAULT_DATA = [
   },
   {
     idx: "idx2",
-    clientIdx: "광고주 idx1",
-    name: "입금자명2",
-    price: 30000,
+    requesterIdx: "출금요청자 idx1",
+    requesterName: "출금요청업체명",
+    bank: "은행명",
+    accountNumber: "계좌번호",
+    depositor: "예금주명",
+    price: 10000,
     createdAt: "2024-10-28 09:00:00",
     state: "승인",
     ProcessedAt: "2024-10-28 09:01:00",
@@ -58,9 +71,12 @@ const DEFAULT_DATA = [
   },
   {
     idx: "idx3",
-    clientIdx: "광고주 idx1",
-    name: "입금자명3",
-    price: 530000,
+    requesterIdx: "출금요청자 idx1",
+    requesterName: "출금요청업체명",
+    bank: "은행명",
+    accountNumber: "계좌번호",
+    depositor: "예금주명",
+    price: 10000,
     createdAt: "2024-10-28 09:00:00",
     state: "거절",
     ProcessedAt: "2024-10-28 09:01:00",
@@ -75,7 +91,7 @@ const DEFAULT_FILTER = {
 const DEFAULT_CREATEDATE = { start: null, end: null };
 const PAGE_RANGE = 5;
 
-export default function ClientCashCharge() {
+export default function MoneyPointWithdrawal() {
   const [data, setData] = useState(DEFAULT_DATA);
   const [chk, setChk] = useState<string[]>([]);
   const [createdAt, setCreatedAt] = useState<{
@@ -88,12 +104,14 @@ export default function ClientCashCharge() {
     show: boolean;
   }>(DEFAULT_FILTER);
   const [page, setPage] = useState(1);
-  const [totalCharge, setTotalCharge] = useState(0);
+  const [totalWithdrawal, setTotalWithdrawal] = useState(0);
   const [state, setState] = useState("all");
   const [startPage, setStartPage] = useState(1);
   const searchRef = useRef<HTMLInputElement>(null);
   const { getCustomParams, setCustomParams, createQueryString } =
     useCustomParams();
+  const setModalOpen = useSetModalOpen();
+  const setModalContents = useSetModalContents();
 
   useEffect(() => {
     const crrpage = getCustomParams("page");
@@ -206,27 +224,42 @@ export default function ClientCashCharge() {
       header: () => <TableTh text="IDX" onSort={() => handleSort("idx")} />,
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("clientIdx", {
-      id: "clientIdx",
-      header: () => <TableTh text="광고주 IDX" />,
+    columnHelper.accessor("requesterIdx", {
+      id: "requesterIdx",
+      header: () => <TableTh text="출금요청자 IDX" />,
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("name", {
-      id: "name",
-      header: () => <TableTh text="입금자명" />,
+    columnHelper.accessor("requesterName", {
+      id: "requesterName",
+      header: () => <TableTh text="출금요청업체명" />,
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("bank", {
+      id: "bank",
+      header: () => <TableTh text="은행명" />,
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("accountNumber", {
+      id: "accountNumber",
+      header: () => <TableTh text="계좌번호" />,
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("depositor", {
+      id: "depositor",
+      header: () => <TableTh text="예금주명" />,
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("price", {
       id: "price",
       header: () => (
-        <TableTh text="충전액" onSort={() => handleSort("price")} />
+        <TableTh text="출금요청액" onSort={() => handleSort("price")} />
       ),
       cell: (info) => `${info.getValue().toLocaleString()}원`,
     }),
     columnHelper.accessor("createdAt", {
       id: "createdAt",
       header: () => (
-        <TableTh text="충전 요청시점" onSort={() => handleSort("createdAt")} />
+        <TableTh text="출금 요청시점" onSort={() => handleSort("createdAt")} />
       ),
       cell: (info) => {
         const newDate = info.getValue().split(" ");
@@ -357,11 +390,39 @@ export default function ClientCashCharge() {
     ]);
   };
 
+  // 일괄승인 클릭
+  const handleChkApprovalClick = () => {
+    const count = chk.length;
+
+    if (!count) {
+      alert("선택된 요청이 없습니다.");
+
+      return false;
+    }
+
+    setModalOpen(true);
+    setModalContents(<MoneyChkApprovalModal info={chk} />);
+  };
+
+  // 일괄거절 클릭
+  const handleChkRefusalClick = () => {
+    const count = chk.length;
+
+    if (!count) {
+      alert("선택된 요청이 없습니다.");
+
+      return false;
+    }
+
+    setModalOpen(true);
+    setModalContents(<MoneyChkRefusalModal info={chk} />);
+  };
+
   return (
     <div className="w-full h-full flex flex-col gap-5">
       <div className="flex flex-col gap-3">
         <div className="text-lg font-bold">
-          캐시 충전액 : {totalCharge.toLocaleString()}원
+          포인트 출금액 : {totalWithdrawal.toLocaleString()}원
         </div>
         <div className="flex justify-between items-end">
           <div className="flex gap-3">
@@ -381,7 +442,7 @@ export default function ClientCashCharge() {
           <div className="flex gap-3">
             <CalendarInput
               endDate={createdAt.end ? createdAt.end : ""}
-              placeholder="충전요청시점 검색"
+              placeholder="출금요청시점 검색"
               range={true}
               required={true}
               startDate={createdAt.start ? createdAt.start : ""}
@@ -438,6 +499,22 @@ export default function ClientCashCharge() {
             <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
               <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
               다운로드
+            </div>
+            <div
+              className="border border-[#ddd] bg-[#F0FDF4] text-[#15803D] flex items-center rounded-md px-4 h-12 cursor-pointer"
+              role="presentation"
+              onClick={handleChkApprovalClick}
+            >
+              <RiCheckFill className="text-[18px] pt-[1px]" /> 선택 요청
+              일괄승인
+            </div>
+            <div
+              className="bg-[#DC2626] text-white flex items-center rounded-md px-4 h-12 cursor-pointer"
+              role="presentation"
+              onClick={handleChkRefusalClick}
+            >
+              <RiCheckFill className="text-[18px] pt-[1px]" /> 선택 요청
+              일괄거절
             </div>
           </div>
         </div>

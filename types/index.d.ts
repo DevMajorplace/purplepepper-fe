@@ -265,6 +265,12 @@ declare global {
     };
   }
 
+  // 입출금 관리
+  // 입출금 승인 모달
+  interface MoneyChkModalProps {
+    info: string[];
+  }
+
   // faq
   interface AccordionProps {
     question: string;

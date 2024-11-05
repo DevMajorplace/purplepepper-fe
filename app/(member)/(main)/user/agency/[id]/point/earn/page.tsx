@@ -172,7 +172,7 @@ export default function AgencyPointEarn() {
       id: "chk",
       header: () => (
         <input
-          checked={chk.length === data.length}
+          checked={data.length !== 0 && chk.length === data.length}
           name="allChk"
           type="checkbox"
           onChange={(e) => handleAllChkChange(e)}
@@ -263,7 +263,16 @@ export default function AgencyPointEarn() {
       header: () => (
         <TableTh text="발생시점" onSort={() => handleSort("createdAt")} />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => {
+        const newDate = info.getValue().split(" ");
+
+        return (
+          <div>
+            <div>{newDate[0]}</div>
+            <div>{newDate[1]}</div>
+          </div>
+        );
+      },
     }),
   ];
 

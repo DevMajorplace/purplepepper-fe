@@ -12,7 +12,10 @@ import {
 import { createColumnHelper } from "@tanstack/react-table";
 import { IoIosSearch, IoIosClose } from "react-icons/io";
 import { PiDownloadSimple } from "react-icons/pi";
-import { RiRefreshLine } from "react-icons/ri";
+import { RiRefreshLine, RiCheckFill } from "react-icons/ri";
+
+import MoneyChkApprovalModal from "../../_components/MoneyChkApprovalModal";
+import MoneyChkRefusalModal from "../../_components/MoneyChkRefusalModal";
 
 import Pages from "@/components/Pages";
 import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
@@ -20,11 +23,13 @@ import TableSelect from "@/components/Select/TableSelect";
 import useCustomParams from "@/hooks/useCustomParams";
 import TableTh from "@/app/(member)/(main)/_components/TableTh";
 import Table from "@/app/(member)/(main)/_components/Table";
+import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
 type RowObj = {
   chk: ReactElement; // 체크 박스
   idx: string; // IDX
   clientIdx: string; // 광고주 IDX
+  clientName: string; // 광고주명
   name: string; // 입금자명
   price: number; // 충전액
   createdAt: string; // 충전 요청일시
@@ -39,6 +44,7 @@ const DEFAULT_DATA = [
   {
     idx: "idx1",
     clientIdx: "광고주 idx1",
+    clientName: "광고주명1",
     name: "입금자명",
     price: 10000,
     createdAt: "2024-10-28 09:00:00",
@@ -48,7 +54,8 @@ const DEFAULT_DATA = [
   },
   {
     idx: "idx2",
-    clientIdx: "광고주 idx1",
+    clientIdx: "광고주 idx2",
+    clientName: "광고주명2",
     name: "입금자명2",
     price: 30000,
     createdAt: "2024-10-28 09:00:00",
@@ -58,7 +65,8 @@ const DEFAULT_DATA = [
   },
   {
     idx: "idx3",
-    clientIdx: "광고주 idx1",
+    clientIdx: "광고주 idx3",
+    clientName: "광고주명3",
     name: "입금자명3",
     price: 530000,
     createdAt: "2024-10-28 09:00:00",
@@ -75,7 +83,7 @@ const DEFAULT_FILTER = {
 const DEFAULT_CREATEDATE = { start: null, end: null };
 const PAGE_RANGE = 5;
 
-export default function ClientCashCharge() {
+export default function MoneyCashCharge() {
   const [data, setData] = useState(DEFAULT_DATA);
   const [chk, setChk] = useState<string[]>([]);
   const [createdAt, setCreatedAt] = useState<{
@@ -94,6 +102,8 @@ export default function ClientCashCharge() {
   const searchRef = useRef<HTMLInputElement>(null);
   const { getCustomParams, setCustomParams, createQueryString } =
     useCustomParams();
+  const setModalOpen = useSetModalOpen();
+  const setModalContents = useSetModalContents();
 
   useEffect(() => {
     const crrpage = getCustomParams("page");
@@ -208,12 +218,23 @@ export default function ClientCashCharge() {
     }),
     columnHelper.accessor("clientIdx", {
       id: "clientIdx",
-      header: () => <TableTh text="광고주 IDX" />,
+      header: () => (
+        <TableTh text="광고주 IDX" onSort={() => handleSort("clientIdx")} />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("clientName", {
+      id: "clientName",
+      header: () => (
+        <TableTh text="광고주명" onSort={() => handleSort("clientName")} />
+      ),
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("name", {
       id: "name",
-      header: () => <TableTh text="입금자명" />,
+      header: () => (
+        <TableTh text="입금자명" onSort={() => handleSort("name")} />
+      ),
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("price", {
@@ -357,6 +378,34 @@ export default function ClientCashCharge() {
     ]);
   };
 
+  // 일괄승인 클릭
+  const handleChkApprovalClick = () => {
+    const count = chk.length;
+
+    if (!count) {
+      alert("선택된 요청이 없습니다.");
+
+      return false;
+    }
+
+    setModalOpen(true);
+    setModalContents(<MoneyChkApprovalModal info={chk} />);
+  };
+
+  // 일괄거절 클릭
+  const handleChkRefusalClick = () => {
+    const count = chk.length;
+
+    if (!count) {
+      alert("선택된 요청이 없습니다.");
+
+      return false;
+    }
+
+    setModalOpen(true);
+    setModalContents(<MoneyChkRefusalModal info={chk} />);
+  };
+
   return (
     <div className="w-full h-full flex flex-col gap-5">
       <div className="flex flex-col gap-3">
@@ -406,6 +455,9 @@ export default function ClientCashCharge() {
                     onChange={(e) => handleSelect(e)}
                   >
                     <option value="idx">IDX</option>
+                    <option value="clientIdx">광고주 IDX</option>
+                    <option value="clientName">광고주명</option>
+                    <option value="name">입금자명</option>
                     <option value="reason">거절사유</option>
                   </select>
                   <input
@@ -438,6 +490,22 @@ export default function ClientCashCharge() {
             <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
               <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
               다운로드
+            </div>
+            <div
+              className="border border-[#ddd] bg-[#F0FDF4] text-[#15803D] flex items-center rounded-md px-4 h-12 cursor-pointer"
+              role="presentation"
+              onClick={handleChkApprovalClick}
+            >
+              <RiCheckFill className="text-[18px] pt-[1px]" /> 선택 요청
+              일괄승인
+            </div>
+            <div
+              className="bg-[#DC2626] text-white flex items-center rounded-md px-4 h-12 cursor-pointer"
+              role="presentation"
+              onClick={handleChkRefusalClick}
+            >
+              <RiCheckFill className="text-[18px] pt-[1px]" /> 선택 요청
+              일괄거절
             </div>
           </div>
         </div>

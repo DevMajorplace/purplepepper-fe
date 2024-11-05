@@ -28,7 +28,7 @@ type RowObj = {
   productIdx: string; // 상품 IDX
   productName: string; // 상품명
   fromIdx: string; // 포인트 출처 IDX
-  fromName: string; // 포인트  출처 업체명
+  fromName: string; // 포인트 출처 업체명
   targetIdx: string; // 적립 대상 IDX
   targetName: string; // 적립 대상 업체명
   price: number; // 적립액
@@ -172,7 +172,7 @@ export default function ClientPointEarn() {
       id: "chk",
       header: () => (
         <input
-          checked={chk.length === data.length}
+          checked={data.length !== 0 && chk.length === data.length}
           name="allChk"
           type="checkbox"
           onChange={(e) => handleAllChkChange(e)}
@@ -263,7 +263,16 @@ export default function ClientPointEarn() {
       header: () => (
         <TableTh text="발생시점" onSort={() => handleSort("createdAt")} />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => {
+        const newDate = info.getValue().split(" ");
+
+        return (
+          <div>
+            <div>{newDate[0]}</div>
+            <div>{newDate[1]}</div>
+          </div>
+        );
+      },
     }),
   ];
 

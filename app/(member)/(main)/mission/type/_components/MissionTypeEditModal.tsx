@@ -11,7 +11,6 @@ export default function MissionTypeEditModal({
   const [state, setState] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
-  const [reason, setReason] = useState("");
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
   const router = useRouter();
@@ -54,6 +53,21 @@ export default function MissionTypeEditModal({
     setConfirm(false);
   };
 
+  // 분류 삭제하기 클릭시
+  const handleDeleteConfirmClick = () => {
+    setIsDelete(true);
+  };
+
+  // 분류 삭제하기 취소 클릭시
+  const handleDeleteConfirmCancelClick = () => {
+    setIsDelete(false);
+  };
+
+  // 분류 삭제하기 삭제 클릭시
+  const handleDeleteClick = () => {
+    setState(true);
+  };
+
   // 확인 클릭시
   const handleOkayClick = () => {
     //console.log(pathname);
@@ -64,8 +78,16 @@ export default function MissionTypeEditModal({
 
   return (
     <div className="min-w-[420px] flex flex-col gap-4">
-      <div className="text-[20px] font-bold">분류 정보 수정</div>
-      {state ? (
+      <div className="text-[20px] font-bold">
+        {isDelete ? "분류 삭제" : "분류 정보 수정"}
+      </div>
+      {isDelete ? (
+        state ? (
+          <div>{info.name}이 삭제되었습니다.</div>
+        ) : (
+          <div>{info.name}을 삭제하시겠습니까?</div>
+        )
+      ) : state ? (
         <div>
           {data.name !== info.name && (
             <div>분류명이 {data.name}으로 수정되었습니다.</div>
@@ -93,7 +115,9 @@ export default function MissionTypeEditModal({
       ) : (
         <div className="flex flex-col gap-4">
           <div className="flex flex-col">
-            <label htmlFor="name">분류명</label>
+            <label className="pb-1" htmlFor="name">
+              분류명
+            </label>
             <input
               className="w-[100%] h-12 bg-white border border-[#ccc] rounded-md px-4 placeholder:text-[#333]/50"
               id="name"
@@ -115,6 +139,7 @@ export default function MissionTypeEditModal({
             <button
               className={`rounded-md px-6 py-3 bg-[#DC2626] text-white disabled:opacity-50`}
               disabled={data.used}
+              onClick={handleDeleteConfirmClick}
             >
               {data.used ? "삭제 불가능: 미션 구동 기록 존재" : "분류 삭제하기"}
             </button>
@@ -130,6 +155,21 @@ export default function MissionTypeEditModal({
           >
             확인
           </button>
+        ) : isDelete ? (
+          <>
+            <button
+              className="border border-[#ccc]"
+              onClick={handleDeleteConfirmCancelClick}
+            >
+              취소
+            </button>
+            <button
+              className="bg-[#333] text-white hover:bg-[#111]"
+              onClick={handleDeleteClick}
+            >
+              확인
+            </button>
+          </>
         ) : confirm ? (
           <>
             <button

@@ -3,22 +3,21 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-import { useId } from "@/contexts/IdContext";
+import Card from "@/components/card";
 
-export default function ClientPointLayout({
+export default function MoneyPointLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const id = useId();
   const pathname = usePathname();
 
   return (
-    <div>
+    <Card className="min-h-[87vh] gap-5">
       {/* 포인트 내역 */}
       <div>
         <div className="border-b border-gray-200 flex mb-5 [&_.selected]:text-[#333] [&_.selected]:font-bold [&_.selected]:border-b-2 [&_.selected]:border-[#666]">
-          <Link href={`/user/client/${id}/point/earn`}>
+          <Link href={`/money/point/earn`}>
             <div
               className={`${pathname.includes("earn") ? "selected" : ""} py-3 px-7 cursor-pointer text-[#999] transition duration-200`}
               data-category="earn"
@@ -26,7 +25,7 @@ export default function ClientPointLayout({
               적립 내역
             </div>
           </Link>
-          <Link href={`/user/client/${id}/point/withdrawal`}>
+          <Link href={`/money/point/withdrawal`}>
             <div
               className={`${pathname.includes("withdrawal") ? "selected" : ""} py-3 px-7 cursor-pointer text-[#999] transition duration-200`}
               data-category="withdrawal"
@@ -37,6 +36,6 @@ export default function ClientPointLayout({
         </div>
         {children}
       </div>
-    </div>
+    </Card>
   );
 }

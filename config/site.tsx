@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 import { HiMiniHome } from "react-icons/hi2";
 import { GoQuestion } from "react-icons/go";
-import { PiDatabase } from "react-icons/pi";
-import { LuUsers } from "react-icons/lu";
+import { PiDatabase, PiCurrencyCircleDollar } from "react-icons/pi";
+import { LuUsers, LuGoal, LuTv } from "react-icons/lu";
 //import { FiPlus } from "react-icons/fi";
 //import { FiLogOut } from "react-icons/fi";
 
@@ -41,7 +41,7 @@ export const siteConfig = {
     {
       label: "미션 관리",
       href: "/mission",
-      icon: <LuUsers className="w-full h-full" />,
+      icon: <LuGoal className="w-full h-full" />,
       show: [10],
       sub: [
         {
@@ -62,6 +62,37 @@ export const siteConfig = {
         {
           label: "미션 분류 관리",
           href: "/mission/type",
+          show: [10],
+        },
+      ],
+    },
+    {
+      label: "입출금 관리",
+      href: "/money",
+      icon: <PiCurrencyCircleDollar className="w-full h-full" />,
+      show: [10],
+      sub: [
+        {
+          label: "캐시 관리",
+          href: "/money/cash",
+          show: [10],
+        },
+        {
+          label: "포인트 관리",
+          href: "/money/point",
+          show: [10],
+        },
+      ],
+    },
+    {
+      label: "매체사 관리",
+      href: "/affiliate",
+      icon: <LuTv className="w-full h-full" />,
+      show: [10],
+      sub: [
+        {
+          label: "매체사 목록",
+          href: "/affiliate",
           show: [10],
         },
       ],
@@ -122,6 +153,18 @@ export const siteConfig = {
     {
       label: "미션별 포인트",
       href: "/mission-point",
+    },
+    {
+      label: "캐시 관리",
+      href: "/money/cash",
+    },
+    {
+      label: "포인트 관리",
+      href: "/money/point",
+    },
+    {
+      label: "매체사 관리",
+      href: "/affiliate",
     },
     {
       label: "포인트 관리",

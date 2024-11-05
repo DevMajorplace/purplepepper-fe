@@ -1,16 +1,14 @@
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
-export default function WaitingRefusalModal({
-  info,
-}: WaitingRefusalModalProps) {
+export default function MoneyChkApprovalModal({ info }: MoneyChkModalProps) {
   const [state, setState] = useState(false);
-  const [reason, setReason] = useState("");
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
   const router = useRouter();
+  const path = usePathname();
 
   // 취소 클릭시
   const handleCancelClick = () => {
@@ -27,40 +25,17 @@ export default function WaitingRefusalModal({
   const handleOkayClick = () => {
     setModalOpen(false);
     setModalContents(<></>);
-    router.push(`/user/waiting`);
+    router.push(path);
   };
 
   return (
     <div className="min-w-[420px]">
-      <div className="text-[20px] font-bold">가입 거절</div>
+      <div className="text-[20px] font-bold">요청 일괄승인</div>
       <p className="text-[#000]/60 mt-1 mb-6">
-        {state ? (
-          <>
-            <div>
-              {`${info.company}, ${info.name}, ${info.recommendId}`}의 가입을
-              거절 했습니다.
-            </div>
-            <div>사유 : {reason ? reason : "-"}</div>
-          </>
-        ) : (
-          `${info.company}, ${info.name}, ${info.recommendId}의 가입을 거절 하시겠습니까?`
-        )}
+        {state
+          ? `${info.length}건의 요청을 승인했습니다.`
+          : `${info.length}건의 요청을 승인합니까?`}
       </p>
-      {!state && (
-        <div className="mb-6 flex flex-col">
-          <label className="mb-1" htmlFor="reason">
-            거절 사유 입력
-          </label>
-          <textarea
-            className="border border-[#ccc] rounded p-3"
-            id="reason"
-            name="reason"
-            placeholder="거절 사유를 입력해주세요."
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-          />
-        </div>
-      )}
       <div className="flex justify-between *:px-4 *:py-2 *:rounded">
         {state ? (
           <button
@@ -81,7 +56,7 @@ export default function WaitingRefusalModal({
               className="bg-[#333] text-white hover:bg-[#111]"
               onClick={handleApprovalClick}
             >
-              거절
+              승인
             </button>
           </>
         )}

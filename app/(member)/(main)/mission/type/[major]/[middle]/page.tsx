@@ -10,13 +10,14 @@ import {
   useState,
 } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { IoIosSearch, IoIosClose } from "react-icons/io";
+import { IoIosSearch, IoIosClose, IoMdArrowBack } from "react-icons/io";
 import { RiRefreshLine } from "react-icons/ri";
 import { HiOutlinePlus } from "react-icons/hi2";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
-import MissionTypeEditModal from "./_components/MissionTypeEditModal";
-import MissionTypeAddModal from "./_components/MissionTypeAddModal";
+import MissionTypeEditModal from "../../_components/MissionTypeEditModal";
+import MissionTypeAddModal from "../../_components/MissionTypeAddModal";
 
 import Pages from "@/components/Pages";
 import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
@@ -27,13 +28,12 @@ import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
 type RowObj = {
   idx: string; // 체크 박스
-  name: string; // 대분류명
-  middle: number; // 하위 중분류 수
+  name: string; // 소분류명
+  template: number; // 템플릿 수
   createdAt: string; // 등록일시
   isUse: boolean; // 사용 여부
   used: boolean; // 사용 내역 여부
   edit: ReactElement; // 수정 버튼
-  add: ReactElement; // 분류 추가 버튼
   data: ReactElement; // 매출데이터
 };
 
@@ -41,32 +41,24 @@ const columnHelper = createColumnHelper<RowObj>();
 
 const DEFAULT_DATA = [
   {
-    idx: "대분류 idx1",
-    name: "대분류명",
-    middle: 10,
+    idx: "소분류 idx1",
+    name: "소분류명",
+    template: 10,
     createdAt: "2024-10-28 09:00:00",
     isUse: true,
     used: false,
   },
-  {
-    idx: "대분류 idx2",
-    name: "대분류명2",
-    middle: 12,
-    createdAt: "2024-10-28 09:00:00",
-    isUse: true,
-    used: true,
-  },
 ];
-// 검색 초기값 - 직상위 사용자 idx
+// 검색 초기값 - 중분류명
 const DEFAULT_FILTER = {
-  type: "major",
+  type: "small",
   keyword: "",
   show: false,
 };
 const DEFAULT_DATE = { start: null, end: null };
 const PAGE_RANGE = 5;
 
-export default function MissionType() {
+export default function MissionTypeMiddle() {
   const [data, setData] = useState(DEFAULT_DATA);
   const [createdAt, setCreatedAt] = useState<{
     start: string | null;
@@ -84,6 +76,7 @@ export default function MissionType() {
     useCustomParams();
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
+  const { major, middle } = useParams();
 
   useEffect(() => {
     const crrpage = getCustomParams("page");
@@ -151,38 +144,30 @@ export default function MissionType() {
 
   // 하위 분류 추가 클릭시
   const handleAddClick = (idx: string) => {
-    setModalOpen(true);
-    setModalContents(
-      // eslint-disable-next-line prettier/prettier
-      <MissionTypeAddModal major={idx} />
-    );
+    console.log(idx);
   };
 
   const COLUMNS = [
     columnHelper.accessor("idx", {
       id: "idx",
       header: () => (
-        <TableTh text="대분류 IDX" onSort={() => handleSort("idx")} />
+        <TableTh text="소분류 IDX" onSort={() => handleSort("idx")} />
       ),
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("name", {
       id: "name",
       header: () => (
-        <TableTh text="대분류명" onSort={() => handleSort("name")} />
+        <TableTh text="소분류명" onSort={() => handleSort("name")} />
       ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("middle", {
-      id: "middle",
+    columnHelper.accessor("template", {
+      id: "template",
       header: () => (
-        <TableTh text="하위 중분류 수" onSort={() => handleSort("middle")} />
+        <TableTh text="템플릿 수" onSort={() => handleSort("template")} />
       ),
-      cell: (info) => (
-        <Link href={`/mission/type/${info.row.original.idx}`}>
-          {info.getValue().toLocaleString()}
-        </Link>
-      ),
+      cell: (info) => info.getValue().toLocaleString(),
     }),
     columnHelper.accessor("createdAt", {
       id: "createdAt",
@@ -216,20 +201,6 @@ export default function MissionType() {
             }
           >
             수정
-          </button>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("add", {
-      id: "add",
-      header: () => <TableTh className="text-center" text="하위 분류 추가" />,
-      cell: (info) => (
-        <div className="flex justify-center items-center">
-          <button
-            className="border border-[#ccc] rounded-md px-4 py-2"
-            onClick={() => handleAddClick(info.row.original.idx)}
-          >
-            분류 추가
           </button>
         </div>
       ),
@@ -326,15 +297,26 @@ export default function MissionType() {
   const handleTypeAddClick = () => {
     setModalOpen(true);
     setModalContents(
-      // eslint-disable-next-line prettier/prettier
-      <MissionTypeAddModal />
+      <MissionTypeAddModal
+        major={decodeURI(major as string)}
+        middle={decodeURI(middle as string)}
+        // eslint-disable-next-line prettier/prettier
+      />
     );
   };
 
   return (
     <div className="w-full h-full flex flex-col gap-5">
       <div className="flex flex-col gap-3">
-        <div className="flex justify-end items-end">
+        <div className="flex justify-between items-end">
+          <div>
+            <Link href={`/mission/type/${major}`}>
+              <button className="bg-[#18181B] text-white rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
+                <IoMdArrowBack className="text-[18px] pt-[1px]" /> 이전 단계로
+                돌아가기
+              </button>
+            </Link>
+          </div>
           <div className="flex gap-3">
             <CalendarInput
               endDate={createdAt.end ? createdAt.end : ""}
@@ -362,8 +344,6 @@ export default function MissionType() {
                     value={search.type}
                     onChange={(e) => handleSelect(e)}
                   >
-                    <option value="major">대분류</option>
-                    <option value="middle">중분류</option>
                     <option value="small">소분류</option>
                   </select>
                   <input

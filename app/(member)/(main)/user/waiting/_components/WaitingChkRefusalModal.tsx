@@ -7,6 +7,7 @@ export default function WaitingChkRefusalModal({
   info,
 }: WaitingChkRefusalModalProps) {
   const [state, setState] = useState(false);
+  const [reason, setReason] = useState("");
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
   const router = useRouter();
@@ -33,9 +34,14 @@ export default function WaitingChkRefusalModal({
     <div className="min-w-[420px]">
       <div className="text-[20px] font-bold">가입 일괄거절</div>
       <p className="text-[#000]/60 mt-1 mb-6">
-        {state
-          ? `${info.length}건의 가입을 거절했습니다.`
-          : `${info.length}건의 가입을 거절합니까?`}
+        {state ? (
+          <>
+            <div>{info.length}건의 요청을 거절했습니다.</div>
+            <div>사유 : {reason ? reason : "-"}</div>
+          </>
+        ) : (
+          `${info.length}건의 요청을 거절합니까?`
+        )}
       </p>
       {!state && (
         <div className="mb-6 flex flex-col">
@@ -47,6 +53,8 @@ export default function WaitingChkRefusalModal({
             id="reason"
             name="reason"
             placeholder="거절 사유를 입력해주세요."
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
           />
           <p className="text-[12px] text-[#000]/60">
             선택된 모든 요청건에 대해 같은 사유가 입력됩니다.

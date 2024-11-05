@@ -11,6 +11,8 @@ export default function Table({ tableData, tableClass }: TableProps) {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  console.log(table.getHeaderGroups());
+
   return (
     <div>
       <table
@@ -46,6 +48,16 @@ export default function Table({ tableData, tableClass }: TableProps) {
               })}
             </tr>
           ))}
+          {table.getRowModel().rows.length === 0 && (
+            <tr>
+              <td
+                className="text-center !py-10"
+                colSpan={table.getHeaderGroups()[0].headers.length}
+              >
+                데이터가 없습니다.
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

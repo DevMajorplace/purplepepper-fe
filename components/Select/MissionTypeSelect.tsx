@@ -108,14 +108,15 @@ export default function MissionTypeSelect() {
   // 분류 수정시
   const handleTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
+    const newValue = value === "all" ? "" : value;
 
     if (name === "major") {
       // 대분류 수정시
       // 중분류, 소분류 값 초기화
       setMissionType({
-        [name]: value,
-        middle: "all",
-        small: "all",
+        [name]: newValue,
+        middle: "",
+        small: "",
       });
       // 중분류 세팅
       if (value === "all") {
@@ -133,8 +134,8 @@ export default function MissionTypeSelect() {
       // 소분류 값 초기화
       setMissionType({
         ...missionType,
-        [name]: value,
-        small: "all",
+        [name]: newValue,
+        small: "",
       });
       // 소분류 세팅
       if (value === "all") {
@@ -149,7 +150,7 @@ export default function MissionTypeSelect() {
       // 소분류 수정시
       setMissionType({
         ...missionType,
-        [name]: value,
+        [name]: newValue,
       });
       setCustomParams([name, "page"], [value, "1"]);
     }

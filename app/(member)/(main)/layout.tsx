@@ -18,7 +18,11 @@ export default function MainLayout({
 
   // Navbar 정보
   const nav = siteConfig.navContent.filter((item) => {
-    return pathname === item.href;
+    if (params) {
+      return pathname.includes(item.href);
+    } else {
+      return pathname === item.href;
+    }
   });
   let label;
 

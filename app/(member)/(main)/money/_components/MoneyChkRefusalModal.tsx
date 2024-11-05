@@ -1,16 +1,15 @@
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
-export default function WaitingRefusalModal({
-  info,
-}: WaitingRefusalModalProps) {
+export default function MoneyChkRefusalModal({ info }: MoneyChkModalProps) {
   const [state, setState] = useState(false);
   const [reason, setReason] = useState("");
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
   const router = useRouter();
+  const path = usePathname();
 
   // 취소 클릭시
   const handleCancelClick = () => {
@@ -27,23 +26,20 @@ export default function WaitingRefusalModal({
   const handleOkayClick = () => {
     setModalOpen(false);
     setModalContents(<></>);
-    router.push(`/user/waiting`);
+    router.push(path);
   };
 
   return (
     <div className="min-w-[420px]">
-      <div className="text-[20px] font-bold">가입 거절</div>
+      <div className="text-[20px] font-bold">요청 일괄거절</div>
       <p className="text-[#000]/60 mt-1 mb-6">
         {state ? (
           <>
-            <div>
-              {`${info.company}, ${info.name}, ${info.recommendId}`}의 가입을
-              거절 했습니다.
-            </div>
+            <div>{info.length}건의 요청을 거절했습니다.</div>
             <div>사유 : {reason ? reason : "-"}</div>
           </>
         ) : (
-          `${info.company}, ${info.name}, ${info.recommendId}의 가입을 거절 하시겠습니까?`
+          `${info.length}건의 요청을 거절합니까?`
         )}
       </p>
       {!state && (
@@ -59,6 +55,9 @@ export default function WaitingRefusalModal({
             value={reason}
             onChange={(e) => setReason(e.target.value)}
           />
+          <p className="text-[12px] text-[#000]/60">
+            선택된 모든 요청건에 대해 같은 사유가 입력됩니다.
+          </p>
         </div>
       )}
       <div className="flex justify-between *:px-4 *:py-2 *:rounded">

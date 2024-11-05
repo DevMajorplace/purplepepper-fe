@@ -194,7 +194,7 @@ export default function ClientPointWithdrawal() {
       id: "chk",
       header: () => (
         <input
-          checked={chk.length === data.length}
+          checked={data.length !== 0 && chk.length === data.length}
           name="allChk"
           type="checkbox"
           onChange={(e) => handleAllChkChange(e)}
@@ -255,7 +255,16 @@ export default function ClientPointWithdrawal() {
       header: () => (
         <TableTh text="출금 요청시점" onSort={() => handleSort("createdAt")} />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => {
+        const newDate = info.getValue().split(" ");
+
+        return (
+          <div>
+            <div>{newDate[0]}</div>
+            <div>{newDate[1]}</div>
+          </div>
+        );
+      },
     }),
     columnHelper.accessor("state", {
       id: "state",
@@ -269,7 +278,16 @@ export default function ClientPointWithdrawal() {
       header: () => (
         <TableTh text="처리시점" onSort={() => handleSort("ProcessedAt")} />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => {
+        const newDate = info.getValue().split(" ");
+
+        return (
+          <div>
+            <div>{newDate[0]}</div>
+            <div>{newDate[1]}</div>
+          </div>
+        );
+      },
     }),
     columnHelper.accessor("reason", {
       id: "reason",

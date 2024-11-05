@@ -24,13 +24,18 @@ import Table from "@/app/(member)/(main)/_components/Table";
 type RowObj = {
   chk: ReactElement; // 체크 박스
   idx: string; // IDX
+  missionIdx: string; // 대상 미션 IDX
+  missionName: string; // 대상 미션명
+  productIdx: string; // 상품 IDX
+  productName: string; // 상품명
   clientIdx: string; // 광고주 IDX
-  name: string; // 입금자명
-  price: number; // 충전액
-  createdAt: string; // 충전 요청일시
-  state: string; // 처리상태
+  clientName: string; // 광고주 IDX
+  useType: string; // 변동 분류
+  price: number; // 변동액
+  createdAt: string; // 발생일시
+  result: string; // 처리결과
+  errorLog: string; // 오류사유
   ProcessedAt: string; // 처리일시
-  reason: string; // 거절사유
 };
 
 const columnHelper = createColumnHelper<RowObj>();
@@ -38,33 +43,33 @@ const columnHelper = createColumnHelper<RowObj>();
 const DEFAULT_DATA = [
   {
     idx: "idx1",
+    missionIdx: "미션 idx1",
+    missionName: "미션명1",
+    productIdx: "상품 idx1",
+    productName: "상품명1",
     clientIdx: "광고주 idx1",
-    name: "입금자명",
-    price: 10000,
+    clientName: "광고주명1",
+    useType: "사용",
+    price: -10000,
     createdAt: "2024-10-28 09:00:00",
-    state: "대기",
+    result: "정상",
+    errorLog: "",
     ProcessedAt: "2024-10-28 09:01:00",
-    reason: "-",
   },
   {
     idx: "idx2",
-    clientIdx: "광고주 idx1",
-    name: "입금자명2",
-    price: 30000,
+    missionIdx: "미션 idx2",
+    missionName: "미션명2",
+    productIdx: "상품 idx2",
+    productName: "상품명2",
+    clientIdx: "광고주 idx2",
+    clientName: "광고주명2",
+    useType: "환급",
+    price: 10000,
     createdAt: "2024-10-28 09:00:00",
-    state: "승인",
+    result: "오류",
+    errorLog: "미션 등록 오류",
     ProcessedAt: "2024-10-28 09:01:00",
-    reason: "-",
-  },
-  {
-    idx: "idx3",
-    clientIdx: "광고주 idx1",
-    name: "입금자명3",
-    price: 530000,
-    createdAt: "2024-10-28 09:00:00",
-    state: "거절",
-    ProcessedAt: "2024-10-28 09:01:00",
-    reason: "거절 사유",
   },
 ];
 const DEFAULT_FILTER = {
@@ -75,7 +80,7 @@ const DEFAULT_FILTER = {
 const DEFAULT_CREATEDATE = { start: null, end: null };
 const PAGE_RANGE = 5;
 
-export default function ClientCashCharge() {
+export default function MoneyCashUsage() {
   const [data, setData] = useState(DEFAULT_DATA);
   const [chk, setChk] = useState<string[]>([]);
   const [createdAt, setCreatedAt] = useState<{
@@ -88,8 +93,9 @@ export default function ClientCashCharge() {
     show: boolean;
   }>(DEFAULT_FILTER);
   const [page, setPage] = useState(1);
-  const [totalCharge, setTotalCharge] = useState(0);
-  const [state, setState] = useState("all");
+  const [totalUsage, setTotalUsage] = useState(0);
+  const [useType, setUseType] = useState("all");
+  const [result, setResult] = useState("all");
   const [startPage, setStartPage] = useState(1);
   const searchRef = useRef<HTMLInputElement>(null);
   const { getCustomParams, setCustomParams, createQueryString } =
@@ -99,7 +105,8 @@ export default function ClientCashCharge() {
     const crrpage = getCustomParams("page");
     const cStart = getCustomParams("cStart");
     const cEnd = getCustomParams("cEnd");
-    const state = getCustomParams("state");
+    const useType = getCustomParams("useType");
+    const result = getCustomParams("result");
     const type = getCustomParams("type");
     const keyword = getCustomParams("keyword");
 
@@ -120,9 +127,14 @@ export default function ClientCashCharge() {
       });
     }
 
-    // 처리 상태 Params가 있으면
-    if (state) {
-      setState(state);
+    // 변동 분류 Params가 있으면
+    if (useType) {
+      setUseType(useType);
+    }
+
+    // 처리결과 Params가 있으면
+    if (result) {
+      setResult(result);
     }
 
     // 페이지 Params가 있으면
@@ -140,7 +152,8 @@ export default function ClientCashCharge() {
     getCustomParams("page"),
     getCustomParams("cStart"),
     getCustomParams("cEnd"),
-    getCustomParams("state"),
+    getCustomParams("useType"),
+    getCustomParams("result"),
     getCustomParams("type"),
     getCustomParams("keyword"),
     startPage,
@@ -206,27 +219,66 @@ export default function ClientCashCharge() {
       header: () => <TableTh text="IDX" onSort={() => handleSort("idx")} />,
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("clientIdx", {
-      id: "clientIdx",
-      header: () => <TableTh text="광고주 IDX" />,
+    columnHelper.accessor("missionIdx", {
+      id: "missionIdx",
+      header: () => (
+        <TableTh text="대상 미션 IDX" onSort={() => handleSort("missionIdx")} />
+      ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("name", {
-      id: "name",
-      header: () => <TableTh text="입금자명" />,
+    columnHelper.accessor("missionName", {
+      id: "missionName",
+      header: () => (
+        <TableTh text="대상 미션명" onSort={() => handleSort("missionName")} />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("productIdx", {
+      id: "productIdx",
+      header: () => (
+        <TableTh text="상품 IDX" onSort={() => handleSort("productIdx")} />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("productName", {
+      id: "productName",
+      header: () => (
+        <TableTh text="상품명" onSort={() => handleSort("productName")} />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("clientIdx", {
+      id: "clientIdx",
+      header: () => (
+        <TableTh text="광고주 IDX" onSort={() => handleSort("clientIdx")} />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("clientName", {
+      id: "clientName",
+      header: () => (
+        <TableTh text="광고주명" onSort={() => handleSort("clientName")} />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("useType", {
+      id: "useType",
+      header: () => (
+        <TableTh text="변동 분류" onSort={() => handleSort("useType")} />
+      ),
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("price", {
       id: "price",
       header: () => (
-        <TableTh text="충전액" onSort={() => handleSort("price")} />
+        <TableTh text="변동액" onSort={() => handleSort("price")} />
       ),
       cell: (info) => `${info.getValue().toLocaleString()}원`,
     }),
     columnHelper.accessor("createdAt", {
       id: "createdAt",
       header: () => (
-        <TableTh text="충전 요청시점" onSort={() => handleSort("createdAt")} />
+        <TableTh text="발생시점" onSort={() => handleSort("createdAt")} />
       ),
       cell: (info) => {
         const newDate = info.getValue().split(" ");
@@ -239,10 +291,10 @@ export default function ClientCashCharge() {
         );
       },
     }),
-    columnHelper.accessor("state", {
-      id: "state",
+    columnHelper.accessor("result", {
+      id: "result",
       header: () => (
-        <TableTh text="처리상태" onSort={() => handleSort("state")} />
+        <TableTh text="처리결과" onSort={() => handleSort("result")} />
       ),
       cell: (info) => info.getValue(),
     }),
@@ -262,19 +314,27 @@ export default function ClientCashCharge() {
         );
       },
     }),
-    columnHelper.accessor("reason", {
-      id: "reason",
-      header: () => <TableTh text="거절사유" />,
+    columnHelper.accessor("errorLog", {
+      id: "errorLog",
+      header: () => <TableTh text="오류사유" />,
       cell: (info) => info.getValue(),
     }),
   ];
 
-  // 처리 상태 수정시
-  const handleStateChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  // 변동 분류 수정시
+  const handleUseTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
 
-    setState(e.target.value);
-    setCustomParams(["state", "page"], [value, "1"]);
+    setUseType(e.target.value);
+    setCustomParams(["useType", "page"], [value, "1"]);
+  };
+
+  // 처리 결과 수정시
+  const handleResultChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+
+    setResult(e.target.value);
+    setCustomParams(["result", "page"], [value, "1"]);
   };
 
   // 등록일로 검색
@@ -344,8 +404,10 @@ export default function ClientCashCharge() {
     setSearch(DEFAULT_FILTER);
     // 발생시점 검색 초기화
     setCreatedAt(DEFAULT_CREATEDATE);
-    // 처리 상태 초기화
-    setState("all");
+    // 변동 분류 초기화
+    setUseType("all");
+    // 처리 결과 초기화
+    setResult("all");
 
     // 1페이지로 이동 후 params 초기화
     setCustomParams("page", "1", [
@@ -353,7 +415,8 @@ export default function ClientCashCharge() {
       "keyword",
       "cStart",
       "cEnd",
-      "state",
+      "useType",
+      "result",
     ]);
   };
 
@@ -361,27 +424,37 @@ export default function ClientCashCharge() {
     <div className="w-full h-full flex flex-col gap-5">
       <div className="flex flex-col gap-3">
         <div className="text-lg font-bold">
-          캐시 충전액 : {totalCharge.toLocaleString()}원
+          캐시 이용액 : {totalUsage.toLocaleString()}원
         </div>
         <div className="flex justify-between items-end">
           <div className="flex gap-3">
             <TableSelect
-              label={"처리 상태"}
-              name={"state"}
+              label={"변동 분류"}
+              name={"useType"}
               options={[
                 { value: "all", name: "전체" },
-                { value: "pending", name: "대기" },
-                { value: "approval", name: "승인" },
-                { value: "rejection", name: "거절" },
+                { value: "usage", name: "사용" },
+                { value: "refund", name: "환급" },
               ]}
-              value={state}
-              onChange={(e) => handleStateChange(e)}
+              value={useType}
+              onChange={(e) => handleUseTypeChange(e)}
+            />
+            <TableSelect
+              label={"처리 결과"}
+              name={"result"}
+              options={[
+                { value: "all", name: "전체" },
+                { value: "success", name: "정상" },
+                { value: "error", name: "오류" },
+              ]}
+              value={result}
+              onChange={(e) => handleResultChange(e)}
             />
           </div>
           <div className="flex gap-3">
             <CalendarInput
               endDate={createdAt.end ? createdAt.end : ""}
-              placeholder="충전요청시점 검색"
+              placeholder="발생시점 검색"
               range={true}
               required={true}
               startDate={createdAt.start ? createdAt.start : ""}
@@ -406,7 +479,12 @@ export default function ClientCashCharge() {
                     onChange={(e) => handleSelect(e)}
                   >
                     <option value="idx">IDX</option>
-                    <option value="reason">거절사유</option>
+                    <option value="missionIdx">대상 미션 IDX</option>
+                    <option value="missionName">대상 미션명</option>
+                    <option value="productIdx">상품 IDX</option>
+                    <option value="productName">상품명</option>
+                    <option value="clientIdx">광고주 IDX</option>
+                    <option value="clientName">광고주명</option>
                   </select>
                   <input
                     ref={searchRef}
@@ -442,7 +520,10 @@ export default function ClientCashCharge() {
           </div>
         </div>
       </div>
-      <Table tableClass="[&_td]:py-3" tableData={{ data, columns: COLUMNS }} />
+      <Table
+        tableClass={"[&_td]:py-3"}
+        tableData={{ data, columns: COLUMNS }}
+      />
       <Pages
         activePage={Number(page) === 0 ? 1 : Number(page)}
         className="pt-4"

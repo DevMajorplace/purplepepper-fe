@@ -13,6 +13,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { IoIosSearch, IoIosClose } from "react-icons/io";
 import { PiDownloadSimple } from "react-icons/pi";
 import { RiRefreshLine } from "react-icons/ri";
+import Link from "next/link";
 
 import Pages from "@/components/Pages";
 import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
@@ -20,17 +21,19 @@ import TableSelect from "@/components/Select/TableSelect";
 import useCustomParams from "@/hooks/useCustomParams";
 import TableTh from "@/app/(member)/(main)/_components/TableTh";
 import Table from "@/app/(member)/(main)/_components/Table";
+import Card from "@/components/card";
 
 type RowObj = {
   chk: ReactElement; // 체크 박스
   idx: string; // IDX
-  clientIdx: string; // 광고주 IDX
-  name: string; // 입금자명
-  price: number; // 충전액
-  createdAt: string; // 충전 요청일시
-  state: string; // 처리상태
-  ProcessedAt: string; // 처리일시
-  reason: string; // 거절사유
+  affiliateName: string; // 매체사명
+  name: string; // 담당자명
+  phone: string; // 담당자 연락처
+  apiKey: string; // API KEY
+  isDevelop: boolean; // 개발/운영 - 개발 or 운영
+  isUse: boolean; // 사용여부 - 사용 or 사용안함
+  createdAt: string; // 매체사명
+  manage: ReactElement; // 상세보기
 };
 
 const columnHelper = createColumnHelper<RowObj>();
@@ -38,33 +41,13 @@ const columnHelper = createColumnHelper<RowObj>();
 const DEFAULT_DATA = [
   {
     idx: "idx1",
-    clientIdx: "광고주 idx1",
-    name: "입금자명",
-    price: 10000,
+    affiliateName: "출금요청업체명",
+    name: "담당자명",
+    phone: "담당자 연락처",
+    apiKey: "API KEY",
+    isDevelop: true,
+    isUse: true,
     createdAt: "2024-10-28 09:00:00",
-    state: "대기",
-    ProcessedAt: "2024-10-28 09:01:00",
-    reason: "-",
-  },
-  {
-    idx: "idx2",
-    clientIdx: "광고주 idx1",
-    name: "입금자명2",
-    price: 30000,
-    createdAt: "2024-10-28 09:00:00",
-    state: "승인",
-    ProcessedAt: "2024-10-28 09:01:00",
-    reason: "-",
-  },
-  {
-    idx: "idx3",
-    clientIdx: "광고주 idx1",
-    name: "입금자명3",
-    price: 530000,
-    createdAt: "2024-10-28 09:00:00",
-    state: "거절",
-    ProcessedAt: "2024-10-28 09:01:00",
-    reason: "거절 사유",
   },
 ];
 const DEFAULT_FILTER = {
@@ -75,7 +58,7 @@ const DEFAULT_FILTER = {
 const DEFAULT_CREATEDATE = { start: null, end: null };
 const PAGE_RANGE = 5;
 
-export default function ClientCashCharge() {
+export default function AffiliateList() {
   const [data, setData] = useState(DEFAULT_DATA);
   const [chk, setChk] = useState<string[]>([]);
   const [createdAt, setCreatedAt] = useState<{
@@ -88,8 +71,9 @@ export default function ClientCashCharge() {
     show: boolean;
   }>(DEFAULT_FILTER);
   const [page, setPage] = useState(1);
-  const [totalCharge, setTotalCharge] = useState(0);
+  const [totalAffiliate, setTotalAffiliate] = useState(0);
   const [state, setState] = useState("all");
+  const [isUse, setIsUse] = useState("all");
   const [startPage, setStartPage] = useState(1);
   const searchRef = useRef<HTMLInputElement>(null);
   const { getCustomParams, setCustomParams, createQueryString } =
@@ -100,6 +84,7 @@ export default function ClientCashCharge() {
     const cStart = getCustomParams("cStart");
     const cEnd = getCustomParams("cEnd");
     const state = getCustomParams("state");
+    const isUse = getCustomParams("isUse");
     const type = getCustomParams("type");
     const keyword = getCustomParams("keyword");
 
@@ -125,6 +110,11 @@ export default function ClientCashCharge() {
       setState(state);
     }
 
+    // 사용 여부 Params가 있으면
+    if (isUse) {
+      setIsUse(isUse);
+    }
+
     // 페이지 Params가 있으면
     if (crrpage) {
       setPage(Number(crrpage));
@@ -141,6 +131,7 @@ export default function ClientCashCharge() {
     getCustomParams("cStart"),
     getCustomParams("cEnd"),
     getCustomParams("state"),
+    getCustomParams("isUse"),
     getCustomParams("type"),
     getCustomParams("keyword"),
     startPage,
@@ -206,27 +197,50 @@ export default function ClientCashCharge() {
       header: () => <TableTh text="IDX" onSort={() => handleSort("idx")} />,
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("clientIdx", {
-      id: "clientIdx",
-      header: () => <TableTh text="광고주 IDX" />,
+    columnHelper.accessor("affiliateName", {
+      id: "affiliateName",
+      header: () => (
+        <TableTh text="매체사명" onSort={() => handleSort("affiliateName")} />
+      ),
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("name", {
       id: "name",
-      header: () => <TableTh text="입금자명" />,
+      header: () => (
+        <TableTh text="매체사 담당자" onSort={() => handleSort("name")} />
+      ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("price", {
-      id: "price",
+    columnHelper.accessor("phone", {
+      id: "phone",
       header: () => (
-        <TableTh text="충전액" onSort={() => handleSort("price")} />
+        <TableTh text="담당자 연락처" onSort={() => handleSort("phone")} />
       ),
-      cell: (info) => `${info.getValue().toLocaleString()}원`,
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("apiKey", {
+      id: "apiKey",
+      header: () => <TableTh text="API KEY" />,
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("isDevelop", {
+      id: "isDevelop",
+      header: () => (
+        <TableTh text="개발/운영" onSort={() => handleSort("isDevelop")} />
+      ),
+      cell: (info) => (info.getValue() ? "개발" : "운영"),
+    }),
+    columnHelper.accessor("isUse", {
+      id: "isUse",
+      header: () => (
+        <TableTh text="사용여부" onSort={() => handleSort("isUse")} />
+      ),
+      cell: (info) => (info.getValue() ? "사용" : "사용안함"),
     }),
     columnHelper.accessor("createdAt", {
       id: "createdAt",
       header: () => (
-        <TableTh text="충전 요청시점" onSort={() => handleSort("createdAt")} />
+        <TableTh text="출금 요청시점" onSort={() => handleSort("createdAt")} />
       ),
       cell: (info) => {
         const newDate = info.getValue().split(" ");
@@ -239,33 +253,18 @@ export default function ClientCashCharge() {
         );
       },
     }),
-    columnHelper.accessor("state", {
-      id: "state",
-      header: () => (
-        <TableTh text="처리상태" onSort={() => handleSort("state")} />
+    columnHelper.accessor("manage", {
+      id: "manage",
+      header: () => <TableTh className="text-center" text="상세 보기" />,
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <Link href={`/affiliate/${info.row.original.idx}`}>
+            <button className="border border-[#ccc] rounded-md px-4 py-2">
+              상세페이지 이동
+            </button>
+          </Link>
+        </div>
       ),
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("ProcessedAt", {
-      id: "ProcessedAt",
-      header: () => (
-        <TableTh text="처리시점" onSort={() => handleSort("ProcessedAt")} />
-      ),
-      cell: (info) => {
-        const newDate = info.getValue().split(" ");
-
-        return (
-          <div>
-            <div>{newDate[0]}</div>
-            <div>{newDate[1]}</div>
-          </div>
-        );
-      },
-    }),
-    columnHelper.accessor("reason", {
-      id: "reason",
-      header: () => <TableTh text="거절사유" />,
-      cell: (info) => info.getValue(),
     }),
   ];
 
@@ -275,6 +274,14 @@ export default function ClientCashCharge() {
 
     setState(e.target.value);
     setCustomParams(["state", "page"], [value, "1"]);
+  };
+
+  // 사용 여부 수정시
+  const handleIsUseChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+
+    setIsUse(e.target.value);
+    setCustomParams(["isUse", "page"], [value, "1"]);
   };
 
   // 등록일로 검색
@@ -358,99 +365,116 @@ export default function ClientCashCharge() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col gap-5">
-      <div className="flex flex-col gap-3">
-        <div className="text-lg font-bold">
-          캐시 충전액 : {totalCharge.toLocaleString()}원
-        </div>
-        <div className="flex justify-between items-end">
-          <div className="flex gap-3">
-            <TableSelect
-              label={"처리 상태"}
-              name={"state"}
-              options={[
-                { value: "all", name: "전체" },
-                { value: "pending", name: "대기" },
-                { value: "approval", name: "승인" },
-                { value: "rejection", name: "거절" },
-              ]}
-              value={state}
-              onChange={(e) => handleStateChange(e)}
-            />
+    <Card className="min-h-[87vh]">
+      <div className="w-full h-full flex flex-col gap-5">
+        <div className="flex flex-col gap-3">
+          <div className="text-lg font-bold">
+            매체사 수 : {totalAffiliate.toLocaleString()}
           </div>
-          <div className="flex gap-3">
-            <CalendarInput
-              endDate={createdAt.end ? createdAt.end : ""}
-              placeholder="충전요청시점 검색"
-              range={true}
-              required={true}
-              startDate={createdAt.start ? createdAt.start : ""}
-              width="w-64"
-              onChange={(value) => handleCreatedAtChange(value)}
-            />
-            <div
-              className={`border border-[#ccc] rounded-md flex items-center cursor-pointer`}
-              role="presentation"
-              onClick={(e) => handleSearchClick(e)}
-            >
+          <div className="flex justify-between items-end">
+            <div className="flex gap-3">
+              <TableSelect
+                label={"개발/운영구분"}
+                name={"state"}
+                options={[
+                  { value: "all", name: "전체" },
+                  { value: "true", name: "개발" },
+                  { value: "false", name: "운영" },
+                ]}
+                value={state}
+                onChange={(e) => handleStateChange(e)}
+              />
+              <TableSelect
+                label={"사용여부"}
+                name={"isUse"}
+                options={[
+                  { value: "all", name: "전체" },
+                  { value: "true", name: "사용" },
+                  { value: "false", name: "사용안함" },
+                ]}
+                value={isUse}
+                onChange={(e) => handleIsUseChange(e)}
+              />
+            </div>
+            <div className="flex gap-3">
+              <CalendarInput
+                endDate={createdAt.end ? createdAt.end : ""}
+                placeholder="등록일 검색"
+                range={true}
+                required={true}
+                startDate={createdAt.start ? createdAt.start : ""}
+                width="w-64"
+                onChange={(value) => handleCreatedAtChange(value)}
+              />
               <div
-                className={`${search.show ? "px-2" : "w-0"} transiton-all overflow-hidden`}
+                className={`border border-[#ccc] rounded-md flex items-center cursor-pointer`}
+                role="presentation"
+                onClick={(e) => handleSearchClick(e)}
               >
-                <form
-                  className={`items-center gap-2 flex search_form`}
-                  onSubmit={(e) => handleSubmit(e)}
+                <div
+                  className={`${search.show ? "px-2" : "w-0"} transiton-all overflow-hidden`}
                 >
-                  <select
-                    className="h-8"
-                    value={search.type}
-                    onChange={(e) => handleSelect(e)}
+                  <form
+                    className={`items-center gap-2 flex search_form`}
+                    onSubmit={(e) => handleSubmit(e)}
                   >
-                    <option value="idx">IDX</option>
-                    <option value="reason">거절사유</option>
-                  </select>
-                  <input
-                    ref={searchRef}
-                    className="h-8 px-2 placeholder:text-[#333]/50"
-                    placeholder="검색어를 입력해주세요."
-                    type="text"
-                    value={search.keyword}
-                    onChange={(e) => handleSearchInput(e)}
-                  />
-                  <div role="presentation" onClick={handleCloseSearchClick}>
-                    <IoIosClose className="text-2xl" />
-                  </div>
-                </form>
+                    <select
+                      className="h-8"
+                      value={search.type}
+                      onChange={(e) => handleSelect(e)}
+                    >
+                      <option value="idx">IDX</option>
+                      <option value="affiliateName">매체사명</option>
+                      <option value="name">매체사 담당자</option>
+                      <option value="phone">담당자 연락처</option>
+                    </select>
+                    <input
+                      ref={searchRef}
+                      className="h-8 px-2 placeholder:text-[#333]/50"
+                      placeholder="검색어를 입력해주세요."
+                      type="text"
+                      value={search.keyword}
+                      onChange={(e) => handleSearchInput(e)}
+                    />
+                    <div role="presentation" onClick={handleCloseSearchClick}>
+                      <IoIosClose className="text-2xl" />
+                    </div>
+                  </form>
+                </div>
+                <div
+                  className={`items-center gap-1 ${search.show ? "hidden" : "flex"} search_button px-4 h-full`}
+                >
+                  <IoIosSearch className="text-[18px] pt-[1px] search_icon" />{" "}
+                  검색
+                </div>
               </div>
               <div
-                className={`items-center gap-1 ${search.show ? "hidden" : "flex"} search_button px-4 h-full`}
+                className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12"
+                role="presentation"
+                onClick={handleFilterClick}
               >
-                <IoIosSearch className="text-[18px] pt-[1px] search_icon" />{" "}
-                검색
+                <RiRefreshLine className="text-[18px] pt-[1px]" /> 필터 초기화
               </div>
-            </div>
-            <div
-              className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12"
-              role="presentation"
-              onClick={handleFilterClick}
-            >
-              <RiRefreshLine className="text-[18px] pt-[1px]" /> 필터 초기화
-            </div>
-            <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
-              <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
-              다운로드
+              <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
+                <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
+                다운로드
+              </div>
             </div>
           </div>
         </div>
+        <Table
+          tableClass="[&_td]:py-3"
+          tableData={{ data, columns: COLUMNS }}
+        />
+        <Pages
+          activePage={Number(page) === 0 ? 1 : Number(page)}
+          className="pt-4"
+          createQueryString={createQueryString}
+          pageRange={PAGE_RANGE}
+          startPage={startPage}
+          totalPages={12}
+        />
       </div>
-      <Table tableClass="[&_td]:py-3" tableData={{ data, columns: COLUMNS }} />
-      <Pages
-        activePage={Number(page) === 0 ? 1 : Number(page)}
-        className="pt-4"
-        createQueryString={createQueryString}
-        pageRange={PAGE_RANGE}
-        startPage={startPage}
-        totalPages={12}
-      />
-    </div>
+    </Card>
   );
 }

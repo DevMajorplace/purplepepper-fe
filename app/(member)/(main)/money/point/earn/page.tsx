@@ -11,79 +11,86 @@ import {
 } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { IoIosSearch, IoIosClose } from "react-icons/io";
+import { PiDownloadSimple } from "react-icons/pi";
 import { RiRefreshLine } from "react-icons/ri";
-import { HiOutlinePlus } from "react-icons/hi2";
-import Link from "next/link";
-
-import MissionTypeEditModal from "./_components/MissionTypeEditModal";
-import MissionTypeAddModal from "./_components/MissionTypeAddModal";
 
 import Pages from "@/components/Pages";
 import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
 import useCustomParams from "@/hooks/useCustomParams";
 import TableTh from "@/app/(member)/(main)/_components/TableTh";
 import Table from "@/app/(member)/(main)/_components/Table";
-import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
 type RowObj = {
-  idx: string; // 체크 박스
-  name: string; // 대분류명
-  middle: number; // 하위 중분류 수
-  createdAt: string; // 등록일시
-  isUse: boolean; // 사용 여부
-  used: boolean; // 사용 내역 여부
-  edit: ReactElement; // 수정 버튼
-  add: ReactElement; // 분류 추가 버튼
-  data: ReactElement; // 매출데이터
+  chk: ReactElement; // 체크 박스
+  idx: string; // IDX
+  missionIdx: string; // 대상 미션 IDX
+  missionName: string; // 대상 미션명
+  productIdx: string; // 상품 IDX
+  productName: string; // 상품명
+  fromIdx: string; // 포인트 출처 IDX
+  fromName: string; // 포인트 출처 업체명
+  targetIdx: string; // 적립 대상 IDX
+  targetName: string; // 적립 대상 업체명
+  price: number; // 적립액
+  createdAt: string; // 발생일시
 };
 
 const columnHelper = createColumnHelper<RowObj>();
 
 const DEFAULT_DATA = [
   {
-    idx: "대분류 idx1",
-    name: "대분류명",
-    middle: 10,
+    idx: "idx1",
+    missionIdx: "미션 idx1",
+    missionName: "미션명1",
+    productIdx: "상품 idx1",
+    productName: "상품명1",
+    fromIdx: "포인트 출처 idx1",
+    fromName: "포인트 출처 업체명",
+    targetIdx: "적립 대상 idx1",
+    targetName: "적립 대상 업체명1",
+    price: 10000,
     createdAt: "2024-10-28 09:00:00",
-    isUse: true,
-    used: false,
   },
   {
-    idx: "대분류 idx2",
-    name: "대분류명2",
-    middle: 12,
+    idx: "idx2",
+    missionIdx: "미션 idx2",
+    missionName: "미션명2",
+    productIdx: "상품 idx2",
+    productName: "상품명2",
+    fromIdx: "포인트 출처 idx2",
+    fromName: "포인트 출처 업체명2",
+    targetIdx: "적립 대상 idx2",
+    targetName: "적립 대상 업체명2",
+    price: 10000,
     createdAt: "2024-10-28 09:00:00",
-    isUse: true,
-    used: true,
   },
 ];
-// 검색 초기값 - 직상위 사용자 idx
 const DEFAULT_FILTER = {
-  type: "major",
+  type: "idx",
   keyword: "",
   show: false,
 };
-const DEFAULT_DATE = { start: null, end: null };
+const DEFAULT_CREATEDATE = { start: null, end: null };
 const PAGE_RANGE = 5;
 
-export default function MissionType() {
+export default function MoneyPointEarn() {
   const [data, setData] = useState(DEFAULT_DATA);
+  const [chk, setChk] = useState<string[]>([]);
   const [createdAt, setCreatedAt] = useState<{
     start: string | null;
     end: string | null;
-  }>(DEFAULT_DATE);
+  }>(DEFAULT_CREATEDATE);
   const [search, setSearch] = useState<{
     type: string;
     keyword: string;
     show: boolean;
   }>(DEFAULT_FILTER);
   const [page, setPage] = useState(1);
+  const [totalEarn, setTotalEarn] = useState(0);
   const [startPage, setStartPage] = useState(1);
   const searchRef = useRef<HTMLInputElement>(null);
   const { getCustomParams, setCustomParams, createQueryString } =
     useCustomParams();
-  const setModalOpen = useSetModalOpen();
-  const setModalContents = useSetModalContents();
 
   useEffect(() => {
     const crrpage = getCustomParams("page");
@@ -92,7 +99,7 @@ export default function MissionType() {
     const type = getCustomParams("type");
     const keyword = getCustomParams("keyword");
 
-    // 참여일시 Params가 있으면
+    // 발생시점 Params가 있으면
     if (cStart && cEnd) {
       setCreatedAt({
         start: cStart,
@@ -134,124 +141,143 @@ export default function MissionType() {
     //console.log(type);
   };
 
-  // 수정 클릭시
-  const handleEditClick = (
-    idx: string,
-    name: string,
-    isUse: boolean,
-    // eslint-disable-next-line prettier/prettier
-    used: boolean
-  ) => {
-    setModalOpen(true);
-    setModalContents(
-      // eslint-disable-next-line prettier/prettier
-      <MissionTypeEditModal info={{ idx, name, isUse, used }} />
-    );
+  // 전체 체크 박스 클릭
+  const handleAllChkChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+
+    if (checked) {
+      setChk(data.map((item) => item.idx));
+    } else {
+      setChk([]);
+    }
   };
 
-  // 하위 분류 추가 클릭시
-  const handleAddClick = (idx: string) => {
-    setModalOpen(true);
-    setModalContents(
-      // eslint-disable-next-line prettier/prettier
-      <MissionTypeAddModal major={idx} />
-    );
+  // 개별 체크 박스 클릭
+  const handleChkChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    // eslint-disable-next-line prettier/prettier
+    target: string
+  ) => {
+    const checked = e.target.checked;
+
+    if (checked) {
+      setChk([...chk, target]);
+    } else {
+      setChk(chk.filter((item) => item !== target));
+    }
   };
 
   const COLUMNS = [
+    columnHelper.accessor("chk", {
+      id: "chk",
+      header: () => (
+        <input
+          checked={data.length !== 0 && chk.length === data.length}
+          name="allChk"
+          type="checkbox"
+          onChange={(e) => handleAllChkChange(e)}
+        />
+      ),
+      cell: (info) => {
+        const idx = info.row.original.idx;
+
+        return (
+          <input
+            checked={chk.includes(idx)}
+            name="chk"
+            type="checkbox"
+            onChange={(e) => handleChkChange(e, idx)}
+          />
+        );
+      },
+    }),
     columnHelper.accessor("idx", {
       id: "idx",
+      header: () => <TableTh text="IDX" onSort={() => handleSort("idx")} />,
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("missionIdx", {
+      id: "missionIdx",
       header: () => (
-        <TableTh text="대분류 IDX" onSort={() => handleSort("idx")} />
+        <TableTh text="대상 미션 IDX" onSort={() => handleSort("missionIdx")} />
       ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("name", {
-      id: "name",
+    columnHelper.accessor("missionName", {
+      id: "missionName",
       header: () => (
-        <TableTh text="대분류명" onSort={() => handleSort("name")} />
+        <TableTh text="대상 미션명" onSort={() => handleSort("missionName")} />
       ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("middle", {
-      id: "middle",
+    columnHelper.accessor("productIdx", {
+      id: "productIdx",
       header: () => (
-        <TableTh text="하위 중분류 수" onSort={() => handleSort("middle")} />
+        <TableTh text="상품 IDX" onSort={() => handleSort("productIdx")} />
       ),
-      cell: (info) => (
-        <Link href={`/mission/type/${info.row.original.idx}`}>
-          {info.getValue().toLocaleString()}
-        </Link>
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("productName", {
+      id: "productName",
+      header: () => (
+        <TableTh text="상품명" onSort={() => handleSort("productName")} />
       ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("fromIdx", {
+      id: "fromIdx",
+      header: () => (
+        <TableTh text="포인트 출처 IDX" onSort={() => handleSort("fromIdx")} />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("fromName", {
+      id: "fromName",
+      header: () => (
+        <TableTh
+          text="포인트 출처 업체명"
+          onSort={() => handleSort("fromName")}
+        />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("targetIdx", {
+      id: "targetIdx",
+      header: () => <TableTh text="적립 대상 IDX" />,
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("targetName", {
+      id: "targetName",
+      header: () => <TableTh text="적입 대상 업체명" />,
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("price", {
+      id: "price",
+      header: () => (
+        <TableTh text="적립액" onSort={() => handleSort("price")} />
+      ),
+      cell: (info) => `${info.getValue().toLocaleString()}원`,
     }),
     columnHelper.accessor("createdAt", {
       id: "createdAt",
       header: () => (
-        <TableTh text="등록일시" onSort={() => handleSort("createdAt")} />
+        <TableTh text="발생시점" onSort={() => handleSort("createdAt")} />
       ),
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("isUse", {
-      id: "isUse",
-      header: () => (
-        <TableTh text="분류 사용 상태" onSort={() => handleSort("isUse")} />
-      ),
-      cell: (info) => (info.getValue() ? "활성화" : "비활성화"),
-    }),
-    columnHelper.accessor("edit", {
-      id: "edit",
-      header: () => <TableTh className="text-center" text="수정" />,
-      cell: (info) => (
-        <div className="flex justify-center items-center">
-          <button
-            className="border border-[#ccc] rounded-md px-4 py-2"
-            onClick={() =>
-              handleEditClick(
-                info.row.original.idx,
-                info.row.original.name,
-                info.row.original.isUse,
-                // eslint-disable-next-line prettier/prettier
-                info.row.original.used
-              )
-            }
-          >
-            수정
-          </button>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("add", {
-      id: "add",
-      header: () => <TableTh className="text-center" text="하위 분류 추가" />,
-      cell: (info) => (
-        <div className="flex justify-center items-center">
-          <button
-            className="border border-[#ccc] rounded-md px-4 py-2"
-            onClick={() => handleAddClick(info.row.original.idx)}
-          >
-            분류 추가
-          </button>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("data", {
-      id: "data",
-      header: () => <TableTh className="text-center" text="매출 데이터" />,
-      cell: (info) => (
-        <div className="flex justify-center items-center">
-          <Link
-            className="border border-[#ccc] rounded-md px-4 py-2"
-            href={`/mission/`}
-          >
-            매출보기
-          </Link>
-        </div>
-      ),
+      cell: (info) => {
+        const newDate = info.getValue().split(" ");
+
+        return (
+          <div>
+            <div>{newDate[0]}</div>
+            <div>{newDate[1]}</div>
+          </div>
+        );
+      },
     }),
   ];
 
-  // 등록일시로 검색
-  const handleDateChange = (value: Value) => {
+  // 등록일로 검색
+  const handleCreatedAtChange = (value: Value) => {
     if (Array.isArray(value)) {
       const start = dateFormat(value[0], "day", "-");
       const end = dateFormat(value[1], "day", "-");
@@ -315,35 +341,29 @@ export default function MissionType() {
   const handleFilterClick = () => {
     // 검색 초기화
     setSearch(DEFAULT_FILTER);
-    // 참여일시 검색 초기화
-    setCreatedAt(DEFAULT_DATE);
+    // 발생시점 검색 초기화
+    setCreatedAt(DEFAULT_CREATEDATE);
 
     // 1페이지로 이동 후 params 초기화
     setCustomParams("page", "1", ["type", "keyword", "cStart", "cEnd"]);
   };
 
-  // 분류 추가 클릭시
-  const handleTypeAddClick = () => {
-    setModalOpen(true);
-    setModalContents(
-      // eslint-disable-next-line prettier/prettier
-      <MissionTypeAddModal />
-    );
-  };
-
   return (
     <div className="w-full h-full flex flex-col gap-5">
       <div className="flex flex-col gap-3">
+        <div className="text-lg font-bold">
+          포인트 적립액 : {totalEarn.toLocaleString()}원
+        </div>
         <div className="flex justify-end items-end">
           <div className="flex gap-3">
             <CalendarInput
               endDate={createdAt.end ? createdAt.end : ""}
-              placeholder="등록일시 검색"
+              placeholder="발생시점 검색"
               range={true}
               required={true}
               startDate={createdAt.start ? createdAt.start : ""}
               width="w-64"
-              onChange={(value) => handleDateChange(value)}
+              onChange={(value) => handleCreatedAtChange(value)}
             />
             <div
               className={`border border-[#ccc] rounded-md flex items-center cursor-pointer`}
@@ -362,9 +382,13 @@ export default function MissionType() {
                     value={search.type}
                     onChange={(e) => handleSelect(e)}
                   >
-                    <option value="major">대분류</option>
-                    <option value="middle">중분류</option>
-                    <option value="small">소분류</option>
+                    <option value="idx">IDX</option>
+                    <option value="missionIdx">대상 미션 IDX</option>
+                    <option value="missionName">대상 미션명</option>
+                    <option value="productIdx">상품 IDX</option>
+                    <option value="productName">상품명</option>
+                    <option value="fromIdx">포인트 출처 IDX</option>
+                    <option value="fromName">포인트 출처 업체명</option>
                   </select>
                   <input
                     ref={searchRef}
@@ -393,17 +417,17 @@ export default function MissionType() {
             >
               <RiRefreshLine className="text-[18px] pt-[1px]" /> 필터 초기화
             </div>
-            <div
-              className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12"
-              role="presentation"
-              onClick={handleTypeAddClick}
-            >
-              <HiOutlinePlus className="text-[18px] pt-[1px]" /> 분류 추가
+            <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
+              <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
+              다운로드
             </div>
           </div>
         </div>
       </div>
-      <Table tableClass="[&_td]:py-3" tableData={{ data, columns: COLUMNS }} />
+      <Table
+        tableClass={"[&_td]:py-3"}
+        tableData={{ data, columns: COLUMNS }}
+      />
       <Pages
         activePage={Number(page) === 0 ? 1 : Number(page)}
         className="pt-4"

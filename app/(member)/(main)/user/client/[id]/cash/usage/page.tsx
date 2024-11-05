@@ -189,7 +189,7 @@ export default function ClientCashUsage() {
       id: "chk",
       header: () => (
         <input
-          checked={chk.length === data.length}
+          checked={data.length !== 0 && chk.length === data.length}
           name="allChk"
           type="checkbox"
           onChange={(e) => handleAllChkChange(e)}
@@ -260,7 +260,16 @@ export default function ClientCashUsage() {
       header: () => (
         <TableTh text="발생시점" onSort={() => handleSort("createdAt")} />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => {
+        const newDate = info.getValue().split(" ");
+
+        return (
+          <div>
+            <div>{newDate[0]}</div>
+            <div>{newDate[1]}</div>
+          </div>
+        );
+      },
     }),
     columnHelper.accessor("result", {
       id: "result",
@@ -269,16 +278,25 @@ export default function ClientCashUsage() {
       ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("errorLog", {
-      id: "errorLog",
-      header: () => <TableTh text="오류사유" />,
-      cell: (info) => info.getValue(),
-    }),
     columnHelper.accessor("ProcessedAt", {
       id: "ProcessedAt",
       header: () => (
         <TableTh text="처리시점" onSort={() => handleSort("ProcessedAt")} />
       ),
+      cell: (info) => {
+        const newDate = info.getValue().split(" ");
+
+        return (
+          <div>
+            <div>{newDate[0]}</div>
+            <div>{newDate[1]}</div>
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor("errorLog", {
+      id: "errorLog",
+      header: () => <TableTh text="오류사유" />,
       cell: (info) => info.getValue(),
     }),
   ];

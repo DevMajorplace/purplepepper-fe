@@ -188,7 +188,7 @@ export default function MissionStatistics() {
       id: "chk",
       header: () => (
         <input
-          checked={chk.length === data.length}
+          checked={data.length !== 0 && chk.length === data.length}
           name="allChk"
           type="checkbox"
           onChange={(e) => handleAllChkChange(e)}
