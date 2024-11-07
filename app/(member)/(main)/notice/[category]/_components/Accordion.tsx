@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import { useUser } from "@/stores/auth.store";
 import useStore from "@/hooks/useStore";
+import { usePathname } from "next/navigation";
 
 export default function Accordion({
   idx,
@@ -15,6 +16,7 @@ export default function Accordion({
 }: AccordionProps) {
   const [open, setOpen] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
+  const path = usePathname();
   const user = useStore(useUser, (state) => {
     return state.user;
   });
@@ -60,7 +62,7 @@ export default function Accordion({
             <div className="text-right">
               <Link
                 className="bg-[#000] text-[12px] text-white rounded-md px-4 inline-flex items-center gap-1 h-10 cursor-pointer"
-                href={`/notice/write?idx=${idx}`}
+                href={`${path}/write?idx=${idx}`}
               >
                 수정
               </Link>

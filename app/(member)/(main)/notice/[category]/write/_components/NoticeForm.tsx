@@ -1,13 +1,16 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { PiPlusBold } from "react-icons/pi";
-import { GoPencil } from "react-icons/go";
+import { GoPencil, GoTrash } from "react-icons/go";
+
+import NoticeModal from "./NoticeModal";
 
 import Input from "@/components/Input";
 import Textarea from "@/components/Textarea";
+import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
 export default function NoticeForm() {
   const [info, setInfo] = useState<{
@@ -36,6 +39,9 @@ export default function NoticeForm() {
   const params = useSearchParams();
   const searchParams = new URLSearchParams(params);
   const idx = searchParams.get("idx");
+  const router = useRouter();
+  const setModalOpen = useSetModalOpen();
+  const setModalContents = useSetModalContents();
 
   useEffect(() => {
     if (idx) {
@@ -104,10 +110,17 @@ export default function NoticeForm() {
   //   }
   // };
 
+  const handleDeleteClick = () => {
+    setModalOpen(true);
+    setModalContents(<NoticeModal info={{ ...info, idx }} type={"delete"} />);
+  };
+
   // 제출시
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    setModalOpen(true);
+    setModalContents(<NoticeModal info={{ ...info, idx }} type={"edit"} />);
     //console.dir(e.target.elements.file);
   };
 
@@ -222,9 +235,22 @@ export default function NoticeForm() {
             <GoPencil className="text-[18px] pt-[1px]" />{" "}
             {idx ? "수정" : "등록"}
           </button>
-          <Link className="border border-[#ccc]" href={"/notice"}>
+          {idx && (
+            <div
+              className="bg-[#DC2626] text-white flex items-center gap-2 cursor-pointer"
+              role="presentation"
+              onClick={handleDeleteClick}
+            >
+              <GoTrash className="text-[18px] pt-[1px]" /> 삭제
+            </div>
+          )}
+          <div
+            className="border border-[#ccc] cursor-pointer"
+            role="presentation"
+            onClick={() => router.back()}
+          >
             취소
-          </Link>
+          </div>
         </div>
       </form>
     </div>
