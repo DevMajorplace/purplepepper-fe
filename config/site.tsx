@@ -192,10 +192,6 @@ export const siteConfig = {
       href: "/point/charge",
     },
     {
-      label: "자주 묻는 질문",
-      href: "/faq",
-    },
-    {
       label: "공지사항",
       href: "/notice",
     },

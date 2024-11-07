@@ -279,8 +279,10 @@ declare global {
 
   // faq
   interface AccordionProps {
-    question: string;
-    answer: JSX.Element;
+    idx: string;
+    title: string;
+    content: JSX.Element;
+    createdAt: string;
   }
 
   // 회원가입

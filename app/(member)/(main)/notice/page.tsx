@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function Notice() {
-  return <div>공지사항</div>;
+  redirect("/notice/category1");
 }
