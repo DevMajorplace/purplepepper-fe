@@ -2,9 +2,9 @@ import { useRouter } from "next/navigation";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
 import { useCookies } from "react-cookie";
+import { useStore } from "zustand";
 
 import { useUser } from "@/stores/auth.store";
-import useStore from "@/hooks/useStore";
 
 export default function User() {
   const user = useStore(useUser, (state) => {
@@ -31,7 +31,7 @@ export default function User() {
   return (
     <div className="w-full">
       <div className="flex justify-between items-center">
-        <div className="text-lg font-bold">{user?.company}</div>
+        <div className="text-lg font-bold">{user.company}</div>
         <div className="text-xl flex gap-3 *:cursor-pointer">
           <AiOutlineSetting />
           <FiLogOut onClick={handleLogout} />
@@ -40,7 +40,7 @@ export default function User() {
       {user?.level === 2 && (
         <div className="flex justify-between items-center font-medium pt-3">
           <div>보유포인트</div>
-          <div>{user?.point.toLocaleString()}P</div>
+          <div>{user.point.toLocaleString()}P</div>
         </div>
       )}
     </div>

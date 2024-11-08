@@ -128,7 +128,19 @@ export const siteConfig = {
       label: "포인트 관리",
       href: "/point",
       icon: <PiDatabase className="w-full h-full" />,
-      show: [2],
+      show: [3, 2],
+      sub: [
+        {
+          label: "적립 내역",
+          href: "/point/earn",
+          show: [3, 2],
+        },
+        {
+          label: "출금 내역",
+          href: "/point/withdrawal",
+          show: [3, 2],
+        },
+      ],
     },
     {
       label: "공지사항",
@@ -202,12 +214,12 @@ export const siteConfig = {
       href: "/affiliate",
     },
     {
-      label: "포인트 관리",
-      href: "/point",
+      label: "포인트 출금 내역",
+      href: "/point/withdrawal",
     },
     {
-      label: "포인트 충전",
-      href: "/point/charge",
+      label: "포인트 적립 내역",
+      href: "/point/earn",
     },
     {
       label: "공지사항",

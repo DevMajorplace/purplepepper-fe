@@ -117,11 +117,13 @@ declare global {
   // 앱 공통
   // 포인트 리스트 아이템
   interface PointListItemProps {
+    idx: string;
     type?: string;
     content?: string;
     detail?: string;
     point: number;
     createdAt: Date;
+    listType?: string;
   }
 
   // dashboard

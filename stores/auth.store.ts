@@ -8,6 +8,11 @@ export type User = {
   point: number;
   cash?: number;
   level: number;
+  account?: {
+    bank: string;
+    accountNumber: string;
+    depositor: string;
+  };
 };
 type Props = {
   token: string;

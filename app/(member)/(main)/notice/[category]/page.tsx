@@ -5,13 +5,13 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { GoPencil } from "react-icons/go";
 import Link from "next/link";
+import { useStore } from "zustand";
 
 import UserDetailTab from "../../user/_components/UserDetailTab";
 
 import Accordion from "./_components/Accordion";
 
 import { useUser } from "@/stores/auth.store";
-import useStore from "@/hooks/useStore";
 
 const NOTICE = [
   {

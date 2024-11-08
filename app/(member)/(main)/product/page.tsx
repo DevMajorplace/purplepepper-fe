@@ -16,6 +16,8 @@ import { TbCubePlus } from "react-icons/tb";
 import { RiRefreshLine } from "react-icons/ri";
 import Link from "next/link";
 
+import AffiliateListModal from "./_components/AffiliateListModal";
+
 import Pages from "@/components/Pages";
 import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
 import useCustomParams from "@/hooks/useCustomParams";
@@ -23,7 +25,6 @@ import TableTh from "@/app/(member)/(main)/_components/TableTh";
 import Table from "@/app/(member)/(main)/_components/Table";
 import Card from "@/components/card";
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
-import AffiliateListModal from "./_components/AffiliateListModal";
 
 type RowObj = {
   chk: ReactElement; // 체크 박스
