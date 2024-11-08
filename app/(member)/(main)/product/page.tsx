@@ -12,42 +12,58 @@ import {
 import { createColumnHelper } from "@tanstack/react-table";
 import { IoIosSearch, IoIosClose } from "react-icons/io";
 import { PiDownloadSimple } from "react-icons/pi";
+import { TbCubePlus } from "react-icons/tb";
 import { RiRefreshLine } from "react-icons/ri";
 import Link from "next/link";
 
 import Pages from "@/components/Pages";
 import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
-import TableSelect from "@/components/Select/TableSelect";
 import useCustomParams from "@/hooks/useCustomParams";
 import TableTh from "@/app/(member)/(main)/_components/TableTh";
 import Table from "@/app/(member)/(main)/_components/Table";
 import Card from "@/components/card";
+import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
+import AffiliateListModal from "./_components/AffiliateListModal";
 
 type RowObj = {
   chk: ReactElement; // 체크 박스
-  idx: string; // IDX
-  affiliateName: string; // 매체사명
-  name: string; // 담당자명
-  phone: string; // 담당자 연락처
-  apiKey: string; // API KEY
-  isDevelop: boolean; // 개발/운영 - 개발 or 운영
-  isUse: boolean; // 사용여부 - 사용 or 사용안함
-  createdAt: string; // 매체사명
-  manage: ReactElement; // 상세보기
+  idx: string; // 상품 IDX
+  name: string; // 상품명
+  createdAt: string; // 등록일시
+  displayStartDate: string; // 노출 시작 일시
+  displayEndDate: string; // 노출 종료 일시
+  missions: number; // 사용 중인 미션 수
+  pointDistribution: number[]; // 포인트 분배 비율
+  salse: number; // 누적 매출
+  profit: number; // 누적 순이익
+  affiliate: ReactElement; // 구성 매체사
+  manage: ReactElement; // 수정
 };
 
 const columnHelper = createColumnHelper<RowObj>();
 
 const DEFAULT_DATA = [
   {
-    idx: "idx1",
-    affiliateName: "매체사명",
-    name: "담당자명",
-    phone: "담당자 연락처",
-    apiKey: "API KEY",
-    isDevelop: true,
-    isUse: true,
-    createdAt: "2024-10-28 09:00:00",
+    idx: "상품 idx1",
+    name: "상품명",
+    createdAt: "2024-10-10 09:00:00",
+    displayStartDate: "2024-10-10 09:00:00",
+    displayEndDate: "2024-10-10 09:00:00",
+    missions: 1000,
+    pointDistribution: [5, 3, 2],
+    salse: 100000,
+    profit: 100000,
+  },
+  {
+    idx: "상품 idx1",
+    name: "상품명",
+    createdAt: "2024-10-10 09:00:00",
+    displayStartDate: "2024-10-10 09:00:00",
+    displayEndDate: "-",
+    missions: 1000,
+    pointDistribution: [5, 3, 2],
+    salse: 100000,
+    profit: 100000,
   },
 ];
 const DEFAULT_FILTER = {
@@ -55,44 +71,70 @@ const DEFAULT_FILTER = {
   keyword: "",
   show: false,
 };
-const DEFAULT_CREATEDATE = { start: null, end: null };
+const DEFAULT_DATE = { start: null, end: null };
 const PAGE_RANGE = 5;
 
-export default function AffiliateList() {
+export default function ProductList() {
   const [data, setData] = useState(DEFAULT_DATA);
   const [chk, setChk] = useState<string[]>([]);
   const [createdAt, setCreatedAt] = useState<{
     start: string | null;
     end: string | null;
-  }>(DEFAULT_CREATEDATE);
+  }>(DEFAULT_DATE);
+  const [displayStartDate, setDisplayStartDate] = useState<{
+    start: string | null;
+    end: string | null;
+  }>(DEFAULT_DATE);
+  const [displayEndDate, setDisplayEndDate] = useState<{
+    start: string | null;
+    end: string | null;
+  }>(DEFAULT_DATE);
   const [search, setSearch] = useState<{
     type: string;
     keyword: string;
     show: boolean;
   }>(DEFAULT_FILTER);
   const [page, setPage] = useState(1);
-  const [totalAffiliate, setTotalAffiliate] = useState(0);
-  const [state, setState] = useState("all");
-  const [isUse, setIsUse] = useState("all");
+  const [totalProduct, setTotalProduct] = useState(0);
   const [startPage, setStartPage] = useState(1);
   const searchRef = useRef<HTMLInputElement>(null);
   const { getCustomParams, setCustomParams, createQueryString } =
     useCustomParams();
+  const setModalOpen = useSetModalOpen();
+  const setModalContents = useSetModalContents();
 
   useEffect(() => {
     const crrpage = getCustomParams("page");
     const cStart = getCustomParams("cStart");
     const cEnd = getCustomParams("cEnd");
-    const state = getCustomParams("state");
-    const isUse = getCustomParams("isUse");
+    const dsStart = getCustomParams("dsStart");
+    const dsEnd = getCustomParams("dsEnd");
+    const deStart = getCustomParams("deStart");
+    const deEnd = getCustomParams("deEnd");
     const type = getCustomParams("type");
     const keyword = getCustomParams("keyword");
 
-    // 발생시점 Params가 있으면
+    // 등록일 검색 Params가 있으면
     if (cStart && cEnd) {
       setCreatedAt({
         start: cStart,
         end: cEnd,
+      });
+    }
+
+    // 노출시작 검색 Params가 있으면
+    if (dsStart && dsEnd) {
+      setDisplayStartDate({
+        start: dsStart,
+        end: dsEnd,
+      });
+    }
+
+    // 노출종료 검색 Params가 있으면
+    if (deStart && deEnd) {
+      setDisplayEndDate({
+        start: deStart,
+        end: deEnd,
       });
     }
 
@@ -103,16 +145,6 @@ export default function AffiliateList() {
         keyword,
         show: true,
       });
-    }
-
-    // 처리 상태 Params가 있으면
-    if (state) {
-      setState(state);
-    }
-
-    // 사용 여부 Params가 있으면
-    if (isUse) {
-      setIsUse(isUse);
     }
 
     // 페이지 Params가 있으면
@@ -130,8 +162,10 @@ export default function AffiliateList() {
     getCustomParams("page"),
     getCustomParams("cStart"),
     getCustomParams("cEnd"),
-    getCustomParams("state"),
-    getCustomParams("isUse"),
+    getCustomParams("dsStart"),
+    getCustomParams("dsEnd"),
+    getCustomParams("deStart"),
+    getCustomParams("deEnd"),
     getCustomParams("type"),
     getCustomParams("keyword"),
     startPage,
@@ -168,6 +202,12 @@ export default function AffiliateList() {
     }
   };
 
+  // 구성 매체사 목록보기 클릭시
+  const handleAffiliateListClick = (idx: string, name: string) => {
+    setModalOpen(true);
+    setModalContents(<AffiliateListModal idx={idx} name={name} />);
+  };
+
   const COLUMNS = [
     columnHelper.accessor("chk", {
       id: "chk",
@@ -197,50 +237,15 @@ export default function AffiliateList() {
       header: () => <TableTh text="IDX" onSort={() => handleSort("idx")} />,
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("affiliateName", {
-      id: "affiliateName",
-      header: () => (
-        <TableTh text="매체사명" onSort={() => handleSort("affiliateName")} />
-      ),
-      cell: (info) => info.getValue(),
-    }),
     columnHelper.accessor("name", {
       id: "name",
-      header: () => (
-        <TableTh text="매체사 담당자" onSort={() => handleSort("name")} />
-      ),
+      header: () => <TableTh text="상품명" onSort={() => handleSort("name")} />,
       cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("phone", {
-      id: "phone",
-      header: () => (
-        <TableTh text="담당자 연락처" onSort={() => handleSort("phone")} />
-      ),
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("apiKey", {
-      id: "apiKey",
-      header: () => <TableTh text="API KEY" />,
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("isDevelop", {
-      id: "isDevelop",
-      header: () => (
-        <TableTh text="개발/운영" onSort={() => handleSort("isDevelop")} />
-      ),
-      cell: (info) => (info.getValue() ? "개발" : "운영"),
-    }),
-    columnHelper.accessor("isUse", {
-      id: "isUse",
-      header: () => (
-        <TableTh text="사용여부" onSort={() => handleSort("isUse")} />
-      ),
-      cell: (info) => (info.getValue() ? "사용" : "사용안함"),
     }),
     columnHelper.accessor("createdAt", {
       id: "createdAt",
       header: () => (
-        <TableTh text="등록일시" onSort={() => handleSort("createdAt")} />
+        <TableTh text="상품등록일시" onSort={() => handleSort("createdAt")} />
       ),
       cell: (info) => {
         const newDate = info.getValue().split(" ");
@@ -253,14 +258,101 @@ export default function AffiliateList() {
         );
       },
     }),
-    columnHelper.accessor("manage", {
-      id: "manage",
-      header: () => <TableTh className="text-center" text="상세 보기" />,
+    columnHelper.accessor("displayStartDate", {
+      id: "displayStartDate",
+      header: () => (
+        <TableTh
+          text="노출시작일시"
+          onSort={() => handleSort("displayStartDate")}
+        />
+      ),
+      cell: (info) => {
+        const newDate = info.getValue().split(" ");
+
+        return (
+          <div>
+            <div>{newDate[0]}</div>
+            <div>{newDate[1]}</div>
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor("displayEndDate", {
+      id: "displayEndDate",
+      header: () => (
+        <TableTh
+          text="노출종료일시"
+          onSort={() => handleSort("displayEndDate")}
+        />
+      ),
+      cell: (info) => {
+        const newDate = info.getValue().split(" ");
+
+        return (
+          <div>
+            <div>{newDate[0]}</div>
+            <div>{newDate[1]}</div>
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor("missions", {
+      id: "missions",
+      header: () => (
+        <TableTh
+          text="사용 중인 미션 수"
+          onSort={() => handleSort("missions")}
+        />
+      ),
+      cell: (info) => info.getValue().toLocaleString(),
+    }),
+    columnHelper.accessor("pointDistribution", {
+      id: "pointDistribution",
+      header: () => <TableTh text="포인트 분배 비율" />,
+      cell: (info) => `${info.getValue().join("% / ")}%`,
+    }),
+    columnHelper.accessor("salse", {
+      id: "salse",
+      header: () => (
+        <TableTh text="누적 매출" onSort={() => handleSort("salse")} />
+      ),
+      cell: (info) => `${info.getValue().toLocaleString()}원`,
+    }),
+    columnHelper.accessor("profit", {
+      id: "profit",
+      header: () => (
+        <TableTh text="누적 순이익" onSort={() => handleSort("profit")} />
+      ),
+      cell: (info) => `${info.getValue().toLocaleString()}원`,
+    }),
+    columnHelper.accessor("affiliate", {
+      id: "affiliate",
+      header: () => <TableTh className="text-center" text="구성 매체사" />,
       cell: (info) => (
         <div className="flex justify-center items-center">
-          <Link href={`/affiliate/${info.row.original.idx}`}>
+          <button
+            className="border border-[#ccc] rounded-md px-4 py-2"
+            onClick={() =>
+              handleAffiliateListClick(
+                info.row.original.idx,
+                // eslint-disable-next-line prettier/prettier
+                info.row.original.name
+              )
+            }
+          >
+            목록보기
+          </button>
+        </div>
+      ),
+    }),
+    columnHelper.accessor("manage", {
+      id: "manage",
+      header: () => <TableTh className="text-center" text="수정" />,
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <Link href={`/add/${info.row.original.idx}`}>
             <button className="border border-[#ccc] rounded-md px-4 py-2">
-              상세페이지 이동
+              수정하기
             </button>
           </Link>
         </div>
@@ -268,24 +360,8 @@ export default function AffiliateList() {
     }),
   ];
 
-  // 처리 상태 수정시
-  const handleStateChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-
-    setState(e.target.value);
-    setCustomParams(["state", "page"], [value, "1"]);
-  };
-
-  // 사용 여부 수정시
-  const handleIsUseChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-
-    setIsUse(e.target.value);
-    setCustomParams(["isUse", "page"], [value, "1"]);
-  };
-
   // 등록일로 검색
-  const handleCreatedAtChange = (value: Value) => {
+  const handldsCreatedAtChange = (value: Value) => {
     if (Array.isArray(value)) {
       const start = dateFormat(value[0], "day", "-");
       const end = dateFormat(value[1], "day", "-");
@@ -295,6 +371,36 @@ export default function AffiliateList() {
         end,
       });
       setCustomParams(["cStart", "cEnd", "page"], [start, end, "1"]);
+      //console.log(pathname);
+    }
+  };
+
+  // 시작일로 검색
+  const handldsStartDateChange = (value: Value) => {
+    if (Array.isArray(value)) {
+      const start = dateFormat(value[0], "day", "-");
+      const end = dateFormat(value[1], "day", "-");
+
+      setDisplayStartDate({
+        start,
+        end,
+      });
+      setCustomParams(["dsStart", "dsEnd", "page"], [start, end, "1"]);
+      //console.log(pathname);
+    }
+  };
+
+  // 종료일로 검색
+  const handldsEndDateChange = (value: Value) => {
+    if (Array.isArray(value)) {
+      const start = dateFormat(value[0], "day", "-");
+      const end = dateFormat(value[1], "day", "-");
+
+      setDisplayEndDate({
+        start,
+        end,
+      });
+      setCustomParams(["deStart", "deEnd", "page"], [start, end, "1"]);
       //console.log(pathname);
     }
   };
@@ -349,19 +455,29 @@ export default function AffiliateList() {
   const handleFilterClick = () => {
     // 검색 초기화
     setSearch(DEFAULT_FILTER);
-    // 발생시점 검색 초기화
-    setCreatedAt(DEFAULT_CREATEDATE);
-    // 처리 상태 초기화
-    setState("all");
+    // 등록일 검색 초기화
+    setCreatedAt(DEFAULT_DATE);
+    // 시작일 검색 초기화
+    setDisplayStartDate(DEFAULT_DATE);
+    // 종료일 검색 초기화
+    setDisplayEndDate(DEFAULT_DATE);
 
     // 1페이지로 이동 후 params 초기화
-    setCustomParams("page", "1", [
-      "type",
-      "keyword",
-      "cStart",
-      "cEnd",
-      "state",
-    ]);
+    setCustomParams(
+      ["page"],
+      ["1"],
+      [
+        "type",
+        "keyword",
+        "cStart",
+        "cEnd",
+        "dsStart",
+        "dsEnd",
+        "deStart",
+        "deEnd",
+        // eslint-disable-next-line prettier/prettier
+      ]
+    );
   };
 
   return (
@@ -369,43 +485,39 @@ export default function AffiliateList() {
       <div className="w-full h-full flex flex-col gap-5">
         <div className="flex flex-col gap-3">
           <div className="text-lg font-bold">
-            매체사 수 : {totalAffiliate.toLocaleString()}
+            상품 개수 : {totalProduct.toLocaleString()}개
           </div>
           <div className="flex justify-between items-end">
             <div className="flex gap-3">
-              <TableSelect
-                label={"개발/운영구분"}
-                name={"state"}
-                options={[
-                  { value: "all", name: "전체" },
-                  { value: "true", name: "개발" },
-                  { value: "false", name: "운영" },
-                ]}
-                value={state}
-                onChange={(e) => handleStateChange(e)}
-              />
-              <TableSelect
-                label={"사용여부"}
-                name={"isUse"}
-                options={[
-                  { value: "all", name: "전체" },
-                  { value: "true", name: "사용" },
-                  { value: "false", name: "사용안함" },
-                ]}
-                value={isUse}
-                onChange={(e) => handleIsUseChange(e)}
-              />
-            </div>
-            <div className="flex gap-3">
               <CalendarInput
                 endDate={createdAt.end ? createdAt.end : ""}
-                placeholder="등록일 검색"
+                placeholder="시작일 검색"
                 range={true}
                 required={true}
                 startDate={createdAt.start ? createdAt.start : ""}
                 width="w-64"
-                onChange={(value) => handleCreatedAtChange(value)}
+                onChange={(value) => handldsCreatedAtChange(value)}
               />
+              <CalendarInput
+                endDate={displayStartDate.end ? displayStartDate.end : ""}
+                placeholder="시작일 검색"
+                range={true}
+                required={true}
+                startDate={displayStartDate.start ? displayStartDate.start : ""}
+                width="w-64"
+                onChange={(value) => handldsStartDateChange(value)}
+              />
+              <CalendarInput
+                endDate={displayEndDate.end ? displayEndDate.end : ""}
+                placeholder="종료일 검색"
+                range={true}
+                required={true}
+                startDate={displayEndDate.start ? displayEndDate.start : ""}
+                width="w-64"
+                onChange={(value) => handldsEndDateChange(value)}
+              />
+            </div>
+            <div className="flex gap-3">
               <div
                 className={`border border-[#ccc] rounded-md flex items-center cursor-pointer`}
                 role="presentation"
@@ -423,10 +535,9 @@ export default function AffiliateList() {
                       value={search.type}
                       onChange={(e) => handleSelect(e)}
                     >
-                      <option value="idx">IDX</option>
-                      <option value="affiliateName">매체사명</option>
-                      <option value="name">매체사 담당자</option>
-                      <option value="phone">담당자 연락처</option>
+                      <option value="idx">상품 IDX</option>
+                      <option value="name">상품명</option>
+                      <option value="affiliate">매체사명</option>
                     </select>
                     <input
                       ref={searchRef}
@@ -459,6 +570,11 @@ export default function AffiliateList() {
                 <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
                 다운로드
               </div>
+              <Link href={"/product/add"}>
+                <div className="bg-[#111] text-white rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
+                  <TbCubePlus className="text-[18px] pt-[1px]" /> 상품 추가
+                </div>
+              </Link>
             </div>
           </div>
         </div>

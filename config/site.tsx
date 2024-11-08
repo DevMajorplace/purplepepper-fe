@@ -3,6 +3,7 @@ import { HiMiniHome } from "react-icons/hi2";
 import { GoQuestion } from "react-icons/go";
 import { PiDatabase, PiCurrencyCircleDollar, PiWarning } from "react-icons/pi";
 import { LuUsers, LuGoal, LuTv } from "react-icons/lu";
+import { GrCubes } from "react-icons/gr";
 //import { FiPlus } from "react-icons/fi";
 //import { FiLogOut } from "react-icons/fi";
 
@@ -62,6 +63,19 @@ export const siteConfig = {
         {
           label: "미션 분류 관리",
           href: "/mission/type",
+          show: [10],
+        },
+      ],
+    },
+    {
+      label: "상품 관리",
+      href: "/product",
+      icon: <GrCubes className="w-full h-full" />,
+      show: [10],
+      sub: [
+        {
+          label: "상품 목록",
+          href: "/product",
           show: [10],
         },
       ],
@@ -162,6 +176,10 @@ export const siteConfig = {
     {
       label: "미션 목록",
       href: "/mission/list",
+    },
+    {
+      label: "상품 목록",
+      href: "/product",
     },
     {
       label: "미션별 포인트",
