@@ -1,6 +1,7 @@
 {
   "token": "distributorToken",
   "user": {
+    "id": "test1",
     "company": "총판1",
     "name": "총판1",
     "phone": "010-1234-5678",

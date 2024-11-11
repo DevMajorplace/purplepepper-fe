@@ -298,4 +298,23 @@ declare global {
     className?: string;
     onChange(e: any): void;
   }
+
+  // 내 정보
+  // 회원 정보 폼
+  type member = {
+    company: string;
+    id: string;
+    password: string;
+    name: string;
+    phone: string;
+    account?: {
+      bank: string;
+      accountNumber: string;
+      depositor: string;
+    };
+    recommendId?: string;
+  };
+  interface SettingFormProps {
+    type: string;
+  }
 }

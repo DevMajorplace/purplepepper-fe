@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 
 export type User = {
   company: string;
+  id: string;
   name: string;
   phone: string;
   point: number;
@@ -13,6 +14,7 @@ export type User = {
     accountNumber: string;
     depositor: string;
   };
+  recommendId?: string;
 };
 type Props = {
   token: string;
@@ -29,11 +31,13 @@ type UserProps = {
 
 const USER_DEFAULT = {
   company: "",
+  id: "",
   name: "",
   phone: "",
   point: 0,
   cash: 0,
   level: 1,
+  recommendId: "",
 };
 
 export const useToken = create<Props>((set) => ({

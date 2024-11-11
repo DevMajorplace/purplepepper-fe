@@ -4,6 +4,7 @@ import { GoQuestion } from "react-icons/go";
 import { PiDatabase, PiCurrencyCircleDollar, PiWarning } from "react-icons/pi";
 import { LuUsers, LuGoal, LuTv } from "react-icons/lu";
 import { GrCubes } from "react-icons/gr";
+import { AiOutlineSetting } from "react-icons/ai";
 //import { FiPlus } from "react-icons/fi";
 //import { FiLogOut } from "react-icons/fi";
 
@@ -147,6 +148,24 @@ export const siteConfig = {
       href: "/notice",
       icon: <GoQuestion className="w-full h-full" />,
     },
+    {
+      label: "내 정보",
+      href: "/setting",
+      icon: <AiOutlineSetting className="w-full h-full" />,
+      show: [3, 2],
+      sub: [
+        {
+          label: "회원 정보",
+          href: "/setting",
+          show: [3, 2],
+        },
+        {
+          label: "조직도",
+          href: "/setting/organization",
+          show: [3, 2],
+        },
+      ],
+    },
   ],
   navContent: [
     {
@@ -224,6 +243,14 @@ export const siteConfig = {
     {
       label: "공지사항",
       href: "/notice",
+    },
+    {
+      label: "조직도",
+      href: "/setting/organization",
+    },
+    {
+      label: "회원 정보",
+      href: "/setting",
     },
   ],
 };

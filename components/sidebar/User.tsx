@@ -33,7 +33,6 @@ export default function User() {
       <div className="flex justify-between items-center">
         <div className="text-lg font-bold">{user.company}</div>
         <div className="text-xl flex gap-3 *:cursor-pointer">
-          <AiOutlineSetting />
           <FiLogOut onClick={handleLogout} />
         </div>
       </div>

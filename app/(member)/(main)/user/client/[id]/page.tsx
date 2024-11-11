@@ -17,7 +17,6 @@ export default function Client() {
   const id = useId();
 
   useEffect(() => {
-    console.log(id);
     if (user.level !== 10) redirect(`/user/client/${id}/cash/usage`);
   });
 
