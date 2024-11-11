@@ -31,7 +31,6 @@ type RowObj = {
   point: number; // 보유 포인트
   name: string; // 담당자명
   phone: string; // 담당자 연락처
-  recommendId: string; // 상위 회원 아이디
   createdAt: string; // 등록일
   lastLogin: string; // 마지막 로그인
   manage: ReactElement; // 상세보기
@@ -47,16 +46,8 @@ const DEFAULT_DATA = [
     point: 200, // 보유 포인트
     name: "홍길동", // 담당자명
     phone: "010-1234-5678", // 담당자 연락처
-    recommendId: "상위 회원 아이디", // 상위 회원 아이디
     createdAt: "2024-10-21", // 등록일
     lastLogin: "2024-10-21", // 마지막 로그인
-    manage: (
-      <Link href={`/user/client/${2}`}>
-        <button className="border border-[#ccc] rounded-md px-4 py-2">
-          상세페이지 이동
-        </button>
-      </Link>
-    ), // 관리 버튼
   },
   {
     id: "회원아이디2", // 회원아이디
@@ -65,16 +56,8 @@ const DEFAULT_DATA = [
     point: 200, // 보유 포인트
     name: "홍길동", // 담당자명
     phone: "010-1234-5678", // 담당자 연락처
-    recommendId: "상위 회원 아이디", // 상위 회원 아이디
     createdAt: "2024-10-21", // 등록일
     lastLogin: "2024-10-21", // 마지막 로그인
-    manage: (
-      <Link href={`/user/client/${2}`}>
-        <button className="border border-[#ccc] rounded-md px-4 py-2">
-          상세페이지 이동
-        </button>
-      </Link>
-    ), // 관리 버튼
   },
 ];
 const DEFAULT_FILTER = {
@@ -257,13 +240,6 @@ export default function ClientListPage() {
       header: () => <TableTh text="담당자 연락처" />,
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("recommendId", {
-      id: "recommendId",
-      header: () => (
-        <TableTh text="상위회원 아이디" onSort={() => handleSort("name")} />
-      ),
-      cell: (info) => info.getValue(),
-    }),
     columnHelper.accessor("createdAt", {
       id: "createdAt",
       header: () => (
@@ -283,7 +259,11 @@ export default function ClientListPage() {
       header: () => <TableTh className="text-center" text="상세 보기" />,
       cell: (info) => (
         <div className="flex justify-center items-center">
-          {info.getValue()}
+          <Link href={`/user/client/${info.row.original.id}`}>
+            <button className="border border-[#ccc] rounded-md px-4 py-2">
+              상세페이지 이동
+            </button>
+          </Link>
         </div>
       ),
     }),
@@ -432,7 +412,6 @@ export default function ClientListPage() {
                     <option value="phone">대표자 연락처</option>
                     <option value="managerName">담당자명</option>
                     <option value="managerPhone">담당자 연락처</option>
-                    <option value="recommendId">상위회원 아이디</option>
                   </select>
                   <input
                     ref={searchRef}

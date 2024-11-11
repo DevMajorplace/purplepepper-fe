@@ -14,13 +14,14 @@ export default function ClientLayout({
 }) {
   const params = useParams();
   const pathname = usePathname();
-  const id = Number(params.id);
+  const id = params.id;
 
   const TABS = [
     {
       name: "회원정보",
       link: `/user/client/${id}`,
       on: pathname === `/user/client/${id}`,
+      admin: true,
     },
     {
       name: "캐시 내역",
@@ -47,7 +48,7 @@ export default function ClientLayout({
   return (
     <Card className="min-h-[87vh] gap-5">
       <UserDetailTab tabs={TABS} />
-      <IdProvider id={id}>{children}</IdProvider>
+      <IdProvider id={id as string}>{children}</IdProvider>
     </Card>
   );
 }

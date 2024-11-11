@@ -24,12 +24,12 @@ export interface idUser extends User {
 }
 
 type context = {
-  id: number;
+  id: string;
   idUser: idUser;
 };
 
 interface IdContextProviderProps {
-  id: number;
+  id: string;
   children: ReactNode;
 }
 

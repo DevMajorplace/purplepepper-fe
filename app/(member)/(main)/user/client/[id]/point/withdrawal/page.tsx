@@ -220,7 +220,7 @@ export default function ClientPointWithdrawal() {
     }),
     columnHelper.accessor("requesterIdx", {
       id: "requesterIdx",
-      header: () => <TableTh text="출금요청자 IDX" />,
+      header: () => <TableTh text="출금요청업체 IDX" />,
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("requesterName", {

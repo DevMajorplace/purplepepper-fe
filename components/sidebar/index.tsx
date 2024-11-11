@@ -3,7 +3,7 @@
 import { HiX } from "react-icons/hi";
 import { siteConfig } from "@/config/site";
 import { Link } from "@nextui-org/link";
-import { MouseEvent, useCallback } from "react";
+import { MouseEvent, useCallback, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import User from "./User";
 import { useStore } from "zustand";
@@ -19,6 +19,14 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   const userLevel = user.level;
   const mainNav = pathname.split("/")[1];
 
+  useEffect(() => {
+    const opens = document.querySelectorAll(".open");
+    opens.forEach((item: any) => {
+      if (item.dataset.href.split("/")[1] !== mainNav)
+        item.classList.remove("open");
+    });
+  }, [pathname]);
+
   // verifies if routeName is the one active (in browser input)
   const activeRoute = useCallback(
     (routeName: string) => {
@@ -29,9 +37,11 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
 
   const activeMain = useCallback(
     (routeName: string) => {
-      return routeName.split("/")[1] === mainNav;
+      const target = routeName.split("/")[1];
+
+      return target === mainNav;
     },
-    [pathname]
+    [pathname, mainNav]
   );
 
   const handleClick = (e: MouseEvent) => {
@@ -91,12 +101,13 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
         {siteConfig.navItems.map((item, index) => {
           if (!item.show || (item.show && item.show.includes(userLevel))) {
             return (
-              <li key={index}>
+              <li key={index} className="side-nav">
                 {item.sub ? (
                   <div
                     className={`group flex cursor-pointer flex-col gap-3 text-base ${
                       activeMain(item.href) === true ? "open" : ""
                     }`}
+                    data-href={item.href}
                     onClick={(e) => handleClick(e)}
                   >
                     <div

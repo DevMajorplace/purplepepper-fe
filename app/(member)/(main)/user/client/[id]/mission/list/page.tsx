@@ -35,6 +35,7 @@ type RowObj = {
     middle: string; // 중분류
     small: string; // 소분류
   };
+  clientIdx: string; // 광고주 IDX
   clientName: string; // 광고주명
   participation: {
     // 일 참여현황
@@ -67,6 +68,7 @@ const DEFAULT_DATA = [
       middle: "중분류",
       small: "소분류",
     },
+    clientIdx: "광고주 idx",
     clientName: "광고주명",
     participation: {
       value: 200,
@@ -101,6 +103,7 @@ const DEFAULT_DATA = [
       middle: "중분류",
       small: "소분류",
     },
+    clientIdx: "광고주 idx",
     clientName: "광고주명",
     participation: {
       value: 200,
@@ -135,6 +138,7 @@ const DEFAULT_DATA = [
       middle: "중분류",
       small: "소분류",
     },
+    clientIdx: "광고주 idx",
     clientName: "광고주명",
     participation: {
       value: 200,
@@ -362,6 +366,11 @@ export default function ClientMissionList() {
           <li>{info.getValue().small}</li>
         </ul>
       ),
+    }),
+    columnHelper.accessor("clientIdx", {
+      id: "clientIdx",
+      header: () => <TableTh text="광고주 IDX" />,
+      cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("clientName", {
       id: "clientName",
