@@ -6,6 +6,7 @@ import { FaExclamationCircle } from "react-icons/fa";
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
 const DEFAULT = {
+  money: 10000,
   amount: 10000,
   account: {
     bank: "KEB 하나은행",
@@ -15,7 +16,7 @@ const DEFAULT = {
   reason: "",
 };
 
-export default function PointWithdrawalDetailsModal({ idx }: { idx: string }) {
+export default function CashChargeDetailsModal({ idx }: { idx: string }) {
   const [data, setDate] = useState(DEFAULT);
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
@@ -30,16 +31,20 @@ export default function PointWithdrawalDetailsModal({ idx }: { idx: string }) {
 
   return (
     <div className="flex flex-col gap-5 w-[480px]">
-      <div className="text-[24px] font-bold text-center">출금요청 내역</div>
+      <div className="text-[24px] font-bold text-center">충전요청 내역</div>
       <div className="bg-[#e9edf9] border border-[#c9cfe1] rounded-lg p-5 flex flex-col gap-3">
         <div className="flex justify-between items-center">
-          <div>출금 액수</div>
+          <div>충전 비용</div>
           <div className="font-bold text-[18px]">
-            {data.amount.toLocaleString()} P
+            {data.money.toLocaleString()} 원
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <div>입금 받을 계좌 정보</div>
+          <div>충전 캐시</div>
+          <div className="font-bold">{data.amount.toLocaleString()} 캐시</div>
+        </div>
+        <div className="flex justify-between items-center">
+          <div>입금 계좌 정보</div>
           <div className="font-bold">
             {`${data.account.bank} / ${data.account.accountNumber} / ${data.account.depositor}`}
           </div>
@@ -61,11 +66,7 @@ export default function PointWithdrawalDetailsModal({ idx }: { idx: string }) {
       <div className="flex flex-col gap-3 pb-2">
         <div className="bg-[#e9edf9] flex gap-3 items-center p-4 text-[13px]">
           <FaExclamationCircle className="text-[20px] text-[#4f66af]" />{" "}
-          ‘주식회사 퍼플페퍼’ 이름으로 입금 될 예정입니다.
-        </div>
-        <div className="bg-[#e9edf9] flex gap-3 items-center p-4 text-[13px]">
-          <FaExclamationCircle className="text-[20px] text-[#4f66af]" />{" "}
-          출금요청 후 6시간 내에 처리되지 않으면 자동 거절됩니다.
+          충전요청 후 6시간 내에 처리되지 않으면 자동 거절됩니다.
         </div>
       </div>
     </div>

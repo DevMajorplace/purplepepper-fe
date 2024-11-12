@@ -2,10 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useStore } from "zustand";
 
 import Input from "@/components/Input";
-import { useUser } from "@/stores/auth.store";
 
 const BANK_LIST = [
   "KEB하나은행",
@@ -32,10 +30,7 @@ const BANK_LIST = [
   "푸른저축은행",
 ];
 
-export default function SettingForm({ type }: SettingFormProps) {
-  const user = useStore(useUser, (state) => {
-    return state.user;
-  });
+export default function SettingForm({ type, user }: SettingFormProps) {
   const [member, setMember] = useState<member>({
     company: "",
     id: "",
@@ -135,11 +130,7 @@ export default function SettingForm({ type }: SettingFormProps) {
             htmlFor={"id"}
             label={type === "agency" ? "총판 ID" : "광고주 ID"}
             name={"id"}
-            placeholder={
-              type === "agency"
-                ? "총판 ID를 입력해주세요."
-                : "광고주 ID를 입력해주세요."
-            }
+            readOnly={true}
             type={"text"}
             value={member?.id}
             onChange={(e) => handleChange(e)}

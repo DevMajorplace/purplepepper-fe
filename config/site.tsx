@@ -126,6 +126,24 @@ export const siteConfig = {
       ],
     },
     {
+      label: "캐시 관리",
+      href: "/cash",
+      icon: <PiDatabase className="w-full h-full" />,
+      show: [2],
+      sub: [
+        {
+          label: "이용 내역",
+          href: "/cash/usage",
+          show: [2],
+        },
+        {
+          label: "충전 내역",
+          href: "/cash/charge",
+          show: [2],
+        },
+      ],
+    },
+    {
       label: "포인트 관리",
       href: "/point",
       icon: <PiDatabase className="w-full h-full" />,
@@ -233,11 +251,19 @@ export const siteConfig = {
       href: "/affiliate",
     },
     {
-      label: "포인트 출금 내역",
+      label: "이용 내역",
+      href: "/cash/usage",
+    },
+    {
+      label: "충전 내역",
+      href: "/cash/charge",
+    },
+    {
+      label: "출금 내역",
       href: "/point/withdrawal",
     },
     {
-      label: "포인트 적립 내역",
+      label: "적립 내역",
       href: "/point/earn",
     },
     {

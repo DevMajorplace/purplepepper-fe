@@ -11,6 +11,7 @@ export default function Input({
   className = "",
   value,
   required = false,
+  readOnly = false,
   onChange,
 }: InputProps) {
   return (
@@ -30,6 +31,7 @@ export default function Input({
         id={htmlFor}
         name={name}
         placeholder={placeholder}
+        readOnly={readOnly}
         required={required}
         type={type}
         value={value}

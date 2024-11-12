@@ -34,6 +34,7 @@ declare global {
     value?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     required?: boolean;
+    readOnly?: boolean;
   }
   // CalendarInput
   type ValuePiece = Date | null;
@@ -304,7 +305,7 @@ declare global {
   type member = {
     company: string;
     id: string;
-    password: string;
+    password?: string;
     name: string;
     phone: string;
     account?: {
@@ -316,5 +317,6 @@ declare global {
   };
   interface SettingFormProps {
     type: string;
+    user: member;
   }
 }

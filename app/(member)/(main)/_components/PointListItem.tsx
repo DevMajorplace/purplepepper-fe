@@ -27,7 +27,7 @@ export default function PointListItem({
         {type && (
           <div className="flex items-center">
             <div
-              className={`px-4 py-[10px] rounded-md ${type === "거절" ? "bg-[#fef2f2] text-[#ef4444]" : "bg-[#f0fdf4] text-[#16a34a]"}`}
+              className={`px-4 py-[10px] rounded-md ${type === "거절" ? "bg-[#fef2f2] text-[#ef4444]" : type === "대기" ? "bg-gray-400/20 text-gray-700" : "bg-[#f0fdf4] text-[#16a34a]"}`}
             >
               {type}
             </div>
@@ -46,9 +46,10 @@ export default function PointListItem({
         </div>
       </div>
       <div
-        className={`text-2xl font-bold ${type && type === "거절" ? "text-[#ef4444]" : "text-[#16a34a]"}`}
+        className={`text-2xl font-bold ${type && type === "거절" ? "text-[#ef4444]" : type === "대기" ? "text-gray-700" : "text-[#16a34a]"}`}
       >
-        {type === "거절" ? "" : "+"} {point.toLocaleString()}P
+        {type === "거절" || type === "대기" ? "" : "+"} {point.toLocaleString()}
+        P
       </div>
     </div>
   );
