@@ -5,7 +5,14 @@ export const config = {
 };
 
 // 로그인 이후 접근 불가 페이지
-const publicRoutes = ["/login", "/register", "/find-password"];
+const publicRoutes = [
+  "/login",
+  "/register",
+  "/find-password",
+  "/find-password/failure",
+  "/change-password",
+  "/change-password/result",
+];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("token");

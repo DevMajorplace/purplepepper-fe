@@ -74,22 +74,38 @@ export default function Login() {
     <FormWrap title="로그인">
       <form onSubmit={(e) => handleSubmit(e)}>
         <FormPart>
-          <InputWrap
-            label={"아이디"}
-            name={"id"}
-            placeholder={"아이디를 입력해주세요."}
-            type={"text"}
-            value={login.id}
-            onChange={handleInput}
-          />
-          <InputWrap
-            label={"비밀번호"}
-            name={"password"}
-            placeholder={"비밀번홀르 입력해주세요."}
-            type={"password"}
-            value={login.password}
-            onChange={handleInput}
-          />
+          <div className="relative mb-2">
+            <InputWrap
+              label={"아이디"}
+              name={"id"}
+              placeholder={"아이디를 입력해주세요."}
+              type={"text"}
+              value={login.id}
+              onChange={handleInput}
+            />
+            <Link
+              className="cursor-pointer text-[#666] absolute right-0 top-0 underline"
+              href={"/find-id"}
+            >
+              아이디를 잊으셨나요?
+            </Link>
+          </div>
+          <div className="relative mb-2">
+            <InputWrap
+              label={"비밀번호"}
+              name={"password"}
+              placeholder={"비밀번홀르 입력해주세요."}
+              type={"password"}
+              value={login.password}
+              onChange={handleInput}
+            />
+            <Link
+              className="cursor-pointer text-[#666] absolute right-0 top-0 underline"
+              href={"/find-password"}
+            >
+              비밀번호를 잊으셨나요?
+            </Link>
+          </div>
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <input
@@ -101,12 +117,6 @@ export default function Login() {
               />
               <label htmlFor="isRemember">로그인 상태 유지</label>
             </div>
-            <Link
-              className="cursor-pointer text-[13px] text-[#666]"
-              href={"/find-password"}
-            >
-              비밀번호를 잊으셨나요?
-            </Link>
           </div>
           <div className="mt-6 flex flex-col gap-2">
             <button
