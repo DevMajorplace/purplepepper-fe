@@ -58,7 +58,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
 
   return (
     <div
-      className={`duration-175 w-[280px] linear fixed !z-50 flex min-h-full flex-col bg-white p-5 shadow-2xl shadow-white/5 transition-all border-r border-navy-400/20 dark:!bg-navy-800 dark:text-white ${
+      className={`duration-175 w-[240px] linear fixed !z-50 flex min-h-full flex-col bg-white p-5 shadow-2xl shadow-white/5 transition-all border-r border-navy-400/20 dark:!bg-navy-800 dark:text-white ${
         open ? "translate-x-0" : "-translate-x-96 xl:translate-x-0"
       }`}
     >

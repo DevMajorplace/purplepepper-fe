@@ -40,7 +40,7 @@ export default function MainLayout({
       <div className="h-full w-full dark:bg-navy-900">
         {/* Main Content */}
         <main
-          className={`mx-2.5 flex-none transition-all dark:bg-navy-900 md:pr-2 xl:ml-[290px]`}
+          className={`mx-2.5 flex-none transition-all dark:bg-navy-900 md:pr-2 xl:ml-[240px]`}
         >
           {/* Routes */}
           <Navbar brandText={label} />

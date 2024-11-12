@@ -10,7 +10,7 @@ import MyRanking from "./MyRanking";
 import Card from "@/components/card";
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
-export default function DistributorDashboard() {
+export default function AgencyDashboard() {
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
 
