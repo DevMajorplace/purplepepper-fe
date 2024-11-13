@@ -127,6 +127,14 @@ declare global {
     listType?: string;
   }
 
+  // 조직도 트리 아이템
+  interface TreeItemProps {
+    label: string;
+    id: string;
+    clients?: TreeItemProps[];
+    depth: number;
+  }
+
   // dashboard
   interface CardTitleProps {
     title: string;

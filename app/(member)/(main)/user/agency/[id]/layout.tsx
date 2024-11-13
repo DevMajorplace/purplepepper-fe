@@ -14,7 +14,7 @@ export default function AgencyLayout({
 }) {
   const params = useParams();
   const pathname = usePathname();
-  const id = Number(params.id);
+  const id = params.id;
 
   const TABS = [
     {
@@ -42,7 +42,7 @@ export default function AgencyLayout({
   return (
     <Card className="min-h-[87vh] gap-5">
       <UserDetailTab tabs={TABS} />
-      <IdProvider id={id}>{children}</IdProvider>
+      <IdProvider id={id as string}>{children}</IdProvider>
     </Card>
   );
 }

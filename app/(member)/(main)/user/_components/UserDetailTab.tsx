@@ -30,6 +30,20 @@ export default function UserDetailTab({
                 </div>
               </Link>
             );
+          } else if (user.level === 10) {
+            return (
+              <Link
+                key={index}
+                className="*:h-[34px] *:px-5 *:rounded-md *:flex *:items-center *:cursor-pointer"
+                href={tab.link}
+              >
+                <div
+                  className={`${tab.on ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
+                >
+                  {tab.name}
+                </div>
+              </Link>
+            );
           }
         })}
       </div>
