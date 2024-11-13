@@ -74,7 +74,7 @@ export default function Login() {
     <FormWrap title="로그인">
       <form onSubmit={(e) => handleSubmit(e)}>
         <FormPart>
-          <div className="relative mb-2">
+          <div className="relative mb-1">
             <InputWrap
               label={"아이디"}
               name={"id"}

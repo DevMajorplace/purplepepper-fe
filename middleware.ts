@@ -12,6 +12,9 @@ const publicRoutes = [
   "/find-password/failure",
   "/change-password",
   "/change-password/result",
+  "/find-id",
+  "/find-id/failure",
+  "/find-id/success",
 ];
 
 export function middleware(request: NextRequest) {
