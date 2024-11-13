@@ -86,6 +86,7 @@ export default function Login() {
             <Link
               className="cursor-pointer text-[#666] absolute right-0 top-0 underline"
               href={"/find-id"}
+              tabIndex={-1}
             >
               아이디를 잊으셨나요?
             </Link>
@@ -102,6 +103,7 @@ export default function Login() {
             <Link
               className="cursor-pointer text-[#666] absolute right-0 top-0 underline"
               href={"/find-password"}
+              tabIndex={-1}
             >
               비밀번호를 잊으셨나요?
             </Link>

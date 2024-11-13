@@ -6,6 +6,7 @@ export default function InputWrap({
   required = true,
   className = "",
   value,
+  tabIndex,
   onChange,
 }: InputWrapProps) {
   return (
@@ -19,6 +20,7 @@ export default function InputWrap({
         name={name}
         placeholder={placeholder}
         required={required}
+        tabIndex={tabIndex}
         type={type}
         value={value}
         onChange={(e) => onChange(e)}

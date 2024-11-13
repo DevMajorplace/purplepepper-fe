@@ -297,6 +297,7 @@ declare global {
     placeholder: string;
     required?: boolean;
     className?: string;
+    tabIndex?: number;
     onChange(e: any): void;
   }
 
