@@ -76,7 +76,17 @@ export const siteConfig = {
       sub: [
         {
           label: "상품 목록",
-          href: "/product",
+          href: "/product/list",
+          show: [10],
+        },
+        {
+          label: "브라우저 유입 경로 목록",
+          href: "/product/browser-inflow",
+          show: [10],
+        },
+        {
+          label: "템플릿 목록",
+          href: "/product/templete",
           show: [10],
         },
       ],
@@ -231,8 +241,16 @@ export const siteConfig = {
       href: "/mission/list",
     },
     {
+      label: "템플릿 목록",
+      href: "/product/templete",
+    },
+    {
+      label: "브라우저 유입 경로 목록",
+      href: "/product/browser-inflow",
+    },
+    {
       label: "상품 목록",
-      href: "/product",
+      href: "/product/list",
     },
     {
       label: "미션별 포인트",

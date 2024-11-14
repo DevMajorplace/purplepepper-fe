@@ -16,7 +16,7 @@ import { TbCubePlus } from "react-icons/tb";
 import { RiRefreshLine } from "react-icons/ri";
 import Link from "next/link";
 
-import AffiliateListModal from "./_components/AffiliateListModal";
+import AffiliateListModal from "../_components/AffiliateListModal";
 
 import Pages from "@/components/Pages";
 import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";

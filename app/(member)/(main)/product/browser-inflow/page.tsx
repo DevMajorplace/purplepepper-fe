@@ -24,58 +24,44 @@ import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
 import useCustomParams from "@/hooks/useCustomParams";
 
 type RowObj = {
-  chk: ReactElement;
-  id: string; // 회원아이디
-  company: string; // 업체명
-  cash: number; // 보유 캐시
-  point: number; // 보유 포인트
-  name: string; // 담당자명
-  phone: string; // 담당자 연락처
+  idx: string; // IDX
+  name: string; // 브라우저 유입 경로명
+  appName: string; // 실행할 앱 이름
+  type: string; // 경로 실행 타입
+  uriScheme: string; // URI Scheme
+  appLink: string; // 앱링크(안드로이드)
+  universalLink: string; // 유니버셜링크(아이폰)
+  isUse: boolean; // 사용여부
   createdAt: string; // 등록일
-  lastLogin: string; // 마지막 로그인
-  manage: ReactElement; // 상세보기
+  manage: ReactElement; // 수정하기
 };
 
 const columnHelper = createColumnHelper<RowObj>();
 
 const DEFAULT_DATA = [
   {
-    id: "회원아이디1", // 회원아이디
-    company: "업체명", // 업체명
-    cash: 100000, // 보유 캐시
-    point: 200, // 보유 포인트
-    name: "홍길동", // 담당자명
-    phone: "010-1234-5678", // 담당자 연락처
+    idx: "idx", // IDX
+    name: "브라우저 유입 경로명", // 브라우저 유입 경로명
+    appName: "실행할 앱 이름", // 실행할 앱 이름
+    type: "경로 실행 타입", // 경로 실행 타입
+    uriScheme: "URI Scheme", // URI Scheme
+    appLink: "앱링크", // 앱링크(안드로이드)
+    universalLink: "유니버셜링크", // 유니버셜링크(아이폰)
+    isUse: true, // 사용여부
     createdAt: "2024-10-21", // 등록일
-    lastLogin: "2024-10-21", // 마지막 로그인
-  },
-  {
-    id: "회원아이디2", // 회원아이디
-    company: "업체명", // 업체명
-    cash: 100000, // 보유 캐시
-    point: 200, // 보유 포인트
-    name: "홍길동", // 담당자명
-    phone: "010-1234-5678", // 담당자 연락처
-    createdAt: "2024-10-21", // 등록일
-    lastLogin: "2024-10-21", // 마지막 로그인
   },
 ];
 const DEFAULT_FILTER = {
-  type: "id",
+  type: "idx",
   keyword: "",
   show: false,
 };
 const DEFAULT_DATE = { start: null, end: null };
 const PAGE_RANGE = 5;
 
-export default function ClientListPage() {
+export default function ProductBrowserInflow() {
   const [data, setData] = useState(DEFAULT_DATA);
-  const [chk, setChk] = useState<string[]>([]);
   const [createdAt, setCreatedAt] = useState<{
-    start: string | null;
-    end: string | null;
-  }>(DEFAULT_DATE);
-  const [lastLogin, setLastLogin] = useState<{
     start: string | null;
     end: string | null;
   }>(DEFAULT_DATE);
@@ -95,8 +81,6 @@ export default function ClientListPage() {
     const crrpage = getCustomParams("page");
     const cStart = getCustomParams("cStart");
     const cEnd = getCustomParams("cEnd");
-    const lStart = getCustomParams("lStart");
-    const lEnd = getCustomParams("lEnd");
     const type = getCustomParams("type");
     const keyword = getCustomParams("keyword");
 
@@ -105,14 +89,6 @@ export default function ClientListPage() {
       setCreatedAt({
         start: cStart,
         end: cEnd,
-      });
-    }
-
-    // 마지막 로그인 Params가 있으면
-    if (lStart && lEnd) {
-      setLastLogin({
-        start: lStart,
-        end: lEnd,
       });
     }
 
@@ -140,8 +116,6 @@ export default function ClientListPage() {
     getCustomParams("page"),
     getCustomParams("cStart"),
     getCustomParams("cEnd"),
-    getCustomParams("lStart"),
-    getCustomParams("lEnd"),
     getCustomParams("type"),
     getCustomParams("keyword"),
     startPage,
@@ -152,92 +126,54 @@ export default function ClientListPage() {
     //console.log(type);
   };
 
-  // 전체 체크 박스 클릭
-  const handleAllChkChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-
-    if (checked) {
-      setChk(data.map((item) => item.id));
-    } else {
-      setChk([]);
-    }
-  };
-
-  // 개별 체크 박스 클릭
-  const handleChkChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    // eslint-disable-next-line prettier/prettier
-    target: string
-  ) => {
-    const checked = e.target.checked;
-
-    if (checked) {
-      setChk([...chk, target]);
-    } else {
-      setChk(chk.filter((item) => item !== target));
-    }
-  };
-
   const COLUMNS = [
-    columnHelper.accessor("chk", {
-      id: "chk",
-      header: () => (
-        <input
-          checked={chk.length === data.length}
-          name="allChk"
-          type="checkbox"
-          onChange={(e) => handleAllChkChange(e)}
-        />
-      ),
-      cell: (info) => {
-        const id = info.row.original.id;
-
-        return (
-          <input
-            checked={chk.includes(id)}
-            name="chk"
-            type="checkbox"
-            onChange={(e) => handleChkChange(e, id)}
-          />
-        );
-      },
-    }),
-    columnHelper.accessor("id", {
-      id: "id",
-      header: () => <TableTh text="아이디" onSort={() => handleSort("id")} />,
+    columnHelper.accessor("idx", {
+      id: "idx",
+      header: () => <TableTh text="IDX" onSort={() => handleSort("idx")} />,
       cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("company", {
-      id: "company",
-      header: () => (
-        <TableTh text="업체명" onSort={() => handleSort("company")} />
-      ),
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("cash", {
-      id: "cash",
-      header: () => (
-        <TableTh text="보유 캐시" onSort={() => handleSort("cash")} />
-      ),
-      cell: (info) => `${info.getValue().toLocaleString()} 원`,
-    }),
-    columnHelper.accessor("point", {
-      id: "point",
-      header: () => (
-        <TableTh text="보유 포인트" onSort={() => handleSort("point")} />
-      ),
-      cell: (info) => `${info.getValue().toLocaleString()} P`,
     }),
     columnHelper.accessor("name", {
       id: "name",
       header: () => (
-        <TableTh text="담당자명" onSort={() => handleSort("name")} />
+        <TableTh
+          text="브라우저 유입 경로명"
+          onSort={() => handleSort("name")}
+        />
       ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("phone", {
-      id: "phone",
-      header: () => <TableTh text="담당자 연락처" />,
+    columnHelper.accessor("appName", {
+      id: "appName",
+      header: () => (
+        <TableTh text="실행할 앱 이름" onSort={() => handleSort("appName")} />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("type", {
+      id: "type",
+      header: () => (
+        <TableTh text="경로 실행 타입" onSort={() => handleSort("type")} />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("appLink", {
+      id: "appLink",
+      header: () => (
+        <TableTh
+          text="앱링크(안드로이드)"
+          onSort={() => handleSort("appLink")}
+        />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("universalLink", {
+      id: "universalLink",
+      header: () => (
+        <TableTh
+          text="유니버셜링크(아이폰)"
+          onSort={() => handleSort("universalLink")}
+        />
+      ),
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("createdAt", {
@@ -247,21 +183,21 @@ export default function ClientListPage() {
       ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("lastLogin", {
-      id: "lastLogin",
+    columnHelper.accessor("isUse", {
+      id: "isUse",
       header: () => (
-        <TableTh text="마지막 로그인" onSort={() => handleSort("lastLogin")} />
+        <TableTh text="사용여부" onSort={() => handleSort("isUse")} />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => (info.getValue() ? "사용" : "사용안함"),
     }),
     columnHelper.accessor("manage", {
       id: "manage",
       header: () => <TableTh className="text-center" text="상세 보기" />,
       cell: (info) => (
         <div className="flex justify-center items-center">
-          <Link href={`/user/client/${info.row.original.id}`}>
+          <Link href={`/product/browser-inflow/${info.row.original.idx}`}>
             <button className="border border-[#ccc] rounded-md px-4 py-2">
-              상세페이지 이동
+              수정하기
             </button>
           </Link>
         </div>
@@ -281,20 +217,6 @@ export default function ClientListPage() {
       });
       setCustomParams(["cStart", "cEnd", "page"], [start, end, "1"]);
       //console.log(pathname);
-    }
-  };
-
-  // 마지막 로그인으로 검색
-  const handleLastLoginChange = (value: Value) => {
-    if (Array.isArray(value)) {
-      const start = dateFormat(value[0], "day", "-");
-      const end = dateFormat(value[1], "day", "-");
-
-      setLastLogin({
-        start,
-        end,
-      });
-      setCustomParams(["lStart", "lEnd", "page"], [start, end, "1"]);
     }
   };
 
@@ -350,18 +272,9 @@ export default function ClientListPage() {
     setSearch(DEFAULT_FILTER);
     // 발생시점 검색 초기화
     setCreatedAt(DEFAULT_DATE);
-    // 마지막 로그인 검색 초기화
-    setLastLogin(DEFAULT_DATE);
 
     // 1페이지로 이동 후 params 초기화
-    setCustomParams("page", "1", [
-      "type",
-      "keyword",
-      "lStart",
-      "lEnd",
-      "cStart",
-      "cEnd",
-    ]);
+    setCustomParams("page", "1", ["type", "keyword", "cStart", "cEnd"]);
   };
 
   return (
@@ -369,7 +282,11 @@ export default function ClientListPage() {
       <div className="w-full h-full scroll-bar flex flex-col gap-5">
         <div className="flex justify-between items-end">
           <div className="text-lg font-bold">
-            광고주 등록 수 : {total.toLocaleString()}명
+            브라우저 유입 경로 수 : {total.toLocaleString()}개
+            <p className="text-sm text-[#888]">
+              미션 랜딩 페이지에서 특정 버튼을 누르면 실행되는
+              브라우저(앱)입니다.
+            </p>
           </div>
           <div className="flex gap-3">
             <CalendarInput
@@ -380,15 +297,6 @@ export default function ClientListPage() {
               startDate={createdAt.start ? createdAt.start : ""}
               width="w-64"
               onChange={(value) => handleCreatedAtChange(value)}
-            />
-            <CalendarInput
-              endDate={lastLogin.end ? lastLogin.end : ""}
-              placeholder="마지막 로그인 검색"
-              range={true}
-              required={true}
-              startDate={lastLogin.start ? lastLogin.start : ""}
-              width="w-64"
-              onChange={(value) => handleLastLoginChange(value)}
             />
             <div
               className={`border border-[#ccc] rounded-md flex items-center cursor-pointer`}
@@ -407,11 +315,10 @@ export default function ClientListPage() {
                     value={search.type}
                     onChange={(e) => handleSelect(e)}
                   >
-                    <option value="id">아이디</option>
-                    <option value="name">대표자명</option>
-                    <option value="phone">대표자 연락처</option>
-                    <option value="managerName">담당자명</option>
-                    <option value="managerPhone">담당자 연락처</option>
+                    <option value="idx">IDX</option>
+                    <option value="name">브라우저 유입 경로명</option>
+                    <option value="appName">실행할 앱 이름</option>
+                    <option value="type">경로 실행 타입</option>
                   </select>
                   <input
                     ref={searchRef}
