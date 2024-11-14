@@ -136,7 +136,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                         {item.label}
                       </p>
                     </div>
-                    <div className="hidden flex-col px-12 gap-2 group-[.open]:flex">
+                    <div className="hidden flex-col pl-12 gap-2 group-[.open]:flex">
                       {item.sub.map((sub, index) => {
                         if (sub.show && sub.show.includes(userLevel)) {
                           return (
