@@ -266,6 +266,71 @@ declare global {
   }
 
   // 미션 관리
+  // 미션 통계
+  interface StatisticsData {
+    idx: string;
+    recommnedIdx?: string;
+    recommnedName?: string;
+    affiliateIdx?: string;
+    affiliateName?: string;
+    missionIdx: string;
+    missionName: string;
+    clientIdx?: string;
+    clientName?: string;
+    landingCount: number;
+    participationCount: number;
+    participationDate: string;
+  }
+  interface ClientStatisticsProps {
+    data: StatisticsData[];
+    chk: string[];
+    handleAllChkChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    handleChkChange: (e: ChangeEvent<HTMLInputElement>, target: string) => void;
+    handleSort: (type: string) => void;
+  }
+  interface AdminStatisticsProps {
+    data: StatisticsData[];
+    chk: string[];
+    handleAllChkChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    handleChkChange: (e: ChangeEvent<HTMLInputElement>, target: string) => void;
+    handleSort: (type: string) => void;
+  }
+  // 미션 참여자 내역
+  interface MissionData {
+    idx: string;
+    affiliateIdx: string;
+    affiliateName: string;
+    adid: string;
+    clientIdx: string;
+    clientName: string;
+    missionIdx: string;
+    missionName: string;
+    missionType: {
+      major: string;
+      middle: string;
+      small: string;
+    };
+    userInputValue: string;
+    reward: number;
+    abusing: boolean;
+    response: boolean;
+    ip: string;
+    participationDate: string;
+  }
+  interface ClientMissionProps {
+    data: MissionData[];
+    chk: string[];
+    handleAllChkChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    handleChkChange: (e: ChangeEvent<HTMLInputElement>, target: string) => void;
+    handleSort: (type: string) => void;
+  }
+  interface AdminMissionProps {
+    data: MissionData[];
+    chk: string[];
+    handleAllChkChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    handleChkChange: (e: ChangeEvent<HTMLInputElement>, target: string) => void;
+    handleSort: (type: string) => void;
+  }
   // 미션 분류 관리
   // 미션 분류 수정 모달
   interface MissionTypeEditModalProps {

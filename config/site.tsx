@@ -44,7 +44,7 @@ export const siteConfig = {
       label: "미션 관리",
       href: "/mission",
       icon: <LuGoal className="w-full h-full" />,
-      show: [10],
+      show: [10, 2],
       sub: [
         {
           label: "미션 목록",
@@ -54,12 +54,12 @@ export const siteConfig = {
         {
           label: "미션 통계",
           href: "/mission/statistics",
-          show: [10],
+          show: [10, 2],
         },
         {
           label: "미션 참여자 내역",
           href: "/mission/participant",
-          show: [10],
+          show: [10, 2],
         },
         {
           label: "미션 분류 관리",
@@ -186,6 +186,10 @@ export const siteConfig = {
     },
   ],
   navContent: [
+    {
+      label: "로그인",
+      href: "/login",
+    },
     {
       label: "홈",
       href: "/main",
