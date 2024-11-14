@@ -215,6 +215,17 @@ declare global {
     type: string;
     idUser?: idUser;
   }
+  // 총판 매출 및 광고주
+  // 목표 매출 테이블
+  interface SalesTableProps {
+    data: { target: number; sales: number }[];
+    className: string;
+  }
+  // 광고주 수 테이블
+  interface ClientTableProps {
+    data: { depth_1: number; depth_2: number; depth_3: number }[];
+    className: string;
+  }
 
   // 광고주 client
   type client = {
