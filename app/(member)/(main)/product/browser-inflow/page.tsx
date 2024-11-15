@@ -11,7 +11,7 @@ import {
 } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { IoIosSearch, IoIosClose } from "react-icons/io";
-import { PiDownloadSimple } from "react-icons/pi";
+import { PiPlusBold } from "react-icons/pi";
 import { RiRefreshLine } from "react-icons/ri";
 import Link from "next/link";
 
@@ -22,6 +22,7 @@ import Card from "@/components/card";
 import Pages from "@/components/Pages";
 import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
 import useCustomParams from "@/hooks/useCustomParams";
+import { usePathname } from "next/navigation";
 
 type RowObj = {
   idx: string; // IDX
@@ -40,13 +41,24 @@ const columnHelper = createColumnHelper<RowObj>();
 
 const DEFAULT_DATA = [
   {
-    idx: "idx", // IDX
+    idx: "idx1", // IDX
     name: "브라우저 유입 경로명", // 브라우저 유입 경로명
     appName: "실행할 앱 이름", // 실행할 앱 이름
-    type: "경로 실행 타입", // 경로 실행 타입
+    type: "1. 지정된 앱 실행 및 미설치 시 설치 유도", // 경로 실행 타입
     uriScheme: "URI Scheme", // URI Scheme
     appLink: "앱링크", // 앱링크(안드로이드)
     universalLink: "유니버셜링크", // 유니버셜링크(아이폰)
+    isUse: true, // 사용여부
+    createdAt: "2024-10-21", // 등록일
+  },
+  {
+    idx: "idx2", // IDX
+    name: "브라우저 유입 경로명", // 브라우저 유입 경로명
+    appName: "", // 실행할 앱 이름
+    type: "3. 기존 브라우저 실행", // 경로 실행 타입
+    uriScheme: "", // URI Scheme
+    appLink: "", // 앱링크(안드로이드)
+    universalLink: "", // 유니버셜링크(아이폰)
     isUse: true, // 사용여부
     createdAt: "2024-10-21", // 등록일
   },
@@ -76,6 +88,7 @@ export default function ProductBrowserInflow() {
   const searchRef = useRef<HTMLInputElement>(null);
   const { getCustomParams, setCustomParams, createQueryString } =
     useCustomParams();
+  const pathname = usePathname();
 
   useEffect(() => {
     const crrpage = getCustomParams("page");
@@ -142,17 +155,17 @@ export default function ProductBrowserInflow() {
       ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("appName", {
-      id: "appName",
-      header: () => (
-        <TableTh text="실행할 앱 이름" onSort={() => handleSort("appName")} />
-      ),
-      cell: (info) => info.getValue(),
-    }),
     columnHelper.accessor("type", {
       id: "type",
       header: () => (
         <TableTh text="경로 실행 타입" onSort={() => handleSort("type")} />
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("appName", {
+      id: "appName",
+      header: () => (
+        <TableTh text="실행할 앱 이름" onSort={() => handleSort("appName")} />
       ),
       cell: (info) => info.getValue(),
     }),
@@ -195,7 +208,9 @@ export default function ProductBrowserInflow() {
       header: () => <TableTh className="text-center" text="상세 보기" />,
       cell: (info) => (
         <div className="flex justify-center items-center">
-          <Link href={`/product/browser-inflow/${info.row.original.idx}`}>
+          <Link
+            href={`/product/browser-inflow/add?idx=${info.row.original.idx}`}
+          >
             <button className="border border-[#ccc] rounded-md px-4 py-2">
               수정하기
             </button>
@@ -347,10 +362,11 @@ export default function ProductBrowserInflow() {
             >
               <RiRefreshLine className="text-[18px] pt-[1px]" /> 필터 초기화
             </div>
-            <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
-              <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
-              다운로드
-            </div>
+            <Link href={`${pathname}/add`}>
+              <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
+                <PiPlusBold className="text-[18px] pt-[1px]" /> 새 경로 추가
+              </div>
+            </Link>
           </div>
         </div>
         <Table

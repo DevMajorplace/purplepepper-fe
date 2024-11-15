@@ -353,6 +353,24 @@ declare global {
     };
   }
 
+  // 상품 관리
+  // 브라우저 유입 폼
+  interface browserInflow {
+    idx: string;
+    name: string;
+    type: number;
+    isUse: boolean;
+    appName?: string;
+    uriScheme?: string;
+    appLink?: string;
+    universalLink?: string;
+    memo?: string;
+  }
+  interface BrowserInflowFormProps {
+    type: string;
+    idx?: string;
+  }
+
   // 입출금 관리
   // 입출금 승인 모달
   interface MoneyChkModalProps {
