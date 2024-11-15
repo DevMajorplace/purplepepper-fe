@@ -86,7 +86,7 @@ export const siteConfig = {
         },
         {
           label: "템플릿 목록",
-          href: "/product/templete",
+          href: "/product/template",
           show: [10],
         },
       ],
@@ -242,7 +242,7 @@ export const siteConfig = {
     },
     {
       label: "템플릿 목록",
-      href: "/product/templete",
+      href: "/product/template",
     },
     {
       label: "브라우저 유입 경로 목록",

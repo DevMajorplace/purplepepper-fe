@@ -26,14 +26,12 @@ import { usePathname } from "next/navigation";
 
 type RowObj = {
   idx: string; // IDX
-  name: string; // 브라우저 유입 경로명
-  appName: string; // 실행할 앱 이름
-  type: string; // 경로 실행 타입
-  uriScheme: string; // URI Scheme
-  appLink: string; // 앱링크(안드로이드)
-  universalLink: string; // 유니버셜링크(아이폰)
-  isUse: boolean; // 사용여부
-  createdAt: string; // 등록일
+  name: string; // 템플릿명
+  typeIdx: string; // 연결 소분류 IDX
+  typeName: string; // 연결 소분류명
+  landingCount: number; // 랜딩 카운트
+  participationCount: number; // 참여 카운트
+  link: string; // 접속 링크
   manage: ReactElement; // 수정하기
 };
 
@@ -42,25 +40,21 @@ const columnHelper = createColumnHelper<RowObj>();
 const DEFAULT_DATA = [
   {
     idx: "idx1", // IDX
-    name: "브라우저 유입 경로명", // 브라우저 유입 경로명
-    appName: "실행할 앱 이름", // 실행할 앱 이름
-    type: "1. 지정된 앱 실행 및 미설치 시 설치 유도", // 경로 실행 타입
-    uriScheme: "URI Scheme", // URI Scheme
-    appLink: "앱링크", // 앱링크(안드로이드)
-    universalLink: "유니버셜링크", // 유니버셜링크(아이폰)
-    isUse: true, // 사용여부
-    createdAt: "2024-10-21", // 등록일
+    name: "템플릿명", // 템플릿명
+    typeIdx: "연결 소분류 IDX", // 연결 소분류 IDX
+    typeName: "연결 소분류명", // 연결 소분류명
+    landingCount: 100, // 랜딩 카운트
+    participationCount: 100, // 참여 카운트
+    link: "접속링크", // 접속 링크
   },
   {
     idx: "idx2", // IDX
-    name: "브라우저 유입 경로명", // 브라우저 유입 경로명
-    appName: "", // 실행할 앱 이름
-    type: "3. 기존 브라우저 실행", // 경로 실행 타입
-    uriScheme: "", // URI Scheme
-    appLink: "", // 앱링크(안드로이드)
-    universalLink: "", // 유니버셜링크(아이폰)
-    isUse: true, // 사용여부
-    createdAt: "2024-10-21", // 등록일
+    name: "템플릿명", // 템플릿명
+    typeIdx: "연결 소분류 IDX", // 연결 소분류 IDX
+    typeName: "연결 소분류명", // 연결 소분류명
+    landingCount: 100, // 랜딩 카운트
+    participationCount: 100, // 참여 카운트
+    link: "접속링크", // 접속 링크
   },
 ];
 const DEFAULT_FILTER = {
@@ -68,15 +62,10 @@ const DEFAULT_FILTER = {
   keyword: "",
   show: false,
 };
-const DEFAULT_DATE = { start: null, end: null };
 const PAGE_RANGE = 5;
 
-export default function ProductBrowserInflow() {
+export default function ProductTemplate() {
   const [data, setData] = useState(DEFAULT_DATA);
-  const [createdAt, setCreatedAt] = useState<{
-    start: string | null;
-    end: string | null;
-  }>(DEFAULT_DATE);
   const [search, setSearch] = useState<{
     type: string;
     keyword: string;
@@ -92,18 +81,8 @@ export default function ProductBrowserInflow() {
 
   useEffect(() => {
     const crrpage = getCustomParams("page");
-    const cStart = getCustomParams("cStart");
-    const cEnd = getCustomParams("cEnd");
     const type = getCustomParams("type");
     const keyword = getCustomParams("keyword");
-
-    // 등록일 Params가 있으면
-    if (cStart && cEnd) {
-      setCreatedAt({
-        start: cStart,
-        end: cEnd,
-      });
-    }
 
     // 검색 타입, 키워드 Params가 있으면
     if (type && keyword) {
@@ -127,8 +106,6 @@ export default function ProductBrowserInflow() {
     }
   }, [
     getCustomParams("page"),
-    getCustomParams("cStart"),
-    getCustomParams("cEnd"),
     getCustomParams("type"),
     getCustomParams("keyword"),
     startPage,
@@ -148,67 +125,54 @@ export default function ProductBrowserInflow() {
     columnHelper.accessor("name", {
       id: "name",
       header: () => (
-        <TableTh
-          text="브라우저 유입 경로명"
-          onSort={() => handleSort("name")}
-        />
+        <TableTh text="템플릿명" onSort={() => handleSort("name")} />
       ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("type", {
-      id: "type",
+    columnHelper.accessor("typeIdx", {
+      id: "typeIdx",
       header: () => (
-        <TableTh text="경로 실행 타입" onSort={() => handleSort("type")} />
+        <TableTh text="연결 소분류 IDX" onSort={() => handleSort("typeIdx")} />
       ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("appName", {
-      id: "appName",
+    columnHelper.accessor("typeName", {
+      id: "typeName",
       header: () => (
-        <TableTh text="실행할 앱 이름" onSort={() => handleSort("appName")} />
+        <TableTh text="연결 소분류명" onSort={() => handleSort("typeName")} />
       ),
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("appLink", {
-      id: "appLink",
+    columnHelper.accessor("landingCount", {
+      id: "landingCount",
       header: () => (
-        <TableTh
-          text="앱링크(안드로이드)"
-          onSort={() => handleSort("appLink")}
-        />
+        <TableTh text="랜딩 카운트" onSort={() => handleSort("landingCount")} />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => info.getValue().toLocaleString(),
     }),
-    columnHelper.accessor("universalLink", {
-      id: "universalLink",
+    columnHelper.accessor("participationCount", {
+      id: "participationCount",
       header: () => (
         <TableTh
-          text="유니버셜링크(아이폰)"
-          onSort={() => handleSort("universalLink")}
+          text="참여 카운트"
+          onSort={() => handleSort("participationCount")}
         />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => info.getValue().toLocaleString(),
     }),
-    columnHelper.accessor("createdAt", {
-      id: "createdAt",
+    columnHelper.accessor("link", {
+      id: "link",
       header: () => (
-        <TableTh text="등록일" onSort={() => handleSort("createdAt")} />
+        <TableTh text="접속 링크" onSort={() => handleSort("link")} />
       ),
       cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("isUse", {
-      id: "isUse",
-      header: () => (
-        <TableTh text="사용여부" onSort={() => handleSort("isUse")} />
-      ),
-      cell: (info) => (info.getValue() ? "사용" : "사용안함"),
     }),
     columnHelper.accessor("manage", {
       id: "manage",
       header: () => <TableTh className="text-center" text="상세 보기" />,
       cell: (info) => (
         <div className="flex justify-center items-center">
-          <Link href={`${pathname}/add?idx=${info.row.original.idx}`}>
+          <Link href={pathname}>
             <button className="border border-[#ccc] rounded-md px-4 py-2">
               수정하기
             </button>
@@ -217,21 +181,6 @@ export default function ProductBrowserInflow() {
       ),
     }),
   ];
-
-  // 등록일로 검색
-  const handleCreatedAtChange = (value: Value) => {
-    if (Array.isArray(value)) {
-      const start = dateFormat(value[0], "day", "-");
-      const end = dateFormat(value[1], "day", "-");
-
-      setCreatedAt({
-        start,
-        end,
-      });
-      setCustomParams(["cStart", "cEnd", "page"], [start, end, "1"]);
-      //console.log(pathname);
-    }
-  };
 
   // 검색 버튼 클릭시
   const handleSearchClick = (e: MouseEvent) => {
@@ -283,11 +232,9 @@ export default function ProductBrowserInflow() {
   const handleFilterClick = () => {
     // 검색 초기화
     setSearch(DEFAULT_FILTER);
-    // 발생시점 검색 초기화
-    setCreatedAt(DEFAULT_DATE);
 
     // 1페이지로 이동 후 params 초기화
-    setCustomParams("page", "1", ["type", "keyword", "cStart", "cEnd"]);
+    setCustomParams("page", "1", ["type", "keyword"]);
   };
 
   return (
@@ -295,22 +242,12 @@ export default function ProductBrowserInflow() {
       <div className="w-full h-full scroll-bar flex flex-col gap-5">
         <div className="flex justify-between items-end">
           <div className="text-lg font-bold">
-            브라우저 유입 경로 수 : {total.toLocaleString()}개
+            템플릿 수 : {total.toLocaleString()}개
             <p className="text-sm text-[#888]">
-              미션 랜딩 페이지에서 특정 버튼을 누르면 실행되는
-              브라우저(앱)입니다.
+              미션 참여 버튼 클릭시 노출 될 소분류별 템플릿의 목록입니다.
             </p>
           </div>
           <div className="flex gap-3">
-            <CalendarInput
-              endDate={createdAt.end ? createdAt.end : ""}
-              placeholder="등록일 검색"
-              range={true}
-              required={true}
-              startDate={createdAt.start ? createdAt.start : ""}
-              width="w-64"
-              onChange={(value) => handleCreatedAtChange(value)}
-            />
             <div
               className={`border border-[#ccc] rounded-md flex items-center cursor-pointer`}
               role="presentation"
@@ -329,9 +266,9 @@ export default function ProductBrowserInflow() {
                     onChange={(e) => handleSelect(e)}
                   >
                     <option value="idx">IDX</option>
-                    <option value="name">브라우저 유입 경로명</option>
-                    <option value="appName">실행할 앱 이름</option>
-                    <option value="type">경로 실행 타입</option>
+                    <option value="name">템플릿명</option>
+                    <option value="typeIdx">연결 소분류 IDX</option>
+                    <option value="typeName">연결 소분류명</option>
                   </select>
                   <input
                     ref={searchRef}
@@ -362,7 +299,7 @@ export default function ProductBrowserInflow() {
             </div>
             <Link href={`${pathname}/add`}>
               <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
-                <PiPlusBold className="text-[18px] pt-[1px]" /> 새 경로 추가
+                <PiPlusBold className="text-[18px] pt-[1px]" /> 새 템플릿 추가
               </div>
             </Link>
           </div>
