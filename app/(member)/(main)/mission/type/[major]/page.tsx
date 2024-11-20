@@ -14,6 +14,7 @@ import { IoIosSearch, IoIosClose, IoMdArrowBack } from "react-icons/io";
 import { RiRefreshLine } from "react-icons/ri";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { HiOutlinePlus } from "react-icons/hi2";
 
 import MissionTypeEditModal from "../_components/MissionTypeEditModal";
 import MissionTypeAddModal from "../_components/MissionTypeAddModal";
@@ -24,7 +25,6 @@ import useCustomParams from "@/hooks/useCustomParams";
 import TableTh from "@/app/(member)/(main)/_components/TableTh";
 import Table from "@/app/(member)/(main)/_components/Table";
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
-import { HiOutlinePlus } from "react-icons/hi2";
 
 type RowObj = {
   idx: string; // 체크 박스

@@ -1,5 +1,6 @@
 import { affiliate } from "@/contexts/AffiliateContext";
 import { idUser } from "@/contexts/IdContext";
+import { Dispatch } from "react";
 
 export {};
 
@@ -354,6 +355,42 @@ declare global {
   }
 
   // 상품 관리
+  // 상품 목록
+  // 상품 추가
+  interface Product {
+    name: string;
+    explanation: string;
+    thumbnail: string;
+    isDisplay: boolean;
+    startDate: string;
+    endDate: string;
+    pointRate: {
+      depth_1: number | undefined;
+      depth_2: number | undefined;
+      depth_3: number | undefined;
+    };
+    correctRate: number | undefined;
+    affiliate: string[];
+    browserInflow: string[];
+    productPrice: {
+      idx: string;
+      price: number | undefined;
+    }[];
+  }
+
+  // 검색리스트 컴포넌트
+  interface SearchListProps {
+    title: string;
+    placeholder: string;
+    info: Product;
+    setInfo: Dispatch<SetStateAction<Product>>;
+    selected: string[];
+    list: {
+      idx: string;
+      name: string;
+    }[];
+    setQuery: Dispatch<SetStateAction<string>>;
+  }
   // 브라우저 유입 폼
   interface browserInflow {
     idx: string;

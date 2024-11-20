@@ -351,7 +351,7 @@ export default function ProductList() {
       header: () => <TableTh className="text-center" text="수정" />,
       cell: (info) => (
         <div className="flex justify-center items-center">
-          <Link href={`/add/${info.row.original.idx}`}>
+          <Link href={`/product/list/add/${info.row.original.idx}`}>
             <button className="border border-[#ccc] rounded-md px-4 py-2">
               수정하기
             </button>
@@ -571,7 +571,7 @@ export default function ProductList() {
                 <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
                 다운로드
               </div>
-              <Link href={"/product/add"}>
+              <Link href={"/product/list/add"}>
                 <div className="bg-[#111] text-white rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
                   <TbCubePlus className="text-[18px] pt-[1px]" /> 상품 추가
                 </div>

@@ -3,9 +3,10 @@ import "chart.js/auto"; // ADD THIS
 import { useEffect, useRef, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 
-import CardTitle from "./CardTitle";
 import Table from "../../_components/Table";
 import TableTh from "../../_components/TableTh";
+
+import CardTitle from "./CardTitle";
 
 type RowObj = {
   date: string;
