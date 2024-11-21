@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 import InputWrap from "../_components/InputWrap";
 import FormPart from "../_components/FormPart";
@@ -24,7 +25,7 @@ export default function Login() {
   const { setUser, setIsLogin } = useUser();
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie] = useCookies(["isLogin"]);
 
   const handleInput = (e: any) => {
     const { name, value } = e.target;
@@ -40,33 +41,46 @@ export default function Login() {
     try {
       //const res = await axios.get("/dummy/admin.json");
       // zustand store에 토큰 정보 저장
-      let token = "";
+      //let token = "";
       let user = [] as any;
 
-      if (login.id === "admin") {
-        token = token;
+      if (login.id === "admin1234") {
+        //token = token;
         user = admin.user;
       } else if (login.id === "test1") {
-        token = distributor.token;
+        //token = distributor.token;
         user = distributor.user;
       } else if (login.id === "test2") {
-        token = advertiser.token;
+        //token = advertiser.token;
         user = advertiser.user;
       } else {
         return false;
       }
 
-      setToken(token);
+      const response = await axios.post(
+        "http://43.203.221.199:3000/user/login",
+        {
+          user_id: login.id,
+          password: login.password,
+        },
+        {
+          withCredentials: true,
+          // eslint-disable-next-line prettier/prettier
+        }
+      );
+
+      setToken(response.data.accessToken);
       setUser(isRemember, user as User);
       setIsLogin(true);
 
       // 쿠키에 토큰 저장
-      setCookie("token", token, {
+      setCookie("isLogin", true, {
         path: "/",
       });
       router.push("/dashboard");
-    } catch (error) {
-      alert(error);
+    } catch (error: any) {
+      //console.log(error);
+      alert(error.response.data.message);
     }
   };
 
@@ -95,7 +109,7 @@ export default function Login() {
             <InputWrap
               label={"비밀번호"}
               name={"password"}
-              placeholder={"비밀번홀르 입력해주세요."}
+              placeholder={"비밀번호를 입력해주세요."}
               type={"password"}
               value={login.password}
               onChange={handleInput}

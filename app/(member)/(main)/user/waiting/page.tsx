@@ -12,6 +12,7 @@ import {
 import { createColumnHelper } from "@tanstack/react-table";
 import { IoIosSearch, IoIosClose } from "react-icons/io";
 import { RiRefreshLine, RiCheckFill } from "react-icons/ri";
+import { useCookies } from "react-cookie";
 
 import TableTh from "../../_components/TableTh";
 import Table from "../../_components/Table";
@@ -28,6 +29,8 @@ import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
 import useCustomParams from "@/hooks/useCustomParams";
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 import OnOffButton from "@/components/button/OnOffButton";
+import { useToken } from "@/stores/auth.store";
+import instance from "@/api/axios";
 
 type ModalInfo = {
   id: string;
@@ -154,6 +157,8 @@ export default function WaitingListPage() {
     useCustomParams();
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
+  const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
+  const { token } = useToken();
 
   useEffect(() => {
     const crrpage = getCustomParams("page");
@@ -190,6 +195,19 @@ export default function WaitingListPage() {
         setStartPage((prev) => prev - PAGE_RANGE);
       }
     }
+
+    const fetchData = async () => {
+      try {
+        console.log(token);
+        const result = await instance.get("/boards/6721d604e53e30fdf3a625a9");
+        console.log(result);
+      } catch (error: any) {
+        //console.log(error);
+        alert(error.response.data.message);
+      }
+    };
+
+    fetchData();
   }, [
     getCustomParams("page"),
     getCustomParams("cStart"),

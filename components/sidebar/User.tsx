@@ -1,5 +1,4 @@
 import { useRouter } from "next/navigation";
-import { AiOutlineSetting } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
 import { useCookies } from "react-cookie";
 import { useStore } from "zustand";
@@ -12,7 +11,7 @@ export default function User() {
   });
   const { logout } = useUser();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["isLogin"]);
   const router = useRouter();
 
   const handleLogout = () => {
@@ -21,7 +20,7 @@ export default function User() {
     // localStorage 삭제
     localStorage.removeItem("user-storage");
     // 토큰 쿠키 삭제
-    removeCookie("token", {
+    removeCookie("isLogin", {
       path: "/",
     });
     // 메인페이지로 이동

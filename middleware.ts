@@ -18,7 +18,7 @@ const publicRoutes = [
 ];
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get("token");
+  const token = request.cookies.get("isLogin");
   const currentPath = request.nextUrl.pathname;
 
   // 토큰이 없고 메인이 아닌 회원 페이지에 접근시

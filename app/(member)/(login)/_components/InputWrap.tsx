@@ -15,6 +15,7 @@ export default function InputWrap({
         {label} {required && <span className="text-red-600">*</span>}
       </label>
       <input
+        autoComplete={type === "password" ? "off" : ""}
         className={`border border-[#d6d6d6] rounded-md h-12 px-3 placeholder:text-[#bbb] ${className}`}
         id={name}
         name={name}

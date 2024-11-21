@@ -131,6 +131,20 @@ export default function Notice() {
   });
 
   useEffect(() => {
+    // const fetchData = async () => {
+    //   const response = await fetch("http://43.203.221.199:3000/user/login", {
+    //     method: "POST",
+    //     //credentials: "include",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       user_id: login.id,
+    //       password: login.password,
+    //     }),
+    //   });
+    //   const result = await response.json();
+    // };
     setNotice(NOTICE);
   }, []);
 
