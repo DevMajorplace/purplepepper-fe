@@ -26,7 +26,6 @@
     "@react-aria/ssr": "3.9.4",
     "@react-aria/visually-hidden": "3.8.12",
     "@tanstack/react-table": "^8.20.5",
-    "apexcharts": "^3.54.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.5",
     "chartjs-plugin-datalabels": "^2.2.0",
