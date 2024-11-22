@@ -44,7 +44,8 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
         className: clsx(
           "px-px transition-opacity hover:opacity-80 cursor-pointer",
           className,
-          classNames?.base,
+          // eslint-disable-next-line prettier/prettier
+          classNames?.base
         ),
       })}
     >
@@ -66,7 +67,8 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
               "px-0",
               "mx-0",
             ],
-            classNames?.wrapper,
+            // eslint-disable-next-line prettier/prettier
+            classNames?.wrapper
           ),
         })}
       >
@@ -75,7 +77,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
         ) : (
           <MoonFilledIcon size={22} />
         )}
-        <span>{isSSR ? 'Server' : 'Client'}</span>
+        <span>{isSSR ? "Server" : "Client"}</span>
       </div>
     </Component>
   );
