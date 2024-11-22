@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 
 import InputWrap from "../_components/InputWrap";
 import FormPart from "../_components/FormPart";
@@ -14,6 +13,7 @@ import { User, useToken, useUser } from "@/stores/auth.store";
 import admin from "@/public/dummy/admin.json";
 import distributor from "@/public/dummy/distributor.json";
 import advertiser from "@/public/dummy/advertiser.json";
+import instance from "@/api/axios";
 
 export default function Login() {
   const [login, setLogin] = useState({
@@ -57,17 +57,10 @@ export default function Login() {
         return false;
       }
 
-      const response = await axios.post(
-        "http://43.203.221.199:3000/user/login",
-        {
-          user_id: login.id,
-          password: login.password,
-        },
-        {
-          withCredentials: true,
-          // eslint-disable-next-line prettier/prettier
-        }
-      );
+      const response = await instance.post("user/login", {
+        user_id: login.id,
+        password: login.password,
+      });
 
       setToken(response.data.accessToken);
       setUser(isRemember, user as User);
