@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import { ModalProvider } from "@/contexts/ModalContext";
 
 export default function ProductLayout({
@@ -5,5 +7,9 @@ export default function ProductLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ModalProvider>{children}</ModalProvider>;
+  return (
+    <Suspense>
+      <ModalProvider>{children}</ModalProvider>
+    </Suspense>
+  );
 }

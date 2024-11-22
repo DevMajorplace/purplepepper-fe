@@ -5,6 +5,7 @@ import {
   FormEvent,
   MouseEvent,
   ReactElement,
+  Suspense,
   useEffect,
   useRef,
   useState,

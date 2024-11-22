@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 
 import { ModalProvider } from "@/contexts/ModalContext";
 
@@ -7,5 +8,9 @@ export default function WaitingLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ModalProvider>{children}</ModalProvider>;
+  return (
+    <Suspense>
+      <ModalProvider>{children}</ModalProvider>
+    </Suspense>
+  );
 }

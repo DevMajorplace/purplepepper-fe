@@ -5,6 +5,7 @@ import {
   FormEvent,
   MouseEvent,
   ReactElement,
+  Suspense,
   useEffect,
   useRef,
   useState,
@@ -371,112 +372,114 @@ export default function MissionCSList() {
   };
 
   return (
-    <Card className="min-h-[87vh]">
-      <div className="w-full h-full flex flex-col gap-5">
-        <div className="flex flex-col gap-3">
-          <div className="text-lg font-bold">
-            미션 CS 개수 : {totalCS.toLocaleString()}건
-          </div>
-          <div className="flex justify-between items-end">
-            <div className="flex gap-3">
-              <TableSelect
-                label={"CS 유형"}
-                name={"state"}
-                options={[
-                  { value: "all", name: "전체" },
-                  { value: "csType1", name: "CS 유형1" },
-                  { value: "csType2", name: "CS 유형2" },
-                ]}
-                value={csType}
-                onChange={(e) => handleCsTypeChange(e)}
-              />
-              {/* 미션 분류 */}
-              <MissionTypeSelect />
+    <Suspense>
+      <Card className="min-h-[87vh]">
+        <div className="w-full h-full flex flex-col gap-5">
+          <div className="flex flex-col gap-3">
+            <div className="text-lg font-bold">
+              미션 CS 개수 : {totalCS.toLocaleString()}건
             </div>
-            <div className="flex gap-3">
-              <CalendarInput
-                endDate={createdAt.end ? createdAt.end : ""}
-                placeholder="등록일시 검색"
-                range={true}
-                required={true}
-                startDate={createdAt.start ? createdAt.start : ""}
-                width="w-64"
-                onChange={(value) => handleDateChange(value)}
-              />
-              <div
-                className={`border border-[#ccc] rounded-md flex items-center cursor-pointer`}
-                role="presentation"
-                onClick={(e) => handleSearchClick(e)}
-              >
+            <div className="flex justify-between items-end">
+              <div className="flex gap-3">
+                <TableSelect
+                  label={"CS 유형"}
+                  name={"state"}
+                  options={[
+                    { value: "all", name: "전체" },
+                    { value: "csType1", name: "CS 유형1" },
+                    { value: "csType2", name: "CS 유형2" },
+                  ]}
+                  value={csType}
+                  onChange={(e) => handleCsTypeChange(e)}
+                />
+                {/* 미션 분류 */}
+                <MissionTypeSelect />
+              </div>
+              <div className="flex gap-3">
+                <CalendarInput
+                  endDate={createdAt.end ? createdAt.end : ""}
+                  placeholder="등록일시 검색"
+                  range={true}
+                  required={true}
+                  startDate={createdAt.start ? createdAt.start : ""}
+                  width="w-64"
+                  onChange={(value) => handleDateChange(value)}
+                />
                 <div
-                  className={`${search.show ? "px-2" : "w-0"} transiton-all overflow-hidden`}
+                  className={`border border-[#ccc] rounded-md flex items-center cursor-pointer`}
+                  role="presentation"
+                  onClick={(e) => handleSearchClick(e)}
                 >
-                  <form
-                    className={`items-center gap-2 flex search_form`}
-                    onSubmit={(e) => handleSubmit(e)}
+                  <div
+                    className={`${search.show ? "px-2" : "w-0"} transiton-all overflow-hidden`}
                   >
-                    <select
-                      className="h-8"
-                      value={search.type}
-                      onChange={(e) => handleSelect(e)}
+                    <form
+                      className={`items-center gap-2 flex search_form`}
+                      onSubmit={(e) => handleSubmit(e)}
                     >
-                      <option value="affiliateIdx">매체사 IDX</option>
-                      <option value="affiliateName">매체사명</option>
-                      <option value="adid">ADID</option>
-                      <option value="clientIdx">광고주 IDX</option>
-                      <option value="clientName">광고주명</option>
-                      <option value="missionIdx">미션 IDX</option>
-                      <option value="missionName">미션명</option>
-                      <option value="productIdx">상품 IDX</option>
-                      <option value="productName">상품명</option>
-                    </select>
-                    <input
-                      ref={searchRef}
-                      className="h-8 px-2 placeholder:text-[#333]/50"
-                      placeholder="검색어를 입력해주세요."
-                      type="text"
-                      value={search.keyword}
-                      onChange={(e) => handleSearchInput(e)}
-                    />
-                    <div role="presentation" onClick={handleCloseSearchClick}>
-                      <IoIosClose className="text-2xl" />
-                    </div>
-                  </form>
+                      <select
+                        className="h-8"
+                        value={search.type}
+                        onChange={(e) => handleSelect(e)}
+                      >
+                        <option value="affiliateIdx">매체사 IDX</option>
+                        <option value="affiliateName">매체사명</option>
+                        <option value="adid">ADID</option>
+                        <option value="clientIdx">광고주 IDX</option>
+                        <option value="clientName">광고주명</option>
+                        <option value="missionIdx">미션 IDX</option>
+                        <option value="missionName">미션명</option>
+                        <option value="productIdx">상품 IDX</option>
+                        <option value="productName">상품명</option>
+                      </select>
+                      <input
+                        ref={searchRef}
+                        className="h-8 px-2 placeholder:text-[#333]/50"
+                        placeholder="검색어를 입력해주세요."
+                        type="text"
+                        value={search.keyword}
+                        onChange={(e) => handleSearchInput(e)}
+                      />
+                      <div role="presentation" onClick={handleCloseSearchClick}>
+                        <IoIosClose className="text-2xl" />
+                      </div>
+                    </form>
+                  </div>
+                  <div
+                    className={`items-center gap-1 ${search.show ? "hidden" : "flex"} search_button px-4 h-full`}
+                  >
+                    <IoIosSearch className="text-[18px] pt-[1px] search_icon" />{" "}
+                    검색
+                  </div>
                 </div>
                 <div
-                  className={`items-center gap-1 ${search.show ? "hidden" : "flex"} search_button px-4 h-full`}
+                  className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12"
+                  role="presentation"
+                  onClick={handleFilterClick}
                 >
-                  <IoIosSearch className="text-[18px] pt-[1px] search_icon" />{" "}
-                  검색
+                  <RiRefreshLine className="text-[18px] pt-[1px]" /> 필터 초기화
                 </div>
-              </div>
-              <div
-                className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12"
-                role="presentation"
-                onClick={handleFilterClick}
-              >
-                <RiRefreshLine className="text-[18px] pt-[1px]" /> 필터 초기화
-              </div>
-              <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
-                <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
-                다운로드
+                <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
+                  <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
+                  다운로드
+                </div>
               </div>
             </div>
           </div>
+          <Table
+            tableClass="[&_td]:py-3"
+            tableData={{ data, columns: COLUMNS }}
+          />
+          <Pages
+            activePage={Number(page) === 0 ? 1 : Number(page)}
+            className="pt-4"
+            createQueryString={createQueryString}
+            pageRange={PAGE_RANGE}
+            startPage={startPage}
+            totalPages={12}
+          />
         </div>
-        <Table
-          tableClass="[&_td]:py-3"
-          tableData={{ data, columns: COLUMNS }}
-        />
-        <Pages
-          activePage={Number(page) === 0 ? 1 : Number(page)}
-          className="pt-4"
-          createQueryString={createQueryString}
-          pageRange={PAGE_RANGE}
-          startPage={startPage}
-          totalPages={12}
-        />
-      </div>
-    </Card>
+      </Card>
+    </Suspense>
   );
 }

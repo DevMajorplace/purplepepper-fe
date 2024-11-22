@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import Card from "@/components/card";
 
 export default function MissionLayout({
@@ -5,5 +7,9 @@ export default function MissionLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <Card className="min-h-[87vh]">{children}</Card>;
+  return (
+    <Suspense>
+      <Card className="min-h-[87vh]">{children}</Card>
+    </Suspense>
+  );
 }
