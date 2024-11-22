@@ -5,7 +5,6 @@ import {
   FormEvent,
   MouseEvent,
   ReactElement,
-  Suspense,
   useEffect,
   useRef,
   useState,
@@ -366,102 +365,100 @@ export default function ClientListPage() {
   };
 
   return (
-    <Suspense>
-      <Card className="min-h-[87vh]">
-        <div className="w-full h-full scroll-bar flex flex-col gap-5">
-          <div className="flex justify-between items-end">
-            <div className="text-lg font-bold">
-              광고주 등록 수 : {total.toLocaleString()}명
-            </div>
-            <div className="flex gap-3">
-              <CalendarInput
-                endDate={createdAt.end ? createdAt.end : ""}
-                placeholder="등록일 검색"
-                range={true}
-                required={true}
-                startDate={createdAt.start ? createdAt.start : ""}
-                width="w-64"
-                onChange={(value) => handleCreatedAtChange(value)}
-              />
-              <CalendarInput
-                endDate={lastLogin.end ? lastLogin.end : ""}
-                placeholder="마지막 로그인 검색"
-                range={true}
-                required={true}
-                startDate={lastLogin.start ? lastLogin.start : ""}
-                width="w-64"
-                onChange={(value) => handleLastLoginChange(value)}
-              />
+    <Card className="min-h-[87vh]">
+      <div className="w-full h-full scroll-bar flex flex-col gap-5">
+        <div className="flex justify-between items-end">
+          <div className="text-lg font-bold">
+            광고주 등록 수 : {total.toLocaleString()}명
+          </div>
+          <div className="flex gap-3">
+            <CalendarInput
+              endDate={createdAt.end ? createdAt.end : ""}
+              placeholder="등록일 검색"
+              range={true}
+              required={true}
+              startDate={createdAt.start ? createdAt.start : ""}
+              width="w-64"
+              onChange={(value) => handleCreatedAtChange(value)}
+            />
+            <CalendarInput
+              endDate={lastLogin.end ? lastLogin.end : ""}
+              placeholder="마지막 로그인 검색"
+              range={true}
+              required={true}
+              startDate={lastLogin.start ? lastLogin.start : ""}
+              width="w-64"
+              onChange={(value) => handleLastLoginChange(value)}
+            />
+            <div
+              className={`border border-[#ccc] rounded-md flex items-center cursor-pointer`}
+              role="presentation"
+              onClick={(e) => handleSearchClick(e)}
+            >
               <div
-                className={`border border-[#ccc] rounded-md flex items-center cursor-pointer`}
-                role="presentation"
-                onClick={(e) => handleSearchClick(e)}
+                className={`${search.show ? "px-2" : "w-0"} transiton-all overflow-hidden`}
               >
-                <div
-                  className={`${search.show ? "px-2" : "w-0"} transiton-all overflow-hidden`}
+                <form
+                  className={`items-center gap-2 flex`}
+                  onSubmit={(e) => handleSubmit(e)}
                 >
-                  <form
-                    className={`items-center gap-2 flex`}
-                    onSubmit={(e) => handleSubmit(e)}
+                  <select
+                    className="h-8"
+                    value={search.type}
+                    onChange={(e) => handleSelect(e)}
                   >
-                    <select
-                      className="h-8"
-                      value={search.type}
-                      onChange={(e) => handleSelect(e)}
-                    >
-                      <option value="id">아이디</option>
-                      <option value="name">대표자명</option>
-                      <option value="phone">대표자 연락처</option>
-                      <option value="managerName">담당자명</option>
-                      <option value="managerPhone">담당자 연락처</option>
-                    </select>
-                    <input
-                      ref={searchRef}
-                      className="h-8 px-2 placeholder:text-[#333]/50"
-                      placeholder="검색어를 입력해주세요."
-                      type="text"
-                      value={search.keyword}
-                      onChange={(e) => handleSearchInput(e)}
-                    />
-                    <div role="presentation" onClick={handleCloseSearchClick}>
-                      <IoIosClose className="text-2xl" />
-                    </div>
-                  </form>
-                </div>
-                <div
-                  className={`items-center gap-1 ${search.show ? "hidden" : "flex"} search_button px-4 h-full`}
-                >
-                  <IoIosSearch className="text-[18px] pt-[1px] search_icon" />{" "}
-                  검색
-                </div>
+                    <option value="id">아이디</option>
+                    <option value="name">대표자명</option>
+                    <option value="phone">대표자 연락처</option>
+                    <option value="managerName">담당자명</option>
+                    <option value="managerPhone">담당자 연락처</option>
+                  </select>
+                  <input
+                    ref={searchRef}
+                    className="h-8 px-2 placeholder:text-[#333]/50"
+                    placeholder="검색어를 입력해주세요."
+                    type="text"
+                    value={search.keyword}
+                    onChange={(e) => handleSearchInput(e)}
+                  />
+                  <div role="presentation" onClick={handleCloseSearchClick}>
+                    <IoIosClose className="text-2xl" />
+                  </div>
+                </form>
               </div>
               <div
-                className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12"
-                role="presentation"
-                onClick={handleFilterClick}
+                className={`items-center gap-1 ${search.show ? "hidden" : "flex"} search_button px-4 h-full`}
               >
-                <RiRefreshLine className="text-[18px] pt-[1px]" /> 필터 초기화
+                <IoIosSearch className="text-[18px] pt-[1px] search_icon" />{" "}
+                검색
               </div>
-              <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
-                <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
-                다운로드
-              </div>
+            </div>
+            <div
+              className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12"
+              role="presentation"
+              onClick={handleFilterClick}
+            >
+              <RiRefreshLine className="text-[18px] pt-[1px]" /> 필터 초기화
+            </div>
+            <div className="border border-[#ccc] rounded-md px-4 flex items-center gap-1 cursor-pointer h-12">
+              <PiDownloadSimple className="text-[18px] pt-[1px]" /> 엑셀
+              다운로드
             </div>
           </div>
-          <Table
-            tableClass={"[&_td]:py-3"}
-            tableData={{ data, columns: COLUMNS }}
-          />
-          <Pages
-            activePage={Number(page) === 0 ? 1 : Number(page)}
-            className="pt-4"
-            createQueryString={createQueryString}
-            pageRange={PAGE_RANGE}
-            startPage={startPage}
-            totalPages={12}
-          />
         </div>
-      </Card>
-    </Suspense>
+        <Table
+          tableClass={"[&_td]:py-3"}
+          tableData={{ data, columns: COLUMNS }}
+        />
+        <Pages
+          activePage={Number(page) === 0 ? 1 : Number(page)}
+          className="pt-4"
+          createQueryString={createQueryString}
+          pageRange={PAGE_RANGE}
+          startPage={startPage}
+          totalPages={12}
+        />
+      </div>
+    </Card>
   );
 }
