@@ -2,9 +2,9 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import Card from "@/components/card";
-import { Suspense } from "react";
 
 export default function MoneyCashLayout({
   children,
