@@ -12,7 +12,6 @@ import {
 import { createColumnHelper } from "@tanstack/react-table";
 import { IoIosSearch, IoIosClose } from "react-icons/io";
 import { RiRefreshLine, RiCheckFill } from "react-icons/ri";
-import { useCookies } from "react-cookie";
 
 import TableTh from "../../_components/TableTh";
 import Table from "../../_components/Table";
