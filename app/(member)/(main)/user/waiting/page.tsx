@@ -157,7 +157,6 @@ export default function WaitingListPage() {
     useCustomParams();
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
-  const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
   const { token } = useToken();
 
   useEffect(() => {

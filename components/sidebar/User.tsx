@@ -4,6 +4,7 @@ import { useCookies } from "react-cookie";
 import { useStore } from "zustand";
 
 import { useUser } from "@/stores/auth.store";
+import instance from "@/api/axios";
 
 export default function User() {
   const user = useStore(useUser, (state) => {
@@ -11,16 +12,29 @@ export default function User() {
   });
   const { logout } = useUser();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [cookies, setCookie, removeCookie] = useCookies(["isLogin"]);
+  const [cookies, setCookie, removeCookie] = useCookies([
+    "isLogin",
+    "access_token",
+    "refresh_token",
+  ]);
   const router = useRouter();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // 로그아웃 요청
+    await instance.post("/user/logout");
+
     // user store 초기화
     logout();
     // localStorage 삭제
     localStorage.removeItem("user-storage");
     // 토큰 쿠키 삭제
     removeCookie("isLogin", {
+      path: "/",
+    });
+    removeCookie("access_token", {
+      path: "/",
+    });
+    removeCookie("refresh_token", {
       path: "/",
     });
     // 메인페이지로 이동

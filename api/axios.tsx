@@ -10,6 +10,7 @@ const instance = axios.create({
 });
 
 export const AxiosInterceptor = (props: any) => {
+  console.log("axios");
   instance.interceptors.request.use(
     // token refresh
     async (config) => {
