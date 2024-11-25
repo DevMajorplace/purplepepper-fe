@@ -80,7 +80,7 @@ export default function Login() {
       // setCookie("isLogin", true, {
       //  path: "/",
       // });
-      router.push("/dashboard");
+      //router.push("/dashboard");
     } catch (error: any) {
       //console.log(error);
       alert(error.response.data.message);
