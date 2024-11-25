@@ -9,4 +9,23 @@ const instance = axios.create({
   },
 });
 
+export const AxiosInterceptor = (props: any) => {
+  instance.interceptors.request.use(
+    // token refresh
+    async (config) => {
+      const newConfig = { ...config };
+      console.log(newConfig);
+
+      return await instance.get("/user/refresh");
+    },
+
+    async (error) => {
+      return await Promise.reject(error);
+      // eslint-disable-next-line prettier/prettier
+    }
+  );
+
+  return props.children;
+};
+
 export default instance;

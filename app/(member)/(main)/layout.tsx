@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, usePathname } from "next/navigation";
-import { useCookies } from "react-cookie";
 
 import { siteConfig } from "@/config/site";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
-import instance from "@/api/axios";
 
 export default function MainLayout({
   children,
@@ -17,28 +15,6 @@ export default function MainLayout({
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const params = useParams();
-  const [cookies, setCookie] = useCookies([
-    "isLogin",
-    "access_token",
-    "refresh_token",
-  ]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await instance.get("/boards/6721d604e53e30fdf3a625a9");
-        console.log(result);
-      } catch (error: any) {
-        console.log(error);
-        //alert(error.response.data.message);
-      }
-    };
-
-    fetchData();
-
-    console.log("access: ", cookies.access_token);
-    console.log("refresh: ", cookies.refresh_token);
-  }, []);
 
   // Navbar 정보
   const nav = siteConfig.navContent.filter((item) => {
