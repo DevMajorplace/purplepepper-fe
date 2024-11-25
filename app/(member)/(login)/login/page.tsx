@@ -9,7 +9,7 @@ import InputWrap from "../_components/InputWrap";
 import FormPart from "../_components/FormPart";
 import FormWrap from "../_components/FormWrap";
 
-import { User, useToken, useUser } from "@/stores/auth.store";
+import { User, useUser } from "@/stores/auth.store";
 import admin from "@/public/dummy/admin.json";
 import distributor from "@/public/dummy/distributor.json";
 import advertiser from "@/public/dummy/advertiser.json";
@@ -21,7 +21,6 @@ export default function Login() {
     password: "",
   });
   const [isRemember, setIsRemember] = useState(false);
-  const { setToken } = useToken();
   const { setUser, setIsLogin } = useUser();
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -62,7 +61,6 @@ export default function Login() {
         password: login.password,
       });
 
-      setToken(response.data.accessToken);
       setUser(isRemember, user as User);
       setIsLogin(true);
 

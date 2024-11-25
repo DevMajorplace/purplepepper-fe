@@ -28,7 +28,6 @@ import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
 import useCustomParams from "@/hooks/useCustomParams";
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 import OnOffButton from "@/components/button/OnOffButton";
-import { useToken } from "@/stores/auth.store";
 import instance from "@/api/axios";
 
 type ModalInfo = {
@@ -156,7 +155,6 @@ export default function WaitingListPage() {
     useCustomParams();
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
-  const { token } = useToken();
 
   useEffect(() => {
     const crrpage = getCustomParams("page");
@@ -196,7 +194,6 @@ export default function WaitingListPage() {
 
     const fetchData = async () => {
       try {
-        console.log(token);
         const result = await instance.get("/boards/6721d604e53e30fdf3a625a9");
         console.log(result);
       } catch (error: any) {

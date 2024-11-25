@@ -16,10 +16,6 @@ export type User = {
   };
   recommendId?: string;
 };
-type Props = {
-  token: string;
-  setToken: (token: string) => void;
-};
 type UserProps = {
   isRemember: boolean;
   user: User;
@@ -39,13 +35,6 @@ const USER_DEFAULT = {
   level: 1,
   recommendId: "",
 };
-
-export const useToken = create<Props>((set) => ({
-  token: "",
-  setToken: (token: string) => {
-    set(() => ({ token }));
-  },
-}));
 
 export const useUser = create(
   persist<UserProps>(

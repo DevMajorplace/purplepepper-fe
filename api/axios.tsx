@@ -9,19 +9,37 @@ const instance = axios.create({
   },
 });
 
-export const AxiosInterceptor = (props: any) => {
+export const AxiosInterceptor = (props: { children: React.ReactElement }) => {
   console.log("axios");
   instance.interceptors.request.use(
-    // token refresh
-    async (config) => {
-      const newConfig = { ...config };
-      console.log(newConfig);
-
-      return await instance.get("/user/refresh");
+    // 요청이 전달되기 전에 작업 수행
+    (config) => {
+      console.log("[+] 요청 전달 이전에 수행이 됩니다. ", config);
+      return config;
     },
+    // 요청 오류가 있는 작업 수행
+    (error) => {
+      console.log("[-] 요청 중 오류가 발생되었을때 수행이 됩니다. ", error);
+      return Promise.reject(error);
+    }
+  );
 
-    async (error) => {
-      return await Promise.reject(error);
+  instance.interceptors.response.use(
+    (response) => {
+      console.log(
+        "[+] 응답이 정상적으로 수행된 경우 수행이 됩니다. ",
+        // eslint-disable-next-line prettier/prettier
+        response
+      );
+      // 2xx 범위에 있는 상태 코드는 이 함수를 트리거 합니다.
+      // 응답 데이터가 있는 작업 수행
+      return response;
+    },
+    (error) => {
+      console.log("[-] 응답이 실패한 경우 수행이 됩니다. ", error);
+      // 2xx 외의 범위에 있는 상태 코드는 이 함수를 트리거 합니다.
+      // 응답 오류가 있는 작업 수행
+      return Promise.reject(error);
       // eslint-disable-next-line prettier/prettier
     }
   );
