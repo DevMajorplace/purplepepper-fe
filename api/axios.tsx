@@ -9,7 +9,7 @@ const instance = axios.create({
   },
 });
 
-export const AxiosInterceptor = (props: { children: React.ReactElement }) => {
+export const AxiosInterceptor = (props: { children: React.ReactNode }) => {
   console.log("axios");
   instance.interceptors.request.use(
     // 요청이 전달되기 전에 작업 수행
@@ -21,6 +21,7 @@ export const AxiosInterceptor = (props: { children: React.ReactElement }) => {
     (error) => {
       console.log("[-] 요청 중 오류가 발생되었을때 수행이 됩니다. ", error);
       return Promise.reject(error);
+      // eslint-disable-next-line prettier/prettier
     }
   );
 
