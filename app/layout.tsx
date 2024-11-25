@@ -5,7 +5,6 @@ import clsx from "clsx";
 import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
-import { AxiosInterceptor } from "@/api/axios";
 
 export const metadata: Metadata = {
   title: {
@@ -40,7 +39,7 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "" }}>
-          <AxiosInterceptor>{children}</AxiosInterceptor>
+          {children}
         </Providers>
       </body>
     </html>
