@@ -67,9 +67,9 @@ export default function Login() {
       setIsLogin(true);
 
       // 쿠키에 토큰 저장
-      setCookie("isLogin", true, {
-        path: "/",
-      });
+      //setCookie("isLogin", true, {
+      //  path: "/",
+      //});
       router.push("/dashboard");
     } catch (error: any) {
       //console.log(error);
