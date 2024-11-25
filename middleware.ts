@@ -22,21 +22,21 @@ export function middleware(request: NextRequest) {
   const currentPath = request.nextUrl.pathname;
 
   // 토큰이 없고 메인이 아닌 회원 페이지에 접근시
-  // if (!token && currentPath !== "/" && !publicRoutes.includes(currentPath)) {
-  //   const url = request.nextUrl.clone();
+  if (!token && currentPath !== "/" && !publicRoutes.includes(currentPath)) {
+    const url = request.nextUrl.clone();
 
-  //   url.pathname = "/login";
+    url.pathname = "/login";
 
-  //   return NextResponse.redirect(url);
-  // }
+    return NextResponse.redirect(url);
+  }
 
-  // if (token && publicRoutes.includes(currentPath)) {
-  //   const url = request.nextUrl.clone();
+  if (token && publicRoutes.includes(currentPath)) {
+    const url = request.nextUrl.clone();
 
-  //   url.pathname = "/dashboard";
+    url.pathname = "/dashboard";
 
-  //   return NextResponse.redirect(url);
-  // }
+    return NextResponse.redirect(url);
+  }
 
   return NextResponse.next();
 }

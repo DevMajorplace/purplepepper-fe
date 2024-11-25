@@ -25,11 +25,7 @@ export default function Login() {
   const { setUser, setIsLogin } = useUser();
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [cookies, setCookie] = useCookies([
-    "isLogin",
-    "access_token",
-    "refresh_token",
-  ]);
+  const [cookies, setCookie] = useCookies(["isLogin"]);
 
   const handleInput = (e: any) => {
     const { name, value } = e.target;
@@ -71,16 +67,10 @@ export default function Login() {
       setIsLogin(true);
 
       // 쿠키에 토큰 저장
-      //setCookie("isLogin", true, {
-      //  path: "/",
-      //});
-      // setCookie("isLogin", true, {
-      //  path: "/",
-      // });
-      // setCookie("isLogin", true, {
-      //  path: "/",
-      // });
-      //router.push("/dashboard");
+      setCookie("isLogin", true, {
+        path: "/",
+      });
+      router.push("/dashboard");
     } catch (error: any) {
       //console.log(error);
       alert(error.response.data.message);
