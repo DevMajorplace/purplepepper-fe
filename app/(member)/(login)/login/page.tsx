@@ -56,7 +56,7 @@ export default function Login() {
         return false;
       }
 
-      const response = await instance.post("user/login", {
+      await instance.post("user/login", {
         user_id: login.id,
         password: login.password,
       });
@@ -68,7 +68,7 @@ export default function Login() {
       setCookie("isLogin", true, {
         path: "/",
       });
-      //router.push("/dashboard");
+      router.push("/dashboard");
     } catch (error: any) {
       //console.log(error);
       alert(error.response.data.message);
