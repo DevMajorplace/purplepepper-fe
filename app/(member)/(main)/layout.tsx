@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, usePathname } from "next/navigation";
+import { useCookies } from "react-cookie";
 
 import { siteConfig } from "@/config/site";
 import Navbar from "@/components/navbar";
@@ -16,6 +17,11 @@ export default function MainLayout({
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const params = useParams();
+  const [cookies, setCookie] = useCookies([
+    "isLogin",
+    "access_token",
+    "refresh_token",
+  ]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +35,9 @@ export default function MainLayout({
     };
 
     fetchData();
+
+    console.log("access: ", cookies.access_token);
+    console.log("refresh: ", cookies.refresh_token);
   }, []);
 
   // Navbar 정보
