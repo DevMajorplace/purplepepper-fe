@@ -2,26 +2,37 @@
 
 import { useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 import { useUser } from "@/stores/auth.store";
 import useStore from "@/hooks/useStore";
-import { usePathname } from "next/navigation";
+import instance from "@/api/axios";
 
-export default function Accordion({
-  idx,
-  title,
-  content,
-  createdAt,
-}: AccordionProps) {
+export default function Accordion({ id, title, createdAt }: AccordionProps) {
   const [open, setOpen] = useState(false);
+  const [content, setContent] = useState<JSX.Element>();
   const divRef = useRef<HTMLDivElement>(null);
   const path = usePathname();
   const user = useStore(useUser, (state) => {
     return state.user;
   });
 
-  const handleClick = () => {
+  const fetchData = async () => {
+    try {
+      const res = await instance.get(
+        // eslint-disable-next-line prettier/prettier
+        `/boards/${id}`
+      );
+
+      return res.data;
+    } catch (error: any) {
+      //console.log(error);
+      alert(error.response.data.message);
+    }
+  };
+
+  const handleClick = async () => {
     if (divRef.current) {
       const targetHeight = divRef.current.scrollHeight;
 
@@ -29,6 +40,7 @@ export default function Accordion({
         open
           ? (divRef.current.parentElement.style.height = `0px`)
           : (divRef.current.parentElement.style.height = `${targetHeight}px`);
+        open ? setContent(<></>) : setContent(await fetchData());
       }
 
       setOpen(!open);
@@ -58,11 +70,11 @@ export default function Accordion({
           className="pb-6 text-xl text-[1.15rem] flex flex-col gap-2"
         >
           {content}
-          {user?.level === 10 && (
+          {user?.role === "admin" && (
             <div className="text-right">
               <Link
                 className="bg-[#000] text-[12px] text-white rounded-md px-4 inline-flex items-center gap-1 h-10 cursor-pointer"
-                href={`${path}/write?idx=${idx}`}
+                href={`${path}/write?id=${id}`}
               >
                 수정
               </Link>

@@ -15,6 +15,7 @@ import { useUser } from "@/stores/auth.store";
 import instance from "@/api/axios";
 import Pages from "@/components/Pages";
 import useCustomParams from "@/hooks/useCustomParams";
+import { categories } from "@/config/site";
 
 const NOTICE = [
   {
@@ -121,9 +122,10 @@ const PAGE_RANGE = 5;
 export default function Notice() {
   const [notice, setNotice] = useState<
     {
+      id: string;
       title: string;
-      content: React.JSX.Element;
-      idx: string;
+      category: string;
+      visible: string[];
       createdAt: string;
     }[]
   >([]);
@@ -136,15 +138,21 @@ export default function Notice() {
   });
   const [page, setPage] = useState(1);
   const [startPage, setStartPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { getCustomParams, setCustomParams, createQueryString } =
     useCustomParams();
 
   const fetchData = async (page: number, keyword?: string) => {
     try {
-      return await instance.get(
+      const res = await instance.get(
         // eslint-disable-next-line prettier/prettier
         `/boards?page=${page}&pageSize=15&category=${params.category}${keyword ? `&title=${keyword}` : ""}`
       );
+
+      // 공지사항 내용
+      setNotice(res.data.data);
+      // 총 페이지 수
+      setTotalPages(res.data.totalPages);
     } catch (error: any) {
       //console.log(error);
       alert(error.response.data.message);
@@ -192,33 +200,13 @@ export default function Notice() {
     }
   };
 
-  const TABS = [
-    {
-      name: "카테고리1",
-      link: `/notice/category1`,
-      on: pathname === `/notice/category1`,
-    },
-    {
-      name: "카테고리2",
-      link: `/notice/category2`,
-      on: pathname === `/notice/category2`,
-    },
-    {
-      name: "카테고리3",
-      link: `/notice/category3`,
-      on: pathname === `/notice/category3`,
-    },
-    {
-      name: "카테고리4",
-      link: `/notice/category4`,
-      on: pathname === `/notice/category4`,
-    },
-    {
-      name: "카테고리5",
-      link: `/notice/category5`,
-      on: pathname === `/notice/category5`,
-    },
-  ];
+  const TABS = categories.map((item) => {
+    return {
+      name: item.name,
+      link: `/notice/${item.id}`,
+      on: pathname === `/notice/${item.id}`,
+    };
+  });
 
   return (
     <>
@@ -238,7 +226,7 @@ export default function Notice() {
               onChange={(e) => handleSearchInput(e)}
             />
           </form>
-          {user?.level === 10 && (
+          {user?.role === "admin" && (
             <Link href={`${pathname}/write`}>
               <div className="bg-[#000] text-white rounded-md px-4 flex items-center gap-1 h-12 cursor-pointer">
                 <GoPencil className="text-[18px] pt-[1px] search_icon" />{" "}
@@ -252,9 +240,8 @@ export default function Notice() {
         {notice.map((item, index) => (
           <Accordion
             key={index}
-            content={item.content}
             createdAt={item.createdAt}
-            idx={item.idx}
+            id={item.id}
             title={item.title}
           />
         ))}
@@ -268,7 +255,7 @@ export default function Notice() {
         createQueryString={createQueryString}
         pageRange={PAGE_RANGE}
         startPage={startPage}
-        totalPages={12}
+        totalPages={totalPages}
       />
     </>
   );
