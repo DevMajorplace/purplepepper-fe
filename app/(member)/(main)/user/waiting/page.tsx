@@ -191,18 +191,6 @@ export default function WaitingListPage() {
         setStartPage((prev) => prev - PAGE_RANGE);
       }
     }
-
-    const fetchData = async () => {
-      try {
-        const result = await instance.get("/boards/6721d604e53e30fdf3a625a9");
-        console.log(result);
-      } catch (error: any) {
-        //console.log(error);
-        alert(error.response.data.message);
-      }
-    };
-
-    fetchData();
   }, [
     getCustomParams("page"),
     getCustomParams("cStart"),

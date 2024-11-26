@@ -12,6 +12,9 @@ import UserDetailTab from "../../user/_components/UserDetailTab";
 import Accordion from "./_components/Accordion";
 
 import { useUser } from "@/stores/auth.store";
+import instance from "@/api/axios";
+import Pages from "@/components/Pages";
+import useCustomParams from "@/hooks/useCustomParams";
 
 const NOTICE = [
   {
@@ -113,6 +116,7 @@ const NOTICE = [
     createdAt: "2024. 12. 10",
   },
 ];
+const PAGE_RANGE = 5;
 
 export default function Notice() {
   const [notice, setNotice] = useState<
@@ -129,24 +133,42 @@ export default function Notice() {
   const user = useStore(useUser, (state) => {
     return state.user;
   });
+  const [page, setPage] = useState(1);
+  const [startPage, setStartPage] = useState(1);
+  const { getCustomParams, setCustomParams, createQueryString } =
+    useCustomParams();
+
+  const fetchData = async (page: number) => {
+    try {
+      const response = await instance.get(
+        // eslint-disable-next-line prettier/prettier
+        `/boards?page=${page}&pageSize=15`
+      );
+      console.log(response);
+      //setNotice(result.data.items);
+    } catch (error: any) {
+      //console.log(error);
+      alert(error.response.data.message);
+    }
+  };
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   const response = await fetch("http://43.203.221.199:3000/user/login", {
-    //     method: "POST",
-    //     //credentials: "include",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       user_id: login.id,
-    //       password: login.password,
-    //     }),
-    //   });
-    //   const result = await response.json();
-    // };
-    setNotice(NOTICE);
-  }, []);
+    const crrpage = getCustomParams("page");
+
+    // 페이지 Params가 있으면
+    if (crrpage) {
+      setPage(Number(crrpage));
+
+      if (Number(crrpage) >= startPage + PAGE_RANGE) {
+        setStartPage((prev) => prev + PAGE_RANGE);
+      }
+      if (Number(crrpage) < startPage) {
+        setStartPage((prev) => prev - PAGE_RANGE);
+      }
+    }
+
+    fetchData(Number(crrpage) ?? 1);
+  }, [getCustomParams("page"), startPage]);
 
   const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -223,7 +245,18 @@ export default function Notice() {
             title={item.title}
           />
         ))}
+        {notice.length === 0 && (
+          <div className="text-center py-20">등록된 공지사항이 없습니다.</div>
+        )}
       </div>
+      <Pages
+        activePage={Number(page) === 0 ? 1 : Number(page)}
+        className="pt-4"
+        createQueryString={createQueryString}
+        pageRange={PAGE_RANGE}
+        startPage={startPage}
+        totalPages={12}
+      />
     </>
   );
 }
