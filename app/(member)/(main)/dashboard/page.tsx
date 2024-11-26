@@ -1,8 +1,5 @@
 "use client";
 
-// import MissionCard from "./_components/MissionCard";
-// import CompletedMissions from "./_components/CompletedMissions";
-// import PopularMissions from "./_components/PopularMissions";
 import { useStore } from "zustand";
 
 import Notice from "./_components/Notice";
@@ -35,11 +32,11 @@ export default function Dashboard() {
       {/* 모달CONTEXT */}
       <ModalProvider>
         {/* 관리자 */}
-        {user.level === 10 && <AdminDashboard />}
+        {user.role === "admin" && <AdminDashboard />}
         {/* 총판 */}
-        {user.level === 3 && <DistributorDashboard />}
+        {user.role === "agency" && <DistributorDashboard />}
         {/* 광고주 */}
-        {user.level === 2 && <ClientDashboard />}
+        {user.role === "client" && <ClientDashboard />}
       </ModalProvider>
     </div>
   );

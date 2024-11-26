@@ -132,7 +132,6 @@ export default function Notice() {
   const pathname = usePathname();
   const params = useParams();
   const [search, setSearch] = useState("");
-  const router = useRouter();
   const user = useStore(useUser, (state) => {
     return state.user;
   });

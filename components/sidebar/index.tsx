@@ -16,7 +16,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
     return state.user;
   });
 
-  const userLevel = user.level;
+  const userRole = user.role;
   const mainNav = pathname.split("/")[1];
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       {/* User Info end */}
       <div className="my-5 h-px bg-gray-300 dark:bg-white/30" />
 
-      {userLevel === 2 && (
+      {userRole === "client" && (
         <div>
           <div className="flex flex-col gap-3">
             <button className="w-full py-3 text-gray-800 border border-gray-500 hover:bg-gray-50 flex items-center justify-center gap-2">
@@ -99,7 +99,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       {/* Nav item */}
       <ul className="mb-auto flex flex-col gap-3">
         {siteConfig.navItems.map((item, index) => {
-          if (!item.show || (item.show && item.show.includes(userLevel))) {
+          if (!item.show || (item.show && item.show.includes(userRole))) {
             return (
               <li key={index} className="side-nav">
                 {item.sub ? (
@@ -138,7 +138,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                     </div>
                     <div className="hidden flex-col pl-12 gap-2 group-[.open]:flex">
                       {item.sub.map((sub, index) => {
-                        if (sub.show && sub.show.includes(userLevel)) {
+                        if (sub.show && sub.show.includes(userRole)) {
                           return (
                             <Link
                               href={sub.href}

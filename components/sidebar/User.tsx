@@ -49,7 +49,7 @@ export default function User() {
           <FiLogOut onClick={handleLogout} />
         </div>
       </div>
-      {user?.level === 2 && (
+      {user?.role === "client" && (
         <div className="flex justify-between items-center font-medium pt-3">
           <div>보유포인트</div>
           <div>{user.point.toLocaleString()}P</div>
