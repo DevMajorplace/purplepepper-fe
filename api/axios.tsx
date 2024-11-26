@@ -35,12 +35,13 @@ instance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    console.log("[-] 응답이 실패한 경우 수행이 됩니다. ", error);
     // 2xx 외의 범위에 있는 상태 코드는 이 함수를 트리거 합니다.
     if (error.status === 401) {
-      console.log("[-] 에러메세지 401일때 수행이 됩니다. ");
-      const res = await instance.get("/user/refresh");
-      console.log("[-] 토큰 리프레쉬. ", res);
+      await instance.get("/user/refresh").then(async (res) => {
+        if (res.status === 200 && res.data.accessToken) {
+          return instance(error.config);
+        }
+      });
     }
 
     // 응답 오류가 있는 작업 수행
