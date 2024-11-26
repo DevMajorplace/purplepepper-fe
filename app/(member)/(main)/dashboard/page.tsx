@@ -10,6 +10,7 @@ import ClientDashboard from "./_components/client/ClientDashboard";
 import Card from "@/components/card";
 import { useUser } from "@/stores/auth.store";
 import { ModalProvider } from "@/contexts/ModalContext";
+import { Suspense } from "react";
 
 export default function Dashboard() {
   const user = useStore(useUser, (state) => {
@@ -31,12 +32,14 @@ export default function Dashboard() {
       </Card>
       {/* 모달CONTEXT */}
       <ModalProvider>
-        {/* 관리자 */}
-        {user.role === "admin" && <AdminDashboard />}
-        {/* 총판 */}
-        {user.role === "agency" && <DistributorDashboard />}
-        {/* 광고주 */}
-        {user.role === "client" && <ClientDashboard />}
+        <Suspense>
+          {/* 관리자 */}
+          {user.role === "admin" && <AdminDashboard />}
+          {/* 총판 */}
+          {user.role === "agency" && <DistributorDashboard />}
+          {/* 광고주 */}
+          {user.role === "client" && <ClientDashboard />}
+        </Suspense>
       </ModalProvider>
     </div>
   );
