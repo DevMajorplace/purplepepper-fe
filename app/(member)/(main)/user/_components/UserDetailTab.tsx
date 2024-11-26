@@ -16,7 +16,7 @@ export default function UserDetailTab({
     <div>
       <div className="inline-flex items-center p-1 bg-[#f6f6f6] rounded-md h-12">
         {tabs.map((tab, index) => {
-          if (user.level !== 10 && !tab.admin) {
+          if (user.role !== "admin" && !tab.admin) {
             return (
               <Link
                 key={index}
@@ -30,7 +30,7 @@ export default function UserDetailTab({
                 </div>
               </Link>
             );
-          } else if (user.level === 10) {
+          } else if (user.role === "admin") {
             return (
               <Link
                 key={index}
