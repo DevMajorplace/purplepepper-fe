@@ -370,13 +370,13 @@ export default function MissionParticipant() {
                     value={search.type}
                     onChange={(e) => handleSelect(e)}
                   >
-                    {user.level === 2 && (
+                    {user.role === "client" && (
                       <>
                         <option value="adid">ADID</option>
                         <option value="missionName">미션명</option>
                       </>
                     )}
-                    {user.level === 10 && (
+                    {user.role === "admin" && (
                       <>
                         <option value="adid">ADID</option>
                         <option value="affiliateIdx">매체사 IDX</option>
@@ -423,7 +423,7 @@ export default function MissionParticipant() {
         </div>
       </div>
 
-      {user.level === 2 && (
+      {user.role === "client" && (
         <ClientParticipant
           chk={chk}
           data={data}
@@ -433,7 +433,7 @@ export default function MissionParticipant() {
         />
       )}
 
-      {user.level === 10 && (
+      {user.role === "admin" && (
         <AdminParticipant
           chk={chk}
           data={data}

@@ -278,12 +278,12 @@ export default function MissionStatistics() {
                     value={search.type}
                     onChange={(e) => handleSelect(e)}
                   >
-                    {user.level === 2 && (
+                    {user.role === "client" && (
                       <>
                         <option value="missionName">미션명</option>
                       </>
                     )}
-                    {user.level === 10 && (
+                    {user.role === "admin" && (
                       <>
                         <option value="recommnedIdx">직상위 사용자 IDX</option>
                         <option value="recommnedName">직상위 사용자명</option>
@@ -335,7 +335,7 @@ export default function MissionStatistics() {
         </div>
       </div>
 
-      {user.level === 2 && (
+      {user.role === "client" && (
         <ClientStatistics
           chk={chk}
           data={data}
@@ -345,7 +345,7 @@ export default function MissionStatistics() {
         />
       )}
 
-      {user.level === 10 && (
+      {user.role === "admin" && (
         <AdminStatistics
           chk={chk}
           data={data}

@@ -16,13 +16,13 @@ import { RiRefreshLine } from "react-icons/ri";
 import Link from "next/link";
 
 import SalesTable from "./_components/SalesTable";
+import ClientTable from "./_components/ClientTable";
 
 import Pages from "@/components/Pages";
 import CalendarInput, { dateFormat } from "@/components/Input/CalendarInput";
 import useCustomParams from "@/hooks/useCustomParams";
 import TableTh from "@/app/(member)/(main)/_components/TableTh";
 import Table from "@/app/(member)/(main)/_components/Table";
-import ClientTable from "./_components/ClientTable";
 
 type RowObj = {
   chk: ReactElement;

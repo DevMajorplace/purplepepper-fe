@@ -17,7 +17,7 @@ export default function Client() {
   const id = useId();
 
   useEffect(() => {
-    if (user.level !== 10) redirect(`/user/client/${id}/cash/usage`);
+    if (user.role !== "admin") redirect(`/user/client/${id}/cash/usage`);
   });
 
   return (
