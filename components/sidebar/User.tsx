@@ -21,7 +21,7 @@ export default function User() {
 
   const handleLogout = async () => {
     // 로그아웃 요청
-    await instance.post("/user/logout");
+    await instance.post("/users/logout");
 
     // user store 초기화
     logout();

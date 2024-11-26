@@ -40,7 +40,7 @@ instance.interceptors.response.use(
     // error 코드 401 일때 발생 - 유효한 token이 아닌 경우, token이 만료되었을 때
     if (error.status === 401) {
       // 토큰 리프레쉬
-      return await instance.get("/user/refresh").then(async (res) => {
+      return await instance.get("/user/refresh-token").then(async (res) => {
         //console.log("[-] 리프레쉬가 성공했을 때 수행이 됩니다. ", res);
         if (res.status === 200 && res.data.accessToken) {
           // 리프레쉬 성공시 이전 요청 재요청

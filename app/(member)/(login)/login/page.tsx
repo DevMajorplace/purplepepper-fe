@@ -39,7 +39,7 @@ export default function Login() {
       // zustand store에 토큰 정보 저장
       //let token = "";
 
-      const result = await instance.post("/user/login", {
+      const result = await instance.post("/users/login", {
         user_id: login.id,
         password: login.password,
       });
