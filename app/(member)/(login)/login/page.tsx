@@ -56,7 +56,7 @@ export default function Login() {
         return false;
       }
 
-      await instance.post("user/login", {
+      await instance.post("/user/login", {
         user_id: login.id,
         password: login.password,
       });
