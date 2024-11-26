@@ -1,6 +1,7 @@
 "use client";
 
 import { useStore } from "zustand";
+import { Suspense } from "react";
 
 import Notice from "./_components/Notice";
 import AdminDashboard from "./_components/admin/AdminDashboard";
@@ -10,7 +11,6 @@ import ClientDashboard from "./_components/client/ClientDashboard";
 import Card from "@/components/card";
 import { useUser } from "@/stores/auth.store";
 import { ModalProvider } from "@/contexts/ModalContext";
-import { Suspense } from "react";
 
 export default function Dashboard() {
   const user = useStore(useUser, (state) => {
