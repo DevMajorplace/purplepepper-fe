@@ -24,7 +24,7 @@ export default function PointListLayout({
   const setModalContents = useSetModalContents();
 
   const handlePointWithdrawal = () => {
-    if (!user.account) {
+    if (!user.isAccount) {
       alert("내 정보에서 출금 계좌 정보를 입력해주세요.");
 
       return false;

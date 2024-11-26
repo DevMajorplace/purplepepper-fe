@@ -9,10 +9,7 @@ import InputWrap from "../_components/InputWrap";
 import FormPart from "../_components/FormPart";
 import FormWrap from "../_components/FormWrap";
 
-import { User, useUser } from "@/stores/auth.store";
-import admin from "@/public/dummy/admin.json";
-import distributor from "@/public/dummy/distributor.json";
-import advertiser from "@/public/dummy/advertiser.json";
+import { useUser } from "@/stores/auth.store";
 import instance from "@/api/axios";
 
 export default function Login() {
@@ -41,27 +38,23 @@ export default function Login() {
       //const res = await axios.get("/dummy/admin.json");
       // zustand store에 토큰 정보 저장
       //let token = "";
-      let user = [] as any;
 
-      if (login.id === "admin1234") {
-        //token = token;
-        user = admin.user;
-      } else if (login.id === "test1") {
-        //token = distributor.token;
-        user = distributor.user;
-      } else if (login.id === "test2") {
-        //token = advertiser.token;
-        user = advertiser.user;
-      } else {
-        return false;
-      }
-
-      await instance.post("/user/login", {
+      const result = await instance.post("/user/login", {
         user_id: login.id,
         password: login.password,
       });
 
-      setUser(isRemember, user as User);
+      const user = {
+        company: result.data.company_name,
+        id: result.data.user_id,
+        name: result.data.manager_name,
+        point: result.data.point,
+        cash: result.data.cash,
+        role: result.data.role,
+        isAccount: result.data.is_register_account,
+      };
+
+      setUser(isRemember, user);
       setIsLogin(true);
 
       // 쿠키에 토큰 저장

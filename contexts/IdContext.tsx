@@ -13,6 +13,7 @@ import { User } from "@/stores/auth.store";
 export interface idUser extends User {
   id: string;
   password: string;
+  phone: string;
   memo: string;
   use: boolean;
   account: {
@@ -43,7 +44,7 @@ const DEFAULT_IDUSER: idUser = {
   phone: "", // 담당자 연락처
   point: 0, // 포인트 (출금 가능)
   cash: 0, // 캐시 (충전)
-  level: 1,
+  role: "client",
   memo: "",
   use: true, // 사용 여부
   account: {
@@ -67,7 +68,7 @@ export function IdProvider({ id, children }: IdContextProviderProps) {
       phone: "담당자 연락처",
       point: 1000,
       cash: 12000,
-      level: 3,
+      role: "agency",
       memo: "",
       use: true,
       account: {

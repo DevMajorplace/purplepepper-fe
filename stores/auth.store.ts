@@ -5,16 +5,10 @@ export type User = {
   company: string;
   id: string;
   name: string;
-  phone: string;
   point: number;
   cash?: number;
-  level: number;
-  account?: {
-    bank: string;
-    accountNumber: string;
-    depositor: string;
-  };
-  recommendId?: string;
+  role: string;
+  isAccount?: boolean;
 };
 type UserProps = {
   isRemember: boolean;
@@ -29,11 +23,10 @@ const USER_DEFAULT = {
   company: "",
   id: "",
   name: "",
-  phone: "",
   point: 0,
   cash: 0,
-  level: 1,
-  recommendId: "",
+  role: "client",
+  isAccount: false,
 };
 
 export const useUser = create(

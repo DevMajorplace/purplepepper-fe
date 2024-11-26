@@ -1,6 +1,7 @@
+import { Dispatch } from "react";
+
 import { affiliate } from "@/contexts/AffiliateContext";
 import { idUser } from "@/contexts/IdContext";
-import { Dispatch } from "react";
 
 export {};
 
@@ -421,9 +422,8 @@ declare global {
 
   // faq
   interface AccordionProps {
-    idx: string;
+    id: string;
     title: string;
-    content: JSX.Element;
     createdAt: string;
   }
 

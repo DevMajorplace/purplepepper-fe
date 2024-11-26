@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import { GrClose } from "react-icons/gr";
-import { FaExclamationCircle } from "react-icons/fa";
 
 import { User } from "@/stores/auth.store";
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
 export default function CashChargeModal({ user }: { user: User }) {
   const [point, setPoint] = useState("");
-  const [myPoint, setMyPoint] = useState(user.point);
   const [name, setName] = useState(user.name);
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
@@ -84,7 +82,7 @@ export default function CashChargeModal({ user }: { user: User }) {
           <div className="bg-[#e9edf9] border border-[#c9cfe1] rounded-lg p-5 flex flex-col gap-3">
             <div className="flex justify-between items-center">
               <div>현재 보유 캐시</div>
-              <div className="font-bold">{myPoint.toLocaleString()} P</div>
+              <div className="font-bold">{user.point.toLocaleString()} P</div>
             </div>
             <div className="flex justify-between items-center">
               <div>충전 캐시</div>
@@ -96,7 +94,7 @@ export default function CashChargeModal({ user }: { user: User }) {
           <div className="flex justify-between px-5 pt-4">
             <div>충전 후 내 캐시</div>
             <div className="font-bold">
-              {(myPoint - Number(point)).toLocaleString()}P
+              {(user.point - Number(point)).toLocaleString()}P
             </div>
           </div>
         </div>

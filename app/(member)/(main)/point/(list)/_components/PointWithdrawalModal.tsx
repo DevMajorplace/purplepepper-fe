@@ -8,7 +8,6 @@ import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 
 export default function PointWithdrawalModal({ user }: { user: User }) {
   const [point, setPoint] = useState("");
-  const [myPoint, setMyPoint] = useState(user.point);
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
 
@@ -76,7 +75,7 @@ export default function PointWithdrawalModal({ user }: { user: User }) {
           <div className="bg-[#e9edf9] border border-[#c9cfe1] rounded-lg p-5 flex flex-col gap-3">
             <div className="flex justify-between items-center">
               <div>현재 보유 포인트</div>
-              <div className="font-bold">{myPoint.toLocaleString()} P</div>
+              <div className="font-bold">{user.point.toLocaleString()} P</div>
             </div>
             <div className="flex justify-between items-center">
               <div>출금 포인트</div>
@@ -88,7 +87,7 @@ export default function PointWithdrawalModal({ user }: { user: User }) {
           <div className="flex justify-between px-5 pt-4">
             <div>출금 후 내 포인트</div>
             <div className="font-bold">
-              {(myPoint - Number(point)).toLocaleString()}P
+              {(user.point - Number(point)).toLocaleString()}P
             </div>
           </div>
         </div>
