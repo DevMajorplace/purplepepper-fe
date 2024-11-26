@@ -141,12 +141,10 @@ export default function Notice() {
 
   const fetchData = async (page: number, keyword?: string) => {
     try {
-      const response = await instance.get(
+      return await instance.get(
         // eslint-disable-next-line prettier/prettier
         `/boards?page=${page}&pageSize=15&category=${params.category}${keyword ? `&title=${keyword}` : ""}`
       );
-      console.log(response);
-      //setNotice(result.data.items);
     } catch (error: any) {
       //console.log(error);
       alert(error.response.data.message);
@@ -183,11 +181,15 @@ export default function Notice() {
   const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setCustomParams(
-      ["keyword", "page"],
-      // eslint-disable-next-line prettier/prettier
-      [search, "1"]
-    );
+    if (search) {
+      setCustomParams(
+        ["keyword", "page"],
+        // eslint-disable-next-line prettier/prettier
+        [search, "1"]
+      );
+    } else {
+      setCustomParams(["page"], ["1"]);
+    }
   };
 
   const TABS = [
