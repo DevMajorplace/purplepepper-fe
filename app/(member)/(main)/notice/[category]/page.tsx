@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { GoPencil } from "react-icons/go";
@@ -128,6 +128,7 @@ export default function Notice() {
     }[]
   >([]);
   const pathname = usePathname();
+  const params = useParams();
   const [search, setSearch] = useState("");
   const router = useRouter();
   const user = useStore(useUser, (state) => {
@@ -138,11 +139,11 @@ export default function Notice() {
   const { getCustomParams, setCustomParams, createQueryString } =
     useCustomParams();
 
-  const fetchData = async (page: number) => {
+  const fetchData = async (page: number, keyword?: string) => {
     try {
       const response = await instance.get(
         // eslint-disable-next-line prettier/prettier
-        `/boards?page=${page}&pageSize=15`
+        `/boards?page=${page}&pageSize=15&category=${params.category}${keyword ? `&title=${keyword}` : ""}`
       );
       console.log(response);
       //setNotice(result.data.items);
@@ -154,6 +155,7 @@ export default function Notice() {
 
   useEffect(() => {
     const crrpage = getCustomParams("page");
+    const keyword = getCustomParams("keyword");
 
     // 페이지 Params가 있으면
     if (crrpage) {
@@ -167,8 +169,12 @@ export default function Notice() {
       }
     }
 
-    fetchData(Number(crrpage) ?? 1);
-  }, [getCustomParams("page"), startPage]);
+    fetchData(
+      Number(crrpage) !== 0 ? Number(crrpage) : 1,
+      // eslint-disable-next-line prettier/prettier
+      keyword ? keyword : undefined
+    );
+  }, [getCustomParams("page"), getCustomParams("keyword"), startPage]);
 
   const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -176,7 +182,12 @@ export default function Notice() {
 
   const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push(`${pathname}?keyword=${search}`);
+
+    setCustomParams(
+      ["keyword", "page"],
+      // eslint-disable-next-line prettier/prettier
+      [search, "1"]
+    );
   };
 
   const TABS = [
