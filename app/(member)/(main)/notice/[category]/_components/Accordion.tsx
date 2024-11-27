@@ -25,7 +25,7 @@ export default function Accordion({ id, title, createdAt }: AccordionProps) {
         `/boards/${id}`
       );
 
-      return res.data;
+      setContent(res.data.content);
     } catch (error: any) {
       //console.log(error);
       alert(error.response.data.message);
@@ -37,15 +37,12 @@ export default function Accordion({ id, title, createdAt }: AccordionProps) {
       const targetHeight = divRef.current.scrollHeight;
 
       if (divRef.current.parentElement) {
-        open
-          ? (divRef.current.parentElement.style.height = `0px`)
-          : (divRef.current.parentElement.style.height = `${targetHeight}px`);
         if (open) {
+          divRef.current.parentElement.style.height = `0px`;
           setContent("");
         } else {
-          const res = await fetchData();
-
-          setContent(res.content);
+          await fetchData();
+          divRef.current.parentElement.style.height = `${targetHeight}px`;
         }
       }
 

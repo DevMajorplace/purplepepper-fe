@@ -10,6 +10,7 @@ import { useStore } from "zustand";
 import UserDetailTab from "../../user/_components/UserDetailTab";
 
 import Accordion from "./_components/Accordion";
+import NoticeLoading from "./_components/NoticeLoading";
 
 import { useUser } from "@/stores/auth.store";
 import instance from "@/api/axios";
@@ -32,6 +33,7 @@ export default function Notice() {
   const pathname = usePathname();
   const params = useParams();
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
   const user = useStore(useUser, (state) => {
     return state.user;
   });
@@ -52,6 +54,8 @@ export default function Notice() {
       setNotice(res.data.data);
       // 총 페이지 수
       setTotalPages(res.data.totalPages);
+      // 로딩 끝
+      setLoading(false);
     } catch (error: any) {
       //console.log(error);
       alert(error.response.data.message);
@@ -135,18 +139,33 @@ export default function Notice() {
           )}
         </div>
       </div>
-      <Suspense>
-        {notice.map((item, index) => (
-          <Accordion
-            key={index}
-            createdAt={item.createdAt}
-            id={item.id}
-            title={item.title}
-          />
-        ))}
-        {notice.length === 0 && (
-          <div className="text-center py-20">등록된 공지사항이 없습니다.</div>
-        )}
+      <Suspense fallback={<NoticeLoading />}>
+        {!loading &&
+          notice.map((item, index) => {
+            if (user?.role === "admin") {
+              // 관리자는 전체 노출
+              return (
+                <Accordion
+                  key={index}
+                  createdAt={item.createdAt}
+                  id={item.id}
+                  title={item.title}
+                />
+              );
+            } else {
+              if (item.visible.includes(user?.role)) {
+                // 회원 권한 포함일 때
+                return (
+                  <Accordion
+                    key={index}
+                    createdAt={item.createdAt}
+                    id={item.id}
+                    title={item.title}
+                  />
+                );
+              }
+            }
+          })}
       </Suspense>
       {totalPages > 1 && (
         <Pages
