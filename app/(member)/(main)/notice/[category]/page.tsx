@@ -139,7 +139,7 @@ export default function Notice() {
           )}
         </div>
       </div>
-      <Suspense fallback={<NoticeLoading />}>
+      <Suspense fallback={<p>Loading List...</p>}>
         {!loading &&
           notice.map((item, index) => (
             <Accordion
