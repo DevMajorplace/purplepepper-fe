@@ -33,16 +33,17 @@ export default function Accordion({ id, title, createdAt }: AccordionProps) {
   };
 
   const handleClick = async () => {
-    if (divRef.current) {
-      const targetHeight = divRef.current.scrollHeight;
+    const target = divRef.current;
 
-      if (divRef.current.parentElement) {
+    if (target) {
+      const targetHeight = target.scrollHeight;
+
+      if (target.parentElement) {
         if (open) {
-          divRef.current.parentElement.style.height = `0px`;
+          target.parentElement.style.height = `0px`;
           setContent("");
         } else {
-          await fetchData();
-          divRef.current.parentElement.style.height = `${targetHeight}px`;
+          fetchData();
         }
       }
 
