@@ -10,7 +10,6 @@ import { useStore } from "zustand";
 import UserDetailTab from "../../user/_components/UserDetailTab";
 
 import Accordion from "./_components/Accordion";
-import NoticeLoading from "./loading";
 
 import { useUser } from "@/stores/auth.store";
 import instance from "@/api/axios";
@@ -139,7 +138,7 @@ export default function Notice() {
           )}
         </div>
       </div>
-      <Suspense fallback={<p>Loading List...</p>}>
+      <div>
         {!loading &&
           notice.map((item, index) => (
             <Accordion
@@ -149,7 +148,7 @@ export default function Notice() {
               title={item.title}
             />
           ))}
-      </Suspense>
+      </div>
       {totalPages > 1 && (
         <Pages
           activePage={Number(page) === 0 ? 1 : Number(page)}
