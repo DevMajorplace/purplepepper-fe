@@ -2,7 +2,6 @@
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import { PiPlusBold } from "react-icons/pi";
 import { GoPencil, GoTrash } from "react-icons/go";
 
@@ -11,19 +10,21 @@ import NoticeModal from "./NoticeModal";
 import Input from "@/components/Input";
 import Textarea from "@/components/Textarea";
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
+import instance from "@/api/axios";
+import { categories } from "@/config/site";
 
 export default function NoticeForm() {
   const [info, setInfo] = useState<{
     category: string;
     title: string;
     content: string;
-    target: number[];
+    target: string[];
     files: any[];
   }>({
     category: "category1",
     title: "",
     content: "",
-    target: [3, 2],
+    target: ["agency", "client"],
     files: [],
   });
   const [filesInput, setFilesInput] = useState([
@@ -38,22 +39,36 @@ export default function NoticeForm() {
   const [filesCount, setFilesCount] = useState(1);
   const params = useSearchParams();
   const searchParams = new URLSearchParams(params);
-  const idx = searchParams.get("idx");
+  const id = searchParams.get("id");
   const router = useRouter();
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
 
-  useEffect(() => {
-    if (idx) {
+  const fetchData = async () => {
+    try {
+      const res = await instance.get(
+        // eslint-disable-next-line prettier/prettier
+        `/boards/${id}`
+      );
+
       setInfo({
-        category: "category1",
-        title: "공지사항 제목",
-        content: "공지사항 내용",
-        target: [3, 2],
-        files: [],
+        category: res.data.category,
+        title: res.data.title,
+        content: res.data.content,
+        target: res.data.visible,
+        files: res.data.file_urls,
       });
+    } catch (error: any) {
+      //console.log(error);
+      alert(error.response.data.message);
     }
-  }, [idx]);
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
 
   const handleFileInputAdd = () => {
     setFilesInput([
@@ -112,7 +127,7 @@ export default function NoticeForm() {
 
   const handleDeleteClick = () => {
     setModalOpen(true);
-    setModalContents(<NoticeModal info={{ ...info, idx }} type={"delete"} />);
+    setModalContents(<NoticeModal info={{ ...info, id }} type={"delete"} />);
   };
 
   // 제출시
@@ -120,7 +135,13 @@ export default function NoticeForm() {
     e.preventDefault();
 
     setModalOpen(true);
-    setModalContents(<NoticeModal info={{ ...info, idx }} type={"edit"} />);
+    setModalContents(
+      <NoticeModal
+        info={id ? { ...info, id } : info}
+        type={id ? "edit" : "add"}
+        // eslint-disable-next-line prettier/prettier
+      />
+    );
     //console.dir(e.target.elements.file);
   };
 
@@ -135,34 +156,16 @@ export default function NoticeForm() {
             <label htmlFor="category">카테고리</label>
             <div>
               <div className="inline-flex items-center p-[4px] bg-[#f6f6f6] rounded-md h-[42px] *:h-[34px] *:px-5 *:rounded-md *:flex *:items-center *:cursor-pointer">
-                <div
-                  className={`${info.category === "category1" ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
-                  role="presentation"
-                  onClick={() => setInfo({ ...info, category: "category1" })}
-                >
-                  카테고리1
-                </div>
-                <div
-                  className={`${info.category === "category2" ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
-                  role="presentation"
-                  onClick={() => setInfo({ ...info, category: "category2" })}
-                >
-                  카테고리2
-                </div>
-                <div
-                  className={`${info.category === "category3" ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
-                  role="presentation"
-                  onClick={() => setInfo({ ...info, category: "category3" })}
-                >
-                  카테고리3
-                </div>
-                <div
-                  className={`${info.category === "category4" ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
-                  role="presentation"
-                  onClick={() => setInfo({ ...info, category: "category4" })}
-                >
-                  카테고리4
-                </div>
+                {categories.map((item) => (
+                  <div
+                    key={item.id}
+                    className={`${info.category === item.id ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
+                    role="presentation"
+                    onClick={() => setInfo({ ...info, category: item.id })}
+                  >
+                    {item.name}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -173,23 +176,25 @@ export default function NoticeForm() {
             <div>
               <div className="inline-flex items-center p-[4px] bg-[#f6f6f6] rounded-md h-[42px] *:h-[34px] *:px-5 *:rounded-md *:flex *:items-center *:cursor-pointer">
                 <div
-                  className={`${info.target.includes(3) && info.target.includes(2) ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
+                  className={`${info.target.includes("agency") && info.target.includes("client") ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
                   role="presentation"
-                  onClick={() => setInfo({ ...info, target: [3, 2] })}
+                  onClick={() =>
+                    setInfo({ ...info, target: ["agency", "client"] })
+                  }
                 >
                   전체
                 </div>
                 <div
-                  className={`${info.target.includes(3) && !info.target.includes(2) ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
+                  className={`${info.target.includes("agency") && !info.target.includes("client") ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
                   role="presentation"
-                  onClick={() => setInfo({ ...info, target: [3] })}
+                  onClick={() => setInfo({ ...info, target: ["agency"] })}
                 >
                   총판
                 </div>
                 <div
-                  className={`${info.target.includes(2) && !info.target.includes(3) ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
+                  className={`${info.target.includes("client") && !info.target.includes("agency") ? "bg-[#fff] text-[#333] font-semibold" : "text-[#333]/50"}`}
                   role="presentation"
-                  onClick={() => setInfo({ ...info, target: [2] })}
+                  onClick={() => setInfo({ ...info, target: ["client"] })}
                 >
                   광고주
                 </div>
@@ -232,10 +237,9 @@ export default function NoticeForm() {
         </div>
         <div className="flex justify-center gap-3 pt-6 *:px-8 *:py-3 *:rounded-md [&_.addBtn]:bg-[#111] hover:[&_.addBtn]:bg-[#202020] [&_.addBtn]:text-white [&_.cancelBtn]:border [&_.cancelBtn]:border-[#888]">
           <button className="addBtn flex items-center gap-2" type="submit">
-            <GoPencil className="text-[18px] pt-[1px]" />{" "}
-            {idx ? "수정" : "등록"}
+            <GoPencil className="text-[18px] pt-[1px]" /> {id ? "수정" : "등록"}
           </button>
-          {idx && (
+          {id && (
             <div
               className="bg-[#DC2626] text-white flex items-center gap-2 cursor-pointer"
               role="presentation"
