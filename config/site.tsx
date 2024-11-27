@@ -306,22 +306,22 @@ export const siteConfig = {
 export const categories = [
   {
     name: "카테고리1",
-    id: `/notice/category1`,
+    id: "category1",
   },
   {
     name: "카테고리2",
-    id: `/notice/category2`,
+    id: "category2",
   },
   {
     name: "카테고리3",
-    id: `/notice/category3`,
+    id: "category3",
   },
   {
     name: "카테고리4",
-    id: `/notice/category4`,
+    id: "category4",
   },
   {
     name: "카테고리5",
-    id: `/notice/category5`,
+    id: "category5",
   },
 ];

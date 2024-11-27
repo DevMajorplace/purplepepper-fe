@@ -40,7 +40,13 @@ export default function Accordion({ id, title, createdAt }: AccordionProps) {
         open
           ? (divRef.current.parentElement.style.height = `0px`)
           : (divRef.current.parentElement.style.height = `${targetHeight}px`);
-        open ? setContent(<></>) : setContent(await fetchData());
+        if (open) {
+          setContent(<></>);
+        } else {
+          const res = await fetchData();
+
+          setContent(<>{res}</>);
+        }
       }
 
       setOpen(!open);

@@ -235,27 +235,31 @@ export default function Notice() {
           )}
         </div>
       </div>
-      <div>
-        {notice.map((item, index) => (
-          <Accordion
-            key={index}
-            createdAt={item.createdAt}
-            id={item.id}
-            title={item.title}
-          />
-        ))}
-        {notice.length === 0 && (
-          <div className="text-center py-20">등록된 공지사항이 없습니다.</div>
-        )}
-      </div>
-      <Pages
-        activePage={Number(page) === 0 ? 1 : Number(page)}
-        className="pt-4"
-        createQueryString={createQueryString}
-        pageRange={PAGE_RANGE}
-        startPage={startPage}
-        totalPages={totalPages}
-      />
+      {notice && (
+        <div>
+          {notice.map((item, index) => (
+            <Accordion
+              key={index}
+              createdAt={item.createdAt}
+              id={item.id}
+              title={item.title}
+            />
+          ))}
+          {notice.length === 0 && (
+            <div className="text-center py-20">등록된 공지사항이 없습니다.</div>
+          )}
+        </div>
+      )}
+      {totalPages > 1 && (
+        <Pages
+          activePage={Number(page) === 0 ? 1 : Number(page)}
+          className="pt-4"
+          createQueryString={createQueryString}
+          pageRange={PAGE_RANGE}
+          startPage={startPage}
+          totalPages={totalPages}
+        />
+      )}
     </>
   );
 }
