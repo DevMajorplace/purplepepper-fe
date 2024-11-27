@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -11,7 +11,7 @@ import instance from "@/api/axios";
 
 export default function Accordion({ id, title, createdAt }: AccordionProps) {
   const [open, setOpen] = useState(false);
-  const [content, setContent] = useState<string>();
+  const [content, setContent] = useState<JSX.Element>();
   const divRef = useRef<HTMLDivElement>(null);
   const path = usePathname();
   const user = useStore(useUser, (state) => {
@@ -32,10 +32,22 @@ export default function Accordion({ id, title, createdAt }: AccordionProps) {
     }
   };
 
-  const handleClick = async () => {
-    open ? setContent("") : fetchData();
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-    setOpen(!open);
+  const handleClick = async () => {
+    if (divRef.current) {
+      const targetHeight = divRef.current.scrollHeight;
+
+      if (divRef.current.parentElement) {
+        open
+          ? (divRef.current.parentElement.style.height = `0px`)
+          : (divRef.current.parentElement.style.height = `${targetHeight}px`);
+      }
+
+      setOpen(!open);
+    }
   };
 
   return (
@@ -54,7 +66,7 @@ export default function Accordion({ id, title, createdAt }: AccordionProps) {
         </div>
       </div>
       <div
-        className={`transition-all duration-300 ${open ? "" : "hidden"} overflow-hidden border-b border-[#ccc] px-4`}
+        className={`transition-all duration-300 h-0 overflow-hidden border-b border-[#ccc] px-4`}
       >
         <div
           ref={divRef}
