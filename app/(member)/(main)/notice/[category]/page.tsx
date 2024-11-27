@@ -138,17 +138,16 @@ export default function Notice() {
           )}
         </div>
       </div>
-      <Suspense>
-        {!loading &&
-          notice.map((item, index) => (
+      {!loading &&
+        notice.map((item, index) => (
+          <Suspense key={index}>
             <Accordion
-              key={index}
               createdAt={item.createdAt}
               id={item.id}
               title={item.title}
             />
-          ))}
-      </Suspense>
+          </Suspense>
+        ))}
       {totalPages > 1 && (
         <Pages
           activePage={Number(page) === 0 ? 1 : Number(page)}
