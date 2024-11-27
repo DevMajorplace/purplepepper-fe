@@ -196,7 +196,7 @@ export const siteConfig = {
     },
     {
       label: "공지사항",
-      href: `/notice/${categories[0].id}`,
+      href: `/notice`,
       icon: <GoQuestion className="w-full h-full" />,
     },
     {
