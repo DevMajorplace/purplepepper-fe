@@ -11,7 +11,7 @@ import instance from "@/api/axios";
 
 export default function Accordion({ id, title, createdAt }: AccordionProps) {
   const [open, setOpen] = useState(false);
-  const [content, setContent] = useState<JSX.Element>();
+  const [content, setContent] = useState<string>();
   const divRef = useRef<HTMLDivElement>(null);
   const path = usePathname();
   const user = useStore(useUser, (state) => {
@@ -41,11 +41,11 @@ export default function Accordion({ id, title, createdAt }: AccordionProps) {
           ? (divRef.current.parentElement.style.height = `0px`)
           : (divRef.current.parentElement.style.height = `${targetHeight}px`);
         if (open) {
-          setContent(<></>);
+          setContent("");
         } else {
           const res = await fetchData();
 
-          setContent(<>{res}</>);
+          setContent(res.content);
         }
       }
 
