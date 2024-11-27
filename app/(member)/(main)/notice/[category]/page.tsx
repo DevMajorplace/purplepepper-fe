@@ -141,31 +141,14 @@ export default function Notice() {
       </div>
       <Suspense fallback={<NoticeLoading />}>
         {!loading &&
-          notice.map((item, index) => {
-            if (user?.role === "admin") {
-              // 관리자는 전체 노출
-              return (
-                <Accordion
-                  key={index}
-                  createdAt={item.createdAt}
-                  id={item.id}
-                  title={item.title}
-                />
-              );
-            } else {
-              if (item.visible.includes(user?.role)) {
-                // 회원 권한 포함일 때
-                return (
-                  <Accordion
-                    key={index}
-                    createdAt={item.createdAt}
-                    id={item.id}
-                    title={item.title}
-                  />
-                );
-              }
-            }
-          })}
+          notice.map((item, index) => (
+            <Accordion
+              key={index}
+              createdAt={item.createdAt}
+              id={item.id}
+              title={item.title}
+            />
+          ))}
       </Suspense>
       {totalPages > 1 && (
         <Pages

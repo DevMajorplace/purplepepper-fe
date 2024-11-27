@@ -43,6 +43,7 @@ export default function Accordion({ id, title, createdAt }: AccordionProps) {
           target.parentElement.style.height = `0px`;
           setContent("");
         } else {
+          target.parentElement.style.height = `auto`;
           fetchData();
         }
       }
