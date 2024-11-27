@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, usePathname } from "next/navigation";
-import { ChangeEvent, FormEvent, Suspense, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { GoPencil } from "react-icons/go";
 import Link from "next/link";
@@ -98,7 +98,7 @@ export default function Notice() {
         [search, "1"]
       );
     } else {
-      setCustomParams(["page"], ["1"]);
+      setCustomParams("page", "1");
     }
   };
 
@@ -138,16 +138,17 @@ export default function Notice() {
           )}
         </div>
       </div>
-      {!loading &&
-        notice.map((item, index) => (
-          <Suspense key={index}>
+      <div>
+        {!loading &&
+          notice.map((item, index) => (
             <Accordion
+              key={index}
               createdAt={item.createdAt}
               id={item.id}
               title={item.title}
             />
-          </Suspense>
-        ))}
+          ))}
+      </div>
       {totalPages > 1 && (
         <Pages
           activePage={Number(page) === 0 ? 1 : Number(page)}
