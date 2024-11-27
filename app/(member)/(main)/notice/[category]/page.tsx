@@ -10,7 +10,7 @@ import { useStore } from "zustand";
 import UserDetailTab from "../../user/_components/UserDetailTab";
 
 import Accordion from "./_components/Accordion";
-import NoticeLoading from "./_components/NoticeLoading";
+import NoticeLoading from "./loading";
 
 import { useUser } from "@/stores/auth.store";
 import instance from "@/api/axios";

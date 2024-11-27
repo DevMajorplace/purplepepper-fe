@@ -33,23 +33,9 @@ export default function Accordion({ id, title, createdAt }: AccordionProps) {
   };
 
   const handleClick = async () => {
-    const target = divRef.current;
+    open ? setContent("") : fetchData();
 
-    if (target) {
-      const targetHeight = target.scrollHeight;
-
-      if (target.parentElement) {
-        if (open) {
-          target.parentElement.style.height = `0px`;
-          setContent("");
-        } else {
-          target.parentElement.style.height = `auto`;
-          fetchData();
-        }
-      }
-
-      setOpen(!open);
-    }
+    setOpen(!open);
   };
 
   return (
@@ -68,7 +54,7 @@ export default function Accordion({ id, title, createdAt }: AccordionProps) {
         </div>
       </div>
       <div
-        className={`transition-all duration-300 h-0 overflow-hidden border-b border-[#ccc] px-4`}
+        className={`transition-all duration-300 ${open ? "" : "hidden"} overflow-hidden border-b border-[#ccc] px-4`}
       >
         <div
           ref={divRef}
