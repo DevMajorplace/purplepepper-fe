@@ -138,7 +138,7 @@ export default function Notice() {
           )}
         </div>
       </div>
-      <div>
+      <Suspense>
         {!loading &&
           notice.map((item, index) => (
             <Accordion
@@ -148,7 +148,7 @@ export default function Notice() {
               title={item.title}
             />
           ))}
-      </div>
+      </Suspense>
       {totalPages > 1 && (
         <Pages
           activePage={Number(page) === 0 ? 1 : Number(page)}

@@ -8,6 +8,29 @@ import { AiOutlineSetting } from "react-icons/ai";
 //import { FiPlus } from "react-icons/fi";
 //import { FiLogOut } from "react-icons/fi";
 
+export const categories = [
+  {
+    name: "카테고리1",
+    id: "category1",
+  },
+  {
+    name: "카테고리2",
+    id: "category2",
+  },
+  {
+    name: "카테고리3",
+    id: "category3",
+  },
+  {
+    name: "카테고리4",
+    id: "category4",
+  },
+  {
+    name: "카테고리5",
+    id: "category5",
+  },
+];
+
 export const siteConfig = {
   name: "Next.js + NextUI",
   description: "Make beautiful websites regardless of your design experience.",
@@ -173,7 +196,7 @@ export const siteConfig = {
     },
     {
       label: "공지사항",
-      href: "/notice",
+      href: `/notice/${categories[0].id}`,
       icon: <GoQuestion className="w-full h-full" />,
     },
     {
@@ -302,26 +325,3 @@ export const siteConfig = {
     },
   ],
 };
-
-export const categories = [
-  {
-    name: "카테고리1",
-    id: "category1",
-  },
-  {
-    name: "카테고리2",
-    id: "category2",
-  },
-  {
-    name: "카테고리3",
-    id: "category3",
-  },
-  {
-    name: "카테고리4",
-    id: "category4",
-  },
-  {
-    name: "카테고리5",
-    id: "category5",
-  },
-];

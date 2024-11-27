@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-
 import Card from "@/components/card";
 
 export default function NoticeLayout({
@@ -7,9 +5,5 @@ export default function NoticeLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <Card className="min-h-[87vh] gap-5">
-      <Suspense fallback={<p>Loading List...</p>}>{children}</Suspense>
-    </Card>
-  );
+  return <Card className="min-h-[87vh] gap-5">{children}</Card>;
 }
