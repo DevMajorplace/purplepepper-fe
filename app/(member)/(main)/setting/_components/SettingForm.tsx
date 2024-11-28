@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import Input from "@/components/Input";
+import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
+import SettingModal from "./SettingModal";
 
 const BANK_LIST = [
   "KEB하나은행",
@@ -41,6 +43,8 @@ export default function SettingForm({ type, user }: SettingFormProps) {
     account: { bank: "", accountNumber: "", depositor: "" },
   });
   const router = useRouter();
+  const setModalOpen = useSetModalOpen();
+  const setModalContents = useSetModalContents();
 
   useEffect(() => {
     setMember(
@@ -106,7 +110,14 @@ export default function SettingForm({ type, user }: SettingFormProps) {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(member);
+    setModalOpen(true);
+    setModalContents(
+      <SettingModal
+        info={member}
+        type={type}
+        // eslint-disable-next-line prettier/prettier
+      />
+    );
   };
 
   return (
@@ -126,6 +137,7 @@ export default function SettingForm({ type, user }: SettingFormProps) {
                   ? "총판명을 입력해주세요."
                   : "광고주 업체명을 입력해주세요."
               }
+              readOnly={true}
               type={"text"}
               value={member?.company}
               onChange={(e) => handleChange(e)}
@@ -137,6 +149,7 @@ export default function SettingForm({ type, user }: SettingFormProps) {
               label="추천 아이디"
               name={"recommendId"}
               placeholder="추천 아이디를 입력해주세요."
+              readOnly={true}
               type={"text"}
               value={member?.recommendId}
               onChange={(e) => handleChange(e)}
