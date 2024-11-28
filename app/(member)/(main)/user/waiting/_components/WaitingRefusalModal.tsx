@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
+import instance from "@/api/axios";
 
 export default function WaitingRefusalModal({
   info,
@@ -18,9 +19,19 @@ export default function WaitingRefusalModal({
     setModalContents(<></>);
   };
 
-  // 승인 클릭시
-  const handleApprovalClick = () => {
-    setState(true);
+  // 거절 클릭시
+  const handleApprovalClick = async () => {
+    try {
+      await instance.patch(`/admin/decline`, {
+        user_ids: [info.id],
+        rejection_reason: reason,
+      });
+
+      setState(true);
+    } catch (error: any) {
+      //console.log(error);
+      alert(error.response.data.message);
+    }
   };
 
   // 확인 클릭시

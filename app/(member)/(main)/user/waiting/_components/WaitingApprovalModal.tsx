@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
+import instance from "@/api/axios";
 
 export default function WaitingApprovalModal({
   info,
@@ -18,8 +19,15 @@ export default function WaitingApprovalModal({
   };
 
   // 승인 클릭시
-  const handleApprovalClick = () => {
-    setState(true);
+  const handleApprovalClick = async () => {
+    try {
+      await instance.patch(`/admin/approve`, { user_ids: [info.id] });
+
+      setState(true);
+    } catch (error: any) {
+      //console.log(error);
+      alert(error.response.data.message);
+    }
   };
 
   // 확인 클릭시

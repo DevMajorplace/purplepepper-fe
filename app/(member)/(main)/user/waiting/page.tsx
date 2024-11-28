@@ -75,18 +75,6 @@ const DEFAULT_DATA = [
     createdAt: "2024-10-21", // 등록일
     certificate:
       "chrome://favicon2/?size=24&scaleFactor=1x&showFallbackMonogram=&pageUrl=http%3A%2F%2Flocalhost%3A3000%2F", // 사업자등록증
-    approval: {
-      id: "회원아이디",
-      company: "업체명",
-      name: "홍길동",
-      recommendId: "추천인 아이디",
-    }, // 승인
-    refusal: {
-      id: "회원아이디",
-      company: "업체명",
-      name: "홍길동",
-      recommendId: "추천인 아이디",
-    }, // 거절
   },
   {
     id: "회원아이디2", // 회원아이디
@@ -97,18 +85,6 @@ const DEFAULT_DATA = [
     createdAt: "2024-10-21", // 등록일
     certificate:
       "chrome://favicon2/?size=24&scaleFactor=1x&showFallbackMonogram=&pageUrl=http%3A%2F%2Flocalhost%3A3000%2F", // 사업자등록증
-    approval: {
-      id: "회원아이디",
-      company: "업체명",
-      name: "홍길동",
-      recommendId: "추천인 아이디",
-    }, // 승인
-    refusal: {
-      id: "회원아이디",
-      company: "업체명",
-      name: "홍길동",
-      recommendId: "추천인 아이디",
-    }, // 거절
   },
 ];
 const DEFAULT_REFUSAL_DATA = [
@@ -150,13 +126,87 @@ export default function WaitingListPage() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [startPage, setStartPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const searchRef = useRef<HTMLInputElement>(null);
   const { getCustomParams, setCustomParams, createQueryString } =
     useCustomParams();
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
 
+  const fetchData = async (page: number, params?: string) => {
+    try {
+      const res = await instance.get(
+        // eslint-disable-next-line prettier/prettier
+        `/admin/status?page=${page}&pageSize=15&status=${!refusalMode ? "pending" : "declined"}`
+      );
+
+      !refusalMode
+        ? setData(
+            res.data.data.map(
+              (item: {
+                user_id: string;
+                company_name: string;
+                manager_name: string;
+                manager_contact: string;
+                parent_id: string;
+                created_at: string;
+                business_registration: string;
+              }) => {
+                return {
+                  id: item.user_id,
+                  company: item.company_name,
+                  name: item.manager_name,
+                  phone: item.manager_contact,
+                  recommendId: item.parent_id,
+                  createdAt: item.created_at,
+                  certificate: item.business_registration,
+                };
+                // eslint-disable-next-line prettier/prettier
+              }
+              // eslint-disable-next-line prettier/prettier
+            )
+          )
+        : setRefusalData(
+            res.data.data.map(
+              (item: {
+                user_id: string;
+                company_name: string;
+                manager_name: string;
+                manager_contact: string;
+                parent_id: string;
+                created_at: string;
+                business_registration: string;
+                decliend_at: string;
+                rejection_reason: string;
+              }) => {
+                return {
+                  id: item.user_id,
+                  company: item.company_name,
+                  name: item.manager_name,
+                  phone: item.manager_contact,
+                  recommendId: item.parent_id,
+                  createdAt: item.created_at,
+                  certificate: item.business_registration,
+                  refusalAt: item.decliend_at,
+                  reason: item.rejection_reason,
+                };
+                // eslint-disable-next-line prettier/prettier
+              }
+              // eslint-disable-next-line prettier/prettier
+            )
+          );
+
+      // 총 페이지 수
+      setTotalPages(res.data.totalPages);
+    } catch (error: any) {
+      //console.log(error);
+      alert(error.response.data.message);
+    }
+  };
+
   useEffect(() => {
+    const paramsNames = [];
+    const paramsValues = [];
     const crrpage = getCustomParams("page");
     const cStart = getCustomParams("cStart");
     const cEnd = getCustomParams("cEnd");
@@ -191,6 +241,8 @@ export default function WaitingListPage() {
         setStartPage((prev) => prev - PAGE_RANGE);
       }
     }
+
+    fetchData(Number(crrpage) !== 0 ? Number(crrpage) : 1);
   }, [
     getCustomParams("page"),
     getCustomParams("cStart"),
@@ -314,7 +366,14 @@ export default function WaitingListPage() {
         <div className="flex justify-center items-center">
           <button
             className="border border-[#ddd] bg-[#F0FDF4] text-[#15803D] rounded-md px-4 py-2"
-            onClick={() => handleApprovalClick(info.getValue())}
+            onClick={() =>
+              handleApprovalClick({
+                id: info.row.original.id,
+                company: info.row.original.company,
+                name: info.row.original.name,
+                recommendId: info.row.original.recommendId,
+              })
+            }
           >
             가입승인
           </button>
@@ -328,7 +387,14 @@ export default function WaitingListPage() {
         <div className="flex justify-center items-center">
           <button
             className="bg-[#DC2626] text-white rounded-md px-4 py-2"
-            onClick={() => handleRefusalClick(info.getValue())}
+            onClick={() =>
+              handleRefusalClick({
+                id: info.row.original.id,
+                company: info.row.original.company,
+                name: info.row.original.name,
+                recommendId: info.row.original.recommendId,
+              })
+            }
           >
             가입거절
           </button>
@@ -634,14 +700,16 @@ export default function WaitingListPage() {
               : { data: refusalData, columns: REFUSAL_COLUMNS }
           }
         />
-        <Pages
-          activePage={Number(page) === 0 ? 1 : Number(page)}
-          className="pt-4"
-          createQueryString={createQueryString}
-          pageRange={PAGE_RANGE}
-          startPage={startPage}
-          totalPages={12}
-        />
+        {totalPages > 1 && (
+          <Pages
+            activePage={Number(page) === 0 ? 1 : Number(page)}
+            className="pt-4"
+            createQueryString={createQueryString}
+            pageRange={PAGE_RANGE}
+            startPage={startPage}
+            totalPages={totalPages}
+          />
+        )}
       </div>
     </Card>
   );
