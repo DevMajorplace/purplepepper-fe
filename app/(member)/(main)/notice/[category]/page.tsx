@@ -91,7 +91,7 @@ export default function Notice() {
   const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (search) {
+    if (search !== "") {
       setCustomParams(
         ["keyword", "page"],
         // eslint-disable-next-line prettier/prettier
