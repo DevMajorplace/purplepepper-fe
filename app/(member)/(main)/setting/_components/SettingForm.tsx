@@ -38,18 +38,36 @@ export default function SettingForm({ type, user }: SettingFormProps) {
     name: "",
     phone: "",
     recommendId: "",
+    account: { bank: "", accountNumber: "", depositor: "" },
   });
   const router = useRouter();
 
   useEffect(() => {
-    setMember({
-      company: user.company,
-      id: user.id,
-      password: "",
-      name: user.name,
-      phone: user.phone,
-      recommendId: user.recommendId,
-    });
+    setMember(
+      user.account
+        ? {
+            company: user.company,
+            id: user.id,
+            password: "",
+            name: user.name,
+            phone: user.phone,
+            recommendId: user.recommendId,
+            account: {
+              bank: user.account?.bank,
+              accountNumber: user.account?.accountNumber,
+              depositor: user.account?.depositor,
+            },
+          }
+        : {
+            company: user.company,
+            id: user.id,
+            password: "",
+            name: user.name,
+            phone: user.phone,
+            recommendId: user.recommendId,
+            // eslint-disable-next-line prettier/prettier
+          }
+    );
   }, [user]);
 
   // 회원 정보 수정시
