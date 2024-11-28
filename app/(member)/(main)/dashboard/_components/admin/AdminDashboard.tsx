@@ -75,9 +75,9 @@ export default function AdminDashboard() {
       <AgencyRanking />
 
       {/* 총판 목록 */}
-      <Card>
+      {/* <Card>
         <AgencyList />
-      </Card>
+      </Card> */}
     </div>
   );
 }
