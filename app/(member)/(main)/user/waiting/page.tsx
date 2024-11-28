@@ -67,38 +67,26 @@ const refusalColumnHelper = createColumnHelper<RefusalRowObj>();
 
 const DEFAULT_DATA = [
   {
-    id: "회원아이디", // 회원아이디
-    company: "업체명", // 업체명
-    name: "홍길동", // 담당자명
-    phone: "010-1234-5678", // 담당자 연락처
-    recommendId: "추천인 아이디", // 추천인 아이디
-    createdAt: "2024-10-21", // 등록일
-    certificate:
-      "chrome://favicon2/?size=24&scaleFactor=1x&showFallbackMonogram=&pageUrl=http%3A%2F%2Flocalhost%3A3000%2F", // 사업자등록증
-  },
-  {
-    id: "회원아이디2", // 회원아이디
-    company: "업체명2", // 업체명
-    name: "홍길동2", // 담당자명
-    phone: "010-1234-5678", // 담당자 연락처
-    recommendId: "추천인 아이디", // 추천인 아이디
-    createdAt: "2024-10-21", // 등록일
-    certificate:
-      "chrome://favicon2/?size=24&scaleFactor=1x&showFallbackMonogram=&pageUrl=http%3A%2F%2Flocalhost%3A3000%2F", // 사업자등록증
+    id: "", // 회원아이디
+    company: "", // 업체명
+    name: "", // 담당자명
+    phone: "", // 담당자 연락처
+    recommendId: "", // 추천인 아이디
+    createdAt: "", // 등록일
+    certificate: "", // 사업자등록증
   },
 ];
 const DEFAULT_REFUSAL_DATA = [
   {
-    id: "회원아이디", // 회원아이디
-    company: "업체명", // 업체명
-    name: "홍길동", // 담당자명
-    phone: "010-1234-5678", // 담당자 연락처
-    recommendId: "추천인 아이디", // 추천인 아이디
-    createdAt: "2024-10-21", // 등록일
-    certificate:
-      "chrome://favicon2/?size=24&scaleFactor=1x&showFallbackMonogram=&pageUrl=http%3A%2F%2Flocalhost%3A3000%2F", // 사업자등록증
-    refusalAt: "2024-10-21", // 거절일시
-    reason: "거절 사유", // 거절 사유
+    id: "", // 회원아이디
+    company: "", // 업체명
+    name: "", // 담당자명
+    phone: "", // 담당자 연락처
+    recommendId: "", // 추천인 아이디
+    createdAt: "", // 등록일
+    certificate: "", // 사업자등록증
+    refusalAt: "", // 거절일시
+    reason: "", // 거절 사유
   },
 ];
 const DEFAULT_FILTER = {
@@ -196,6 +184,8 @@ export default function WaitingListPage() {
             )
           );
 
+      // 총 인원
+      setTotal(res.data.totalItems);
       // 총 페이지 수
       setTotalPages(res.data.totalPages);
     } catch (error: any) {
@@ -343,7 +333,7 @@ export default function WaitingListPage() {
       header: () => (
         <TableTh text="가입요청일시" onSort={() => handleSort("createdAt")} />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => new Date(info.getValue()),
     }),
     columnHelper.accessor("certificate", {
       id: "certificate",
