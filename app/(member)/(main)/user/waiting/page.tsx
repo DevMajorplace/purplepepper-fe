@@ -29,6 +29,7 @@ import useCustomParams from "@/hooks/useCustomParams";
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
 import OnOffButton from "@/components/button/OnOffButton";
 import instance from "@/api/axios";
+import formatDate from "@/utils/formatDate";
 
 type ModalInfo = {
   id: string;
@@ -334,8 +335,7 @@ export default function WaitingListPage() {
         <TableTh text="가입요청일시" onSort={() => handleSort("createdAt")} />
       ),
       cell: (info) => {
-        console.log(info.getValue());
-        return new Date(info.getValue()).toLocaleDateString();
+        return formatDate(info.getValue());
       },
     }),
     columnHelper.accessor("certificate", {
