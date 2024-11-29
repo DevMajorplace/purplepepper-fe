@@ -241,6 +241,7 @@ export default function WaitingListPage() {
     getCustomParams("type"),
     getCustomParams("keyword"),
     startPage,
+    refusalMode,
   ]);
 
   // 테이블 정렬
@@ -546,7 +547,9 @@ export default function WaitingListPage() {
     }
 
     setModalOpen(true);
-    setModalContents(<WaitingChkApprovalModal info={chk} />);
+    setModalContents(
+      <WaitingChkApprovalModal info={chk} data={data} setData={setData} />
+    );
   };
 
   // 일괄거절 클릭
@@ -560,7 +563,9 @@ export default function WaitingListPage() {
     }
 
     setModalOpen(true);
-    setModalContents(<WaitingChkRefusalModal info={chk} />);
+    setModalContents(
+      <WaitingChkRefusalModal info={chk} data={data} setData={setData} />
+    );
   };
 
   // 거절된 가입요청만 보기 클릭
@@ -577,13 +582,17 @@ export default function WaitingListPage() {
   // 승인 클릭
   const handleApprovalClick = (info: ModalInfo) => {
     setModalOpen(true);
-    setModalContents(<WaitingApprovalModal info={info} />);
+    setModalContents(
+      <WaitingApprovalModal info={info} data={data} setData={setData} />
+    );
   };
 
   // 거절 클릭
   const handleRefusalClick = (info: ModalInfo) => {
     setModalOpen(true);
-    setModalContents(<WaitingRefusalModal info={info} />);
+    setModalContents(
+      <WaitingRefusalModal info={info} data={data} setData={setData} />
+    );
   };
 
   return (
