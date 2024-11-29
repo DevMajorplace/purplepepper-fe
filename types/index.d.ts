@@ -251,13 +251,28 @@ declare global {
   }
 
   // 가입 대기자 waiting
+  // 대기자 테이블
+  interface Waiting {
+    id: string;
+    company: string;
+    name: string;
+    phone: string;
+    recommendId: string;
+    createdAt: string;
+    certificate: string;
+  }
+  [];
   // 일괄 승인 모달
   interface WaitingChkApprovalModalProps {
     info: string[];
+    data: Waiting[];
+    setData: Dispatch<SetStateAction<Waiting>>;
   }
   // 일괄 거절 모달
   interface WaitingChkRefusalModalProps {
     info: string[];
+    data: Waiting[];
+    setData: Dispatch<SetStateAction<Waiting>>;
   }
   // 개별 승인 모달
   interface WaitingApprovalModalProps {
@@ -267,6 +282,8 @@ declare global {
       name: string;
       recommendId: string;
     };
+    data: Waiting[];
+    setData: Dispatch<SetStateAction<Waiting>>;
   }
   // 개별 거절 모달
   interface WaitingRefusalModalProps {
@@ -276,6 +293,8 @@ declare global {
       name: string;
       recommendId: string;
     };
+    data: Waiting[];
+    setData: Dispatch<SetStateAction<Waiting>>;
   }
 
   // 미션 관리

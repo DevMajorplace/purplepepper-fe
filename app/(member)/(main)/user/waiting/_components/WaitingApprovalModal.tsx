@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useSetModalContents, useSetModalOpen } from "@/contexts/ModalContext";
@@ -6,11 +5,12 @@ import instance from "@/api/axios";
 
 export default function WaitingApprovalModal({
   info,
+  data,
+  setData,
 }: WaitingApprovalModalProps) {
   const [state, setState] = useState(false);
   const setModalOpen = useSetModalOpen();
   const setModalContents = useSetModalContents();
-  const router = useRouter();
 
   // 취소 클릭시
   const handleCancelClick = () => {
@@ -32,9 +32,13 @@ export default function WaitingApprovalModal({
 
   // 확인 클릭시
   const handleOkayClick = () => {
+    const newData = data.filter((item) => {
+      return item.id != info.id;
+    });
+
+    setData(newData);
     setModalOpen(false);
     setModalContents(<></>);
-    router.refresh();
   };
 
   return (

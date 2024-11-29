@@ -548,7 +548,8 @@ export default function WaitingListPage() {
 
     setModalOpen(true);
     setModalContents(
-      <WaitingChkApprovalModal info={chk} data={data} setData={setData} />
+      // eslint-disable-next-line prettier/prettier
+      <WaitingChkApprovalModal data={data} info={chk} setData={setData} />
     );
   };
 
@@ -564,7 +565,8 @@ export default function WaitingListPage() {
 
     setModalOpen(true);
     setModalContents(
-      <WaitingChkRefusalModal info={chk} data={data} setData={setData} />
+      // eslint-disable-next-line prettier/prettier
+      <WaitingChkRefusalModal data={data} info={chk} setData={setData} />
     );
   };
 
@@ -583,7 +585,8 @@ export default function WaitingListPage() {
   const handleApprovalClick = (info: ModalInfo) => {
     setModalOpen(true);
     setModalContents(
-      <WaitingApprovalModal info={info} data={data} setData={setData} />
+      // eslint-disable-next-line prettier/prettier
+      <WaitingApprovalModal data={data} info={info} setData={setData} />
     );
   };
 
@@ -591,7 +594,8 @@ export default function WaitingListPage() {
   const handleRefusalClick = (info: ModalInfo) => {
     setModalOpen(true);
     setModalContents(
-      <WaitingRefusalModal info={info} data={data} setData={setData} />
+      // eslint-disable-next-line prettier/prettier
+      <WaitingRefusalModal data={data} info={info} setData={setData} />
     );
   };
 
