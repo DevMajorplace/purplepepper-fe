@@ -333,7 +333,7 @@ export default function WaitingListPage() {
       header: () => (
         <TableTh text="가입요청일시" onSort={() => handleSort("createdAt")} />
       ),
-      cell: (info) => new Date(info.getValue()),
+      cell: (info) => new Date(info.getValue()).toLocaleDateString(),
     }),
     columnHelper.accessor("certificate", {
       id: "certificate",
