@@ -4,7 +4,7 @@ export default function formatDate(date: string) {
   const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
   const kr_curr = new Date(utc + KR_TIME_DIFF);
   const dateFormat = kr_curr.toLocaleDateString();
-  const timeFormat = kr_curr.toLocaleTimeString().split(" ")[1];
+  const timeFormat = kr_curr.toTimeString().split(" ")[0];
   const format = `${dateFormat} ${timeFormat}`;
 
   return format;
