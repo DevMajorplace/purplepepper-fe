@@ -5,9 +5,9 @@ export default function formatDate(date: string) {
   const kr_curr = new Date(utc + KR_TIME_DIFF);
   console.log("toLocaleDateString ", kr_curr.toLocaleDateString());
   console.log("toLocaleTimeString ", kr_curr.toLocaleTimeString());
-  console.log("toISOString ", kr_curr.toISOString());
   console.log("toString ", kr_curr.toString());
   console.log("toTimeString ", kr_curr.toTimeString());
+  console.log("toLocaleString ", kr_curr.toLocaleString());
   //console.log("toLocaleDateString ", kr_curr.toTimeString().split(" ")[0]);
   const format = `${kr_curr.toLocaleString()} ${kr_curr.toTimeString().split(" ")[0]}`;
 
