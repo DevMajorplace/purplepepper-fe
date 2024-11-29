@@ -34,7 +34,7 @@ export default function WaitingChkApprovalModal({
   const handleOkayClick = () => {
     setModalOpen(false);
     setModalContents(<></>);
-    router.push(`/user/waiting`);
+    router.refresh();
   };
 
   return (

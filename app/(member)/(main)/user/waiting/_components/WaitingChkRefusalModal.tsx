@@ -38,7 +38,7 @@ export default function WaitingChkRefusalModal({
   const handleOkayClick = () => {
     setModalOpen(false);
     setModalContents(<></>);
-    router.push(`/user/waiting`);
+    router.refresh();
   };
 
   return (
