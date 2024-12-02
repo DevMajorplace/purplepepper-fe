@@ -32,10 +32,10 @@ export default function MoneyChkApprovalModal({
 
     if (Array.isArray(file)) {
       file.map((file: any) => {
-        formData.append("files", file);
+        formData.append("file", file);
       });
     } else {
-      formData.append("files", file);
+      formData.append("file", file);
     }
 
     console.log("formData: ", formData);
