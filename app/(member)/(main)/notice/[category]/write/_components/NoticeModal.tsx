@@ -6,9 +6,11 @@ import instance from "@/api/axios";
 
 export default function MoneyChkApprovalModal({
   type,
+  file,
   info,
 }: {
   type: string;
+  file?: any;
   info: any;
 }) {
   const [state, setState] = useState(false);
@@ -24,8 +26,31 @@ export default function MoneyChkApprovalModal({
     setModalContents(<></>);
   };
 
-  // 확인 클릭시
-  const handleConfirmClick = async () => {
+  const postFiles = async () => {
+    const formData = new FormData();
+
+    file.map((file: any) => {
+      formData.append("files", file);
+    });
+
+    console.log("formData: ", formData);
+
+    try {
+      // 추가일 때
+      const response = await instance.post(`/boards/file`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("response: ", response);
+    } catch (error: any) {
+      //console.log(error);
+      alert(error.response.data.message);
+    }
+  };
+
+  const postBoards = async () => {
     try {
       if (type === "add") {
         // 추가일 때
@@ -55,6 +80,12 @@ export default function MoneyChkApprovalModal({
       //console.log(error);
       alert(error.response.data.message);
     }
+  };
+
+  // 확인 클릭시
+  const handleConfirmClick = () => {
+    postFiles();
+    //postBoards();
   };
 
   // 확인 클릭시

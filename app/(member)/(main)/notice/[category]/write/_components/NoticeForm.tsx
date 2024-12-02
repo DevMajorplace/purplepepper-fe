@@ -133,10 +133,12 @@ export default function NoticeForm() {
   // 제출시
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const target = e.target as any;
 
     setModalOpen(true);
     setModalContents(
       <NoticeModal
+        file={target.elements.file}
         info={id ? { ...info, id } : info}
         type={id ? "edit" : "add"}
         // eslint-disable-next-line prettier/prettier
