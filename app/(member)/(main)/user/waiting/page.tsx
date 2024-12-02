@@ -318,7 +318,7 @@ export default function WaitingListPage() {
         <TableTh text="가입요청일시" onSort={() => handleSort("createdAt")} />
       ),
       cell: (info) => {
-        return formatDate(info.getValue());
+        return info.getValue() && formatDate(info.getValue());
       },
     }),
     columnHelper.accessor("certificate", {
@@ -341,7 +341,7 @@ export default function WaitingListPage() {
       id: "approval",
       header: () => <TableTh className="text-center" text="승인" />,
       cell: (info) => {
-        info.getValue() && (
+        info.row.original.id && (
           <div className="flex justify-center items-center">
             <button
               className="border border-[#ddd] bg-[#F0FDF4] text-[#15803D] rounded-md px-4 py-2"
@@ -364,7 +364,7 @@ export default function WaitingListPage() {
       id: "refusal",
       header: () => <TableTh className="text-center" text="거절" />,
       cell: (info) => {
-        info.getValue() && (
+        info.row.original.id && (
           <div className="flex justify-center items-center">
             <button
               className="bg-[#DC2626] text-white rounded-md px-4 py-2"
@@ -422,7 +422,7 @@ export default function WaitingListPage() {
       header: () => (
         <TableTh text="가입요청일시" onSort={() => handleSort("createdAt")} />
       ),
-      cell: (info) => formatDate(info.getValue()),
+      cell: (info) => info.getValue() && formatDate(info.getValue()),
     }),
     refusalColumnHelper.accessor("certificate", {
       id: "certificate",
@@ -445,7 +445,7 @@ export default function WaitingListPage() {
       header: () => (
         <TableTh text="거절처리일시" onSort={() => handleSort("refusalAt")} />
       ),
-      cell: (info) => formatDate(info.getValue()),
+      cell: (info) => info.getValue() && formatDate(info.getValue()),
     }),
     refusalColumnHelper.accessor("reason", {
       id: "reason",
