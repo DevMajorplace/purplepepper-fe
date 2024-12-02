@@ -27,6 +27,7 @@ export default function MoneyChkApprovalModal({
   };
 
   const postFiles = async () => {
+    console.log(file);
     const formData = new FormData();
 
     if (Array.isArray(file)) {
