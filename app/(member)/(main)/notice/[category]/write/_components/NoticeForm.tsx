@@ -134,6 +134,8 @@ export default function NoticeForm() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const target = e.target as any;
+    console.log(target.elements.file);
+    return false;
 
     setModalOpen(true);
     setModalContents(
