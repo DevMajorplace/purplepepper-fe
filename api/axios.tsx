@@ -49,6 +49,15 @@ instance.interceptors.response.use(
       });
     }
 
+    // error 코드 400 일때 발생 - 토큰이 없거나 로그인 정보가 틀렸을 때
+    if (
+      error.status === 400 &&
+      error.response.data.message === "토큰이 없습니다."
+    ) {
+      const user = localStorage.getItem("user-storage");
+      console.log(user);
+    }
+
     // 응답 오류가 있는 작업 수행
     return Promise.reject(error);
     // eslint-disable-next-line prettier/prettier
