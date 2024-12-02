@@ -29,9 +29,13 @@ export default function MoneyChkApprovalModal({
   const postFiles = async () => {
     const formData = new FormData();
 
-    file.map((file: any) => {
+    if (Array.isArray(file)) {
+      file.map((file: any) => {
+        formData.append("files", file);
+      });
+    } else {
       formData.append("files", file);
-    });
+    }
 
     console.log("formData: ", formData);
 
