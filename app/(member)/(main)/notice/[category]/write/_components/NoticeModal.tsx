@@ -28,21 +28,21 @@ export default function MoneyChkApprovalModal({
 
   const postFiles = async () => {
     console.log(file);
-    const formData = new FormData();
+    // const formData = new FormData();
 
-    if (Array.isArray(file)) {
-      file.map((file: any) => {
-        formData.append("file", file);
-      });
-    } else {
-      formData.append("file", file);
-    }
+    // if (Array.isArray(file)) {
+    //   file.map((file: any) => {
+    //     formData.append("file", file);
+    //   });
+    // } else {
+    //   formData.append("file", file);
+    // }
 
-    console.log("formData: ", formData);
+    console.log("formData: ", file);
 
     try {
       // 추가일 때
-      const response = await instance.post(`/boards/file`, formData, {
+      const response = await instance.post(`/boards/file`, file, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

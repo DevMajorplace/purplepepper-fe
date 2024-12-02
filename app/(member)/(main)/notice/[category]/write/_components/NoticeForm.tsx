@@ -134,11 +134,20 @@ export default function NoticeForm() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const target = e.target as any;
+    const formData = new FormData();
+
+    if (Array.isArray(target.elements.file)) {
+      target.elements.file.map((file: any) => {
+        formData.append("file", file);
+      });
+    } else {
+      formData.append("file", target.elements.file);
+    }
 
     setModalOpen(true);
     setModalContents(
       <NoticeModal
-        file={target.elements.file}
+        file={formData}
         info={id ? { ...info, id } : info}
         type={id ? "edit" : "add"}
         // eslint-disable-next-line prettier/prettier
