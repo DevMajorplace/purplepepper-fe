@@ -1,4 +1,5 @@
 export default function formatDate(date: string) {
+  console.log(date);
   const newDate = new Date(date);
   const utc = newDate.getTime() + newDate.getTimezoneOffset() * 60 * 1000;
   const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
