@@ -271,7 +271,7 @@ declare global {
     parent_id: string;
     created_at: string;
     business_registration: string;
-    decliend_at: string;
+    declined_at: string;
     rejection_reason: string;
   }
 

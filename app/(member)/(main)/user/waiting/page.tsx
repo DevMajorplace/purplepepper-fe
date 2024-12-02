@@ -180,7 +180,7 @@ export default function WaitingListPage() {
                   recommendId: item.parent_id,
                   createdAt: item.created_at,
                   certificate: item.business_registration,
-                  refusalAt: item.decliend_at,
+                  refusalAt: item.declined_at,
                   reason: item.rejection_reason,
                 };
                 // eslint-disable-next-line prettier/prettier
@@ -438,7 +438,7 @@ export default function WaitingListPage() {
       header: () => (
         <TableTh text="가입요청일시" onSort={() => handleSort("createdAt")} />
       ),
-      cell: (info) => info.getValue() && formatDate(info.getValue()),
+      cell: (info) => formatDate(info.getValue()),
     }),
     refusalColumnHelper.accessor("certificate", {
       id: "certificate",
@@ -459,7 +459,7 @@ export default function WaitingListPage() {
       header: () => (
         <TableTh text="거절처리일시" onSort={() => handleSort("refusalAt")} />
       ),
-      cell: (info) => info.getValue() && formatDate(info.getValue()),
+      cell: (info) => formatDate(info.getValue()),
     }),
     refusalColumnHelper.accessor("reason", {
       id: "reason",
