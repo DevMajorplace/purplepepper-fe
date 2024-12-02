@@ -99,10 +99,32 @@ const DEFAULT_DATE = { start: null, end: null };
 const PAGE_RANGE = 5;
 
 export default function WaitingListPage() {
-  const [data, setData] = useState(DEFAULT_DATA);
+  const [data, setData] = useState<
+    {
+      id: string;
+      company: string;
+      name: string;
+      phone: string;
+      recommendId: string;
+      createdAt: string;
+      certificate: string;
+    }[]
+  >();
   const [chk, setChk] = useState<string[]>([]);
   const [refusalMode, setRefusalMode] = useState(false);
-  const [refusalData, setRefusalData] = useState(DEFAULT_REFUSAL_DATA);
+  const [refusalData, setRefusalData] = useState<
+    {
+      id: string;
+      company: string;
+      name: string;
+      phone: string;
+      recommendId: string;
+      createdAt: string;
+      certificate: string;
+      refusalAt: string;
+      reason: string;
+    }[]
+  >();
   const [createdAt, setCreatedAt] = useState<{
     start: string | null;
     end: string | null;
@@ -236,7 +258,7 @@ export default function WaitingListPage() {
     const checked = e.target.checked;
 
     if (checked) {
-      setChk(data.map((item) => item.id));
+      data && setChk(data.map((item) => item.id));
     } else {
       setChk([]);
     }
@@ -262,7 +284,7 @@ export default function WaitingListPage() {
       id: "chk",
       header: () => (
         <input
-          checked={data.length !== 0 && chk.length === data.length}
+          checked={data?.length !== 0 && chk.length === data?.length}
           name="allChk"
           type="checkbox"
           onChange={(e) => handleAllChkChange(e)}
@@ -324,64 +346,58 @@ export default function WaitingListPage() {
     columnHelper.accessor("certificate", {
       id: "certificate",
       header: () => <TableTh className="text-center" text="사업자등록증" />,
-      cell: (info) => {
-        info.getValue() && (
-          <div className="flex justify-center items-center">
-            <button
-              className="border border-[#ccc] rounded-md px-4 py-2"
-              onClick={() => handleCerificateClick(info.getValue())}
-            >
-              이미지 보기
-            </button>
-          </div>
-        );
-      },
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <button
+            className="border border-[#ccc] rounded-md px-4 py-2"
+            onClick={() => handleCerificateClick(info.getValue())}
+          >
+            이미지 보기
+          </button>
+        </div>
+      ),
     }),
     columnHelper.accessor("approval", {
       id: "approval",
       header: () => <TableTh className="text-center" text="승인" />,
-      cell: (info) => {
-        info.row.original.id && (
-          <div className="flex justify-center items-center">
-            <button
-              className="border border-[#ddd] bg-[#F0FDF4] text-[#15803D] rounded-md px-4 py-2"
-              onClick={() =>
-                handleApprovalClick({
-                  id: info.row.original.id,
-                  company: info.row.original.company,
-                  name: info.row.original.name,
-                  recommendId: info.row.original.recommendId,
-                })
-              }
-            >
-              가입승인
-            </button>
-          </div>
-        );
-      },
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <button
+            className="border border-[#ddd] bg-[#F0FDF4] text-[#15803D] rounded-md px-4 py-2"
+            onClick={() =>
+              handleApprovalClick({
+                id: info.row.original.id,
+                company: info.row.original.company,
+                name: info.row.original.name,
+                recommendId: info.row.original.recommendId,
+              })
+            }
+          >
+            가입승인
+          </button>
+        </div>
+      ),
     }),
     columnHelper.accessor("refusal", {
       id: "refusal",
       header: () => <TableTh className="text-center" text="거절" />,
-      cell: (info) => {
-        info.row.original.id && (
-          <div className="flex justify-center items-center">
-            <button
-              className="bg-[#DC2626] text-white rounded-md px-4 py-2"
-              onClick={() =>
-                handleRefusalClick({
-                  id: info.row.original.id,
-                  company: info.row.original.company,
-                  name: info.row.original.name,
-                  recommendId: info.row.original.recommendId,
-                })
-              }
-            >
-              가입거절
-            </button>
-          </div>
-        );
-      },
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <button
+            className="bg-[#DC2626] text-white rounded-md px-4 py-2"
+            onClick={() =>
+              handleRefusalClick({
+                id: info.row.original.id,
+                company: info.row.original.company,
+                name: info.row.original.name,
+                recommendId: info.row.original.recommendId,
+              })
+            }
+          >
+            가입거절
+          </button>
+        </div>
+      ),
     }),
   ];
 
@@ -427,18 +443,16 @@ export default function WaitingListPage() {
     refusalColumnHelper.accessor("certificate", {
       id: "certificate",
       header: () => <TableTh className="text-center" text="사업자등록증" />,
-      cell: (info) => {
-        info.getValue() && (
-          <div className="flex justify-center items-center">
-            <button
-              className="border border-[#ccc] rounded-md px-4 py-2"
-              onClick={() => handleCerificateClick(info.getValue())}
-            >
-              이미지 보기
-            </button>
-          </div>
-        );
-      },
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <button
+            className="border border-[#ccc] rounded-md px-4 py-2"
+            onClick={() => handleCerificateClick(info.getValue())}
+          >
+            이미지 보기
+          </button>
+        </div>
+      ),
     }),
     refusalColumnHelper.accessor("refusalAt", {
       id: "refusalAt",
@@ -712,14 +726,16 @@ export default function WaitingListPage() {
             </div>
           </div>
         </div>
-        <Table
-          tableClass={"[&_td]:py-3"}
-          tableData={
-            !refusalMode
-              ? { data, columns: COLUMNS }
-              : { data: refusalData, columns: REFUSAL_COLUMNS }
-          }
-        />
+        {(data || refusalData) && (
+          <Table
+            tableClass={"[&_td]:py-3"}
+            tableData={
+              !refusalMode
+                ? { data, columns: COLUMNS }
+                : { data: refusalData, columns: REFUSAL_COLUMNS }
+            }
+          />
+        )}
         {totalPages > 1 && (
           <Pages
             activePage={Number(page) === 0 ? 1 : Number(page)}
