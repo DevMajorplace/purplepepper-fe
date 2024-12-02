@@ -252,6 +252,29 @@ declare global {
 
   // 가입 대기자 waiting
   // 대기자 테이블
+
+  interface WaitingData {
+    user_id: string;
+    company_name: string;
+    manager_name: string;
+    manager_contact: string;
+    parent_id: string;
+    created_at: string;
+    business_registration: string;
+  }
+
+  interface RefuseData {
+    user_id: string;
+    company_name: string;
+    manager_name: string;
+    manager_contact: string;
+    parent_id: string;
+    created_at: string;
+    business_registration: string;
+    decliend_at: string;
+    rejection_reason: string;
+  }
+
   interface Waiting {
     id: string;
     company: string;
@@ -265,14 +288,16 @@ declare global {
   // 일괄 승인 모달
   interface WaitingChkApprovalModalProps {
     info: string[];
-    data: Waiting[];
     setData: Dispatch<SetStateAction<Waiting>>;
+    setTotal: Dispatch<SetStateAction<number>>;
+    setTotalPages: Dispatch<SetStateAction<number>>;
   }
   // 일괄 거절 모달
   interface WaitingChkRefusalModalProps {
     info: string[];
-    data: Waiting[];
     setData: Dispatch<SetStateAction<Waiting>>;
+    setTotal: Dispatch<SetStateAction<number>>;
+    setTotalPages: Dispatch<SetStateAction<number>>;
   }
   // 개별 승인 모달
   interface WaitingApprovalModalProps {
@@ -282,8 +307,9 @@ declare global {
       name: string;
       recommendId: string;
     };
-    data: Waiting[];
     setData: Dispatch<SetStateAction<Waiting>>;
+    setTotal: Dispatch<SetStateAction<number>>;
+    setTotalPages: Dispatch<SetStateAction<number>>;
   }
   // 개별 거절 모달
   interface WaitingRefusalModalProps {
@@ -293,8 +319,9 @@ declare global {
       name: string;
       recommendId: string;
     };
-    data: Waiting[];
     setData: Dispatch<SetStateAction<Waiting>>;
+    setTotal: Dispatch<SetStateAction<number>>;
+    setTotalPages: Dispatch<SetStateAction<number>>;
   }
 
   // 미션 관리

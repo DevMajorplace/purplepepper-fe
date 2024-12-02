@@ -132,15 +132,7 @@ export default function WaitingListPage() {
       !refusalMode
         ? setData(
             res.data.data.map(
-              (item: {
-                user_id: string;
-                company_name: string;
-                manager_name: string;
-                manager_contact: string;
-                parent_id: string;
-                created_at: string;
-                business_registration: string;
-              }) => {
+              (item: WaitingData) => {
                 return {
                   id: item.user_id,
                   company: item.company_name,
@@ -157,17 +149,7 @@ export default function WaitingListPage() {
           )
         : setRefusalData(
             res.data.data.map(
-              (item: {
-                user_id: string;
-                company_name: string;
-                manager_name: string;
-                manager_contact: string;
-                parent_id: string;
-                created_at: string;
-                business_registration: string;
-                decliend_at: string;
-                rejection_reason: string;
-              }) => {
+              (item: RefuseData) => {
                 return {
                   id: item.user_id,
                   company: item.company_name,
@@ -342,58 +324,64 @@ export default function WaitingListPage() {
     columnHelper.accessor("certificate", {
       id: "certificate",
       header: () => <TableTh className="text-center" text="사업자등록증" />,
-      cell: (info) => (
-        <div className="flex justify-center items-center">
-          <button
-            className="border border-[#ccc] rounded-md px-4 py-2"
-            onClick={() => handleCerificateClick(info.getValue())}
-          >
-            이미지 보기
-          </button>
-        </div>
-      ),
+      cell: (info) => {
+        info.getValue() && (
+          <div className="flex justify-center items-center">
+            <button
+              className="border border-[#ccc] rounded-md px-4 py-2"
+              onClick={() => handleCerificateClick(info.getValue())}
+            >
+              이미지 보기
+            </button>
+          </div>
+        );
+      },
     }),
     columnHelper.accessor("approval", {
       id: "approval",
       header: () => <TableTh className="text-center" text="승인" />,
-      cell: (info) => (
-        <div className="flex justify-center items-center">
-          <button
-            className="border border-[#ddd] bg-[#F0FDF4] text-[#15803D] rounded-md px-4 py-2"
-            onClick={() =>
-              handleApprovalClick({
-                id: info.row.original.id,
-                company: info.row.original.company,
-                name: info.row.original.name,
-                recommendId: info.row.original.recommendId,
-              })
-            }
-          >
-            가입승인
-          </button>
-        </div>
-      ),
+      cell: (info) => {
+        info.getValue() && (
+          <div className="flex justify-center items-center">
+            <button
+              className="border border-[#ddd] bg-[#F0FDF4] text-[#15803D] rounded-md px-4 py-2"
+              onClick={() =>
+                handleApprovalClick({
+                  id: info.row.original.id,
+                  company: info.row.original.company,
+                  name: info.row.original.name,
+                  recommendId: info.row.original.recommendId,
+                })
+              }
+            >
+              가입승인
+            </button>
+          </div>
+        );
+      },
     }),
     columnHelper.accessor("refusal", {
       id: "refusal",
       header: () => <TableTh className="text-center" text="거절" />,
-      cell: (info) => (
-        <div className="flex justify-center items-center">
-          <button
-            className="bg-[#DC2626] text-white rounded-md px-4 py-2"
-            onClick={() =>
-              handleRefusalClick({
-                id: info.row.original.id,
-                company: info.row.original.company,
-                name: info.row.original.name,
-                recommendId: info.row.original.recommendId,
-              })
-            }
-          >
-            가입거절
-          </button>
-        </div>
-      ),
+      cell: (info) => {
+        info.getValue() && (
+          <div className="flex justify-center items-center">
+            <button
+              className="bg-[#DC2626] text-white rounded-md px-4 py-2"
+              onClick={() =>
+                handleRefusalClick({
+                  id: info.row.original.id,
+                  company: info.row.original.company,
+                  name: info.row.original.name,
+                  recommendId: info.row.original.recommendId,
+                })
+              }
+            >
+              가입거절
+            </button>
+          </div>
+        );
+      },
     }),
   ];
 
@@ -434,28 +422,30 @@ export default function WaitingListPage() {
       header: () => (
         <TableTh text="가입요청일시" onSort={() => handleSort("createdAt")} />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => formatDate(info.getValue()),
     }),
     refusalColumnHelper.accessor("certificate", {
       id: "certificate",
       header: () => <TableTh className="text-center" text="사업자등록증" />,
-      cell: (info) => (
-        <div className="flex justify-center items-center">
-          <button
-            className="border border-[#ccc] rounded-md px-4 py-2"
-            onClick={() => handleCerificateClick(info.getValue())}
-          >
-            이미지 보기
-          </button>
-        </div>
-      ),
+      cell: (info) => {
+        info.getValue() && (
+          <div className="flex justify-center items-center">
+            <button
+              className="border border-[#ccc] rounded-md px-4 py-2"
+              onClick={() => handleCerificateClick(info.getValue())}
+            >
+              이미지 보기
+            </button>
+          </div>
+        );
+      },
     }),
     refusalColumnHelper.accessor("refusalAt", {
       id: "refusalAt",
       header: () => (
         <TableTh text="거절처리일시" onSort={() => handleSort("refusalAt")} />
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => formatDate(info.getValue()),
     }),
     refusalColumnHelper.accessor("reason", {
       id: "reason",
@@ -549,7 +539,13 @@ export default function WaitingListPage() {
     setModalOpen(true);
     setModalContents(
       // eslint-disable-next-line prettier/prettier
-      <WaitingChkApprovalModal data={data} info={chk} setData={setData} />
+      <WaitingChkApprovalModal
+        info={chk}
+        setData={setData}
+        setTotal={setTotal}
+        setTotalPages={setTotalPages}
+        // eslint-disable-next-line prettier/prettier
+      />
     );
   };
 
@@ -566,7 +562,13 @@ export default function WaitingListPage() {
     setModalOpen(true);
     setModalContents(
       // eslint-disable-next-line prettier/prettier
-      <WaitingChkRefusalModal data={data} info={chk} setData={setData} />
+      <WaitingChkRefusalModal
+        info={chk}
+        setData={setData}
+        setTotal={setTotal}
+        setTotalPages={setTotalPages}
+        // eslint-disable-next-line prettier/prettier
+      />
     );
   };
 
@@ -586,7 +588,13 @@ export default function WaitingListPage() {
     setModalOpen(true);
     setModalContents(
       // eslint-disable-next-line prettier/prettier
-      <WaitingApprovalModal data={data} info={info} setData={setData} />
+      <WaitingApprovalModal
+        info={info}
+        setData={setData}
+        setTotal={setTotal}
+        setTotalPages={setTotalPages}
+        // eslint-disable-next-line prettier/prettier
+      />
     );
   };
 
@@ -595,7 +603,13 @@ export default function WaitingListPage() {
     setModalOpen(true);
     setModalContents(
       // eslint-disable-next-line prettier/prettier
-      <WaitingRefusalModal data={data} info={info} setData={setData} />
+      <WaitingRefusalModal
+        info={info}
+        setData={setData}
+        setTotal={setTotal}
+        setTotalPages={setTotalPages}
+        // eslint-disable-next-line prettier/prettier
+      />
     );
   };
 

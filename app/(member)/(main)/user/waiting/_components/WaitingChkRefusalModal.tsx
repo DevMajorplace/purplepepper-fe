@@ -5,8 +5,9 @@ import instance from "@/api/axios";
 
 export default function WaitingChkRefusalModal({
   info,
-  data,
   setData,
+  setTotal,
+  setTotalPages,
 }: WaitingChkRefusalModalProps) {
   const [state, setState] = useState(false);
   const [reason, setReason] = useState("");
@@ -35,12 +36,39 @@ export default function WaitingChkRefusalModal({
   };
 
   // 확인 클릭시
-  const handleOkayClick = () => {
-    const newData = data.filter((item) => {
-      return !info.includes(item.id);
-    });
+  const handleOkayClick = async () => {
+    try {
+      const res = await instance.get(
+        // eslint-disable-next-line prettier/prettier
+        `/admin/status?page=1&pageSize=15&status=pending`
+      );
 
-    setData(newData);
+      setData(
+        res.data.data.map(
+          (item: WaitingData) => {
+            return {
+              id: item.user_id,
+              company: item.company_name,
+              name: item.manager_name,
+              phone: item.manager_contact,
+              recommendId: item.parent_id,
+              createdAt: item.created_at,
+              certificate: item.business_registration,
+            };
+            // eslint-disable-next-line prettier/prettier
+          }
+          // eslint-disable-next-line prettier/prettier
+        )
+      );
+
+      // 총 인원
+      setTotal(res.data.totalItems);
+      // 총 페이지 수
+      setTotalPages(res.data.totalPages);
+    } catch (error: any) {
+      //console.log(error);
+      alert(error.response.data.message);
+    }
     setModalOpen(false);
     setModalContents(<></>);
   };
