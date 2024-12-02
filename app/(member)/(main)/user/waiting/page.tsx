@@ -346,64 +346,58 @@ export default function WaitingListPage() {
     columnHelper.accessor("certificate", {
       id: "certificate",
       header: () => <TableTh className="text-center" text="사업자등록증" />,
-      cell: (info) => {
-        refusalData && (
-          <div className="flex justify-center items-center">
-            <button
-              className="border border-[#ccc] rounded-md px-4 py-2"
-              onClick={() => handleCerificateClick(info.getValue())}
-            >
-              이미지 보기
-            </button>
-          </div>
-        );
-      },
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <button
+            className="border border-[#ccc] rounded-md px-4 py-2"
+            onClick={() => handleCerificateClick(info.getValue())}
+          >
+            이미지 보기
+          </button>
+        </div>
+      ),
     }),
     columnHelper.accessor("approval", {
       id: "approval",
       header: () => <TableTh className="text-center" text="승인" />,
-      cell: (info) => {
-        refusalData && (
-          <div className="flex justify-center items-center">
-            <button
-              className="border border-[#ddd] bg-[#F0FDF4] text-[#15803D] rounded-md px-4 py-2"
-              onClick={() =>
-                handleApprovalClick({
-                  id: info.row.original.id,
-                  company: info.row.original.company,
-                  name: info.row.original.name,
-                  recommendId: info.row.original.recommendId,
-                })
-              }
-            >
-              가입승인
-            </button>
-          </div>
-        );
-      },
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <button
+            className="border border-[#ddd] bg-[#F0FDF4] text-[#15803D] rounded-md px-4 py-2"
+            onClick={() =>
+              handleApprovalClick({
+                id: info.row.original.id,
+                company: info.row.original.company,
+                name: info.row.original.name,
+                recommendId: info.row.original.recommendId,
+              })
+            }
+          >
+            가입승인
+          </button>
+        </div>
+      ),
     }),
     columnHelper.accessor("refusal", {
       id: "refusal",
       header: () => <TableTh className="text-center" text="거절" />,
-      cell: (info) => {
-        refusalData && (
-          <div className="flex justify-center items-center">
-            <button
-              className="bg-[#DC2626] text-white rounded-md px-4 py-2"
-              onClick={() =>
-                handleRefusalClick({
-                  id: info.row.original.id,
-                  company: info.row.original.company,
-                  name: info.row.original.name,
-                  recommendId: info.row.original.recommendId,
-                })
-              }
-            >
-              가입거절
-            </button>
-          </div>
-        );
-      },
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <button
+            className="bg-[#DC2626] text-white rounded-md px-4 py-2"
+            onClick={() =>
+              handleRefusalClick({
+                id: info.row.original.id,
+                company: info.row.original.company,
+                name: info.row.original.name,
+                recommendId: info.row.original.recommendId,
+              })
+            }
+          >
+            가입거절
+          </button>
+        </div>
+      ),
     }),
   ];
 
@@ -449,18 +443,16 @@ export default function WaitingListPage() {
     refusalColumnHelper.accessor("certificate", {
       id: "certificate",
       header: () => <TableTh className="text-center" text="사업자등록증" />,
-      cell: (info) => {
-        refusalData && (
-          <div className="flex justify-center items-center">
-            <button
-              className="border border-[#ccc] rounded-md px-4 py-2"
-              onClick={() => handleCerificateClick(info.getValue())}
-            >
-              이미지 보기
-            </button>
-          </div>
-        );
-      },
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <button
+            className="border border-[#ccc] rounded-md px-4 py-2"
+            onClick={() => handleCerificateClick(info.getValue())}
+          >
+            이미지 보기
+          </button>
+        </div>
+      ),
     }),
     refusalColumnHelper.accessor("refusalAt", {
       id: "refusalAt",
